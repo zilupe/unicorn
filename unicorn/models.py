@@ -1,8 +1,23 @@
 from sqlalchemy import Column, create_engine, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from unicorn.configuration import get_session
+
+engine = create_engine('sqlite://')
+
+
+class _Base:
+    @classmethod
+    def create(cls, **kwargs):
+        inst = cls(**kwargs)
+        session = get_session()
+        session.add(inst)
+        session.commit()
+        return inst
+
+
+Base = declarative_base(cls=_Base)
 
 
 class Team(Base):
@@ -53,36 +68,4 @@ class Game(Base):
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')
 Team.home_games = relationship('Game', foreign_keys=Game.home_team_id, order_by=Game.starts_at, back_populates='home_team')
 Team.away_games = relationship('Game', foreign_keys=Game.away_team_id, order_by=Game.starts_at, back_populates='away_team')
-
-
-engine = create_engine('sqlite://')
-Session = sessionmaker()
-
-
-Base.metadata.create_all(engine)
-
-Session.configure(bind=engine)
-
-season1 = Season(id=1, name='Winter 2010')
-lost_angels = Team(id=1, name='Lost Angels')
-camden_hells = Team(id=2, name='Camden Hells')
-
-session = Session()
-session.add(season1)
-session.add(lost_angels)
-session.add(camden_hells)
-
-game1 = Game(id=1, season=season1, home_team=lost_angels, away_team=camden_hells)
-session.add(game1)
-
-session.commit()
-
-games = session.query(Game).all()
-g = games[0]
-
-print(g)
-print(g.home_team)
-print(g.away_team)
-
-
 
