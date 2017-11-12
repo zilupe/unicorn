@@ -16,6 +16,10 @@ class _Base:
         session.commit()
         return inst
 
+    @classmethod
+    def get_all(cls):
+        return get_session().query(cls).all()
+
 
 Base = declarative_base(cls=_Base)
 
@@ -26,7 +30,7 @@ class Team(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
 
-    def __str__(self):
+    def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
 
 
@@ -38,7 +42,7 @@ class Season(Base):
     first_week_date = Column(Date)
     last_week_date = Column(Date)
 
-    def __str__(self):
+    def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
 
 
@@ -61,7 +65,7 @@ class Game(Base):
     home_team = relationship('Team', foreign_keys=[home_team_id], back_populates='home_games')
     away_team = relationship('Team', foreign_keys=[away_team_id], back_populates='away_games')
 
-    def __str__(self):
+    def __repr__(self):
         return '<{} {} vs {}>'.format(self.__class__.__name__, self.home_team, self.away_team)
 
 

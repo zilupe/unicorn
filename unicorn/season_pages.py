@@ -14,13 +14,13 @@ source_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file
 def parse_team_link(team_link):
     qs = parse_qs(team_link['href'])
     return {
-        'id': qs['TeamId'][0],
+        'id': int(qs['TeamId'][0]),
         'name': ' '.join(w for w in team_link.text.strip().replace('\n', ' ').split(' ') if w),
     }
 
 
-def parse_season(season_page_path):
-    with open(full_source_path) as f:
+def _parse_season(season_page_path):
+    with open(season_page_path) as f:
         soup = BeautifulSoup(f.read(), 'html.parser')
 
     title_parts = soup.title.text.strip().split(' - ')
@@ -29,11 +29,32 @@ def parse_season(season_page_path):
     assert title_parts[2] == 'Thurs'
     assert title_parts[3] == 'Rec)'
     assert title_parts[5] == 'Current Standings'
-    season_title = title_parts[4]
+    season_name = title_parts[4]
 
+    teams = []
     fixtures = []
 
     standings_table = soup.find('table', class_='STTable')
+
+    for row in standings_table.find_all('tr', class_='STRow'):
+        tc = row.find('td', class_='STTeamCell')
+        team = parse_team_link(tc.find('a'))
+
+        all_cells = row.find_all('td')
+        team['played'] = int(all_cells[2].text.strip())
+        team['won'] = int(all_cells[3].text.strip())
+        team['lost'] = int(all_cells[4].text.strip())
+        team['drawn'] = int(all_cells[5].text.strip())
+        team['forfeits_for'] = int(all_cells[6].text.strip())
+        team['forfeits_against'] = int(all_cells[7].text.strip())
+        team['points_for'] = int(all_cells[8].text.strip())
+        team['points_against'] = int(all_cells[9].text.strip())
+        team['difference'] = int(all_cells[10].text.strip())
+        team['bonus_points'] = int(all_cells[11].text.strip())
+        team['points'] = int(all_cells[12].find('a').text.strip())
+
+        teams.append(team)
+
     for fixtures_table in soup.find_all('table', class_='SpawtzFixtureList'):
         fixture_date = dt.datetime.strptime(
             fixtures_table.find('td', class_='SpawtzDate').text.strip(),
@@ -70,19 +91,23 @@ def parse_season(season_page_path):
                     away_team['score'] = row.find('td', class_='SpawtzAwayTeamScore').text.strip()
                 else:
                     if row.find('td', class_='SpawtzSplitter'):
-                        fixtures.append(
-                            (fixture_datetime, home_team, away_team)
-                        )
+                        if home_team['id'] != 0:
+                            fixtures.append(
+                                (fixture_datetime, home_team, away_team)
+                            )
                         continue
                     log.warning('Unrecognised row: {}'.format(row))
 
     return {
-        'title': season_title,
+        'name': season_name,
+        'teams': teams,
         'fixtures': fixtures,
+        'first_week_date': min(fixtures, key=lambda f: f[0])[0],
+        'last_week_date': max(fixtures, key=lambda f: f[0])[0],
     }
 
 
-for source_filename in os.listdir(source_dir):
-    full_source_path = os.path.join(source_dir, source_filename)
-    print(parse_season(full_source_path))
-
+def parse_seasons():
+    for source_filename in os.listdir(source_dir):
+        full_source_path = os.path.join(source_dir, source_filename)
+        yield _parse_season(full_source_path)
