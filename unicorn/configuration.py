@@ -1,6 +1,4 @@
-import logging
 import logging.config
-import os
 
 
 LOGGING = {
@@ -38,6 +36,3 @@ LOGGING = {
 }
 
 logging.config.dictConfig(LOGGING)
-
-
-db_connection_url = os.environ.get('UNICORN_DATABASE_URL', 'sqlite://')

@@ -1,12 +1,9 @@
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from unicorn import configuration
 
-
-engine = create_engine(configuration.db_connection_url)
-session_factory = sessionmaker(bind=engine)
+session_factory = sessionmaker()
 Session = scoped_session(session_factory)
 metadata = MetaData()
 

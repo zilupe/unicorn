@@ -23,6 +23,12 @@ def _parse_season(season_page_path):
     with open(season_page_path) as f:
         soup = BeautifulSoup(f.read(), 'html.parser')
 
+    season_id = 0
+    for h3 in soup.find_all('h3'):
+        a = h3.find('a')
+        if a:
+            season_id = int(parse_qs(a['href'])['SeasonId'][0])
+
     title_parts = soup.title.text.strip().split(' - ')
     assert title_parts[0] == 'Basketball'
     assert title_parts[1] == 'Mixed (Angel (City)'
@@ -100,6 +106,7 @@ def _parse_season(season_page_path):
 
     return {
         'name': season_name,
+        'id': season_id,
         'teams': teams,
         'fixtures': fixtures,
         'first_week_date': min(fixtures, key=lambda f: f[0])[0],

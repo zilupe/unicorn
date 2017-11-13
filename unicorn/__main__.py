@@ -1,31 +1,23 @@
-from unicorn.configuration import get_session, db_engine, logging
-from unicorn.models import Season, Base, Team, Game
+from unicorn.configuration import logging
+from unicorn.models import Season, Team, Game
 from unicorn.season_pages import parse_seasons
 
 
 log = logging.getLogger(__name__)
 
 
-def list_models(model_cls):
-    print('{}:'.format(model_cls.__name__))
-    for obj in get_session().query(model_cls).all():
-        print(obj)
-    print('---')
-
-
 def main():
-    Base.metadata.create_all(db_engine)
-
     all_teams = {}
 
     for team in Team.get_all():
         all_teams[team.id] = team
 
-    for i, raw in enumerate(parse_seasons()):
-        season_id = i + 1
+    for raw in parse_seasons():
         season = Season.create(
-            id=season_id,
+            id=raw['id'],
             name=raw['name'],
+            first_week_date=raw['first_week_date'],
+            last_week_date=raw['last_week_date'],
         )
 
         for t in raw['teams']:
@@ -41,6 +33,7 @@ def main():
                 home_team = all_teams[ht['id']]
                 away_team = all_teams[at['id']]
                 Game.create(
+                    season=season,
                     starts_at=f_datetime,
                     home_team=home_team,
                     home_team_points=int(ht['score'] or -1),
@@ -52,13 +45,6 @@ def main():
                 raise
 
 
-    list_models(Team)
-    list_models(Season)
-    list_models(Game)
-
-
-
-
 if __name__ == '__main__':
+    import unicorn.db.connection  # configure db connection
     main()
-
