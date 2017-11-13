@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 log = logging.getLogger(__name__)
 
 
-db_engine = create_engine('sqlite://')
+db_engine = create_engine('sqlite:///../unicorn.db')
 
 Session = sessionmaker(db_engine)
 Session.configure(bind=db_engine)

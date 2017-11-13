@@ -28,7 +28,7 @@ def _parse_season(season_page_path):
     assert title_parts[1] == 'Mixed (Angel (City)'
     assert title_parts[2] == 'Thurs'
     assert title_parts[3] == 'Rec)'
-    assert title_parts[5] == 'Current Standings'
+    assert title_parts[5] in ('Current Standings', 'Division 1', 'Div 1')
     season_name = title_parts[4]
 
     teams = []
@@ -110,4 +110,8 @@ def _parse_season(season_page_path):
 def parse_seasons():
     for source_filename in os.listdir(source_dir):
         full_source_path = os.path.join(source_dir, source_filename)
-        yield _parse_season(full_source_path)
+        try:
+            yield _parse_season(full_source_path)
+        except Exception as e:
+            log.error('Failed to parse {}'.format(full_source_path))
+            raise
