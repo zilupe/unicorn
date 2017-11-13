@@ -1,27 +1,7 @@
-from sqlalchemy import Column, create_engine, Date, DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from unicorn.configuration import get_session
-
-engine = create_engine('sqlite://')
-
-
-class _Base:
-    @classmethod
-    def create(cls, **kwargs):
-        inst = cls(**kwargs)
-        session = get_session()
-        session.add(inst)
-        session.commit()
-        return inst
-
-    @classmethod
-    def get_all(cls):
-        return get_session().query(cls).all()
-
-
-Base = declarative_base(cls=_Base)
+from unicorn.db import Base
 
 
 class Team(Base):
@@ -72,4 +52,3 @@ class Game(Base):
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')
 Team.home_games = relationship('Game', foreign_keys=Game.home_team_id, order_by=Game.starts_at, back_populates='home_team')
 Team.away_games = relationship('Game', foreign_keys=Game.away_team_id, order_by=Game.starts_at, back_populates='away_team')
-

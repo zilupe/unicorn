@@ -1,23 +1,43 @@
 import logging
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-
-log = logging.getLogger(__name__)
+import logging.config
+import os
 
 
-db_engine = create_engine('sqlite:///../unicorn.db')
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'console': {
+            'format': (
+                '[%(asctime)s][%(levelname)s] %(name)s '
+                '%(filename)s:%(funcName)s:%(lineno)d | %(message)s'
+            ),
+            'datefmt': '%H:%M:%S',
+        },
+        'simple': {
+            'format': '%(asctime)s  [%(levelname)s] - %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'stream': 'ext://sys.stdout',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'unicorn': {
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
-Session = sessionmaker(db_engine)
-Session.configure(bind=db_engine)
+logging.config.dictConfig(LOGGING)
 
 
-_main_session = None
-
-
-def get_session():
-    global _main_session
-    if _main_session is None:
-        _main_session = Session()
-    return _main_session
+db_connection_url = os.environ.get('UNICORN_DATABASE_URL', 'sqlite://')

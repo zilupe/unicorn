@@ -1,9 +1,8 @@
 import pytest
 
-from unicorn.configuration import Session, db_engine
-from unicorn.models import Base
+from unicorn.db import Base, engine
 
 
 @pytest.fixture(scope='session')
 def db():
-    Base.metadata.create_all(db_engine)
+    Base.metadata.create_all(engine)
