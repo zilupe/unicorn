@@ -2,3 +2,4 @@ season-pages/
 tests/.cache/
 __pycache__
 unicorn.db
+build/
