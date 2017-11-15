@@ -11,7 +11,7 @@ metadata = MetaData()
 class _Base:
     @classmethod
     def get_all(cls):
-        return Session.query(cls).all()
+        return Session.query(cls)
 
     @classmethod
     def create(cls, **kwargs):

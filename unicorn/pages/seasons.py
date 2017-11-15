@@ -4,7 +4,7 @@ from unicorn.models import Season
 
 
 def main():
-    seasons = Season.get_all()
+    seasons = Season.get_all().order_by(Season.first_week_date.asc())
     generator = generate_pages(
         seasons,
         'season.html',

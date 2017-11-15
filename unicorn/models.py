@@ -13,6 +13,10 @@ class Team(Base):
     def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
 
+    @property
+    def link(self):
+        return '<a href="/team_{}.html">{}</a>'.format(self.id, self.name)
+
 
 class Season(Base):
     __tablename__ = 'seasons'

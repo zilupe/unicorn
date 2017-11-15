@@ -6,6 +6,43 @@
 <body>
     <h1>{{ season.id }} - {{ season.name }}</h1>
 
-    {# a comment #}
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{ season.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ season.name }}</td>
+        </tr>
+        <tr>
+            <th>First Day</th>
+            <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        <tr>
+            <th>Last Day</th>
+            <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
+        </tr>
+    </table>
+
+    {% for game in season.games %}
+
+        <table>
+            <thead>
+            <tr>
+                <th colspan="2">{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</th>
+            </tr>
+            </thead>
+            <tr>
+                <th>{{ game.home_team.link|safe }}</th>
+                <td>{{ game.home_team_points }}</td>
+            </tr>
+            <tr>
+                <th>{{ game.away_team.link|safe }}</th>
+                <td>{{ game.away_team_points }}</td>
+            </tr>
+        </table>
+
+    {% endfor %}
 </body>
 </html>
