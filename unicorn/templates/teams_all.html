@@ -1,0 +1,7 @@
+<h1>All Teams</h1>
+
+<ul>
+    {% for page in pages %}
+        <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+    {% endfor %}
+</ul>

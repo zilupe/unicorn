@@ -1,0 +1,33 @@
+<h1>{{ team.name }}</h1>
+
+<h3>All Seasons</h3>
+
+<ul>
+    {% for season in team.all_seasons %}
+        <li>{{ season.link|safe }}</li>
+    {% endfor %}
+</ul>
+
+<h3>All Games</h3>
+
+<table>
+    <thead>
+    <tr>
+        <th>Season</th>
+        <th>Date</th>
+        <th>Match-up</th>
+        <th>Score</th>
+        <th>Outcome</th>
+    </tr>
+    </thead>
+    {% for game in team.all_games %}
+        <tr>
+            <td>{{ game.season.link|safe }}</td>
+            <td>{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</td>
+            <td>{{ game.link|safe }}</td>
+            <td>{{ game.home_team_points }} - {{ game.away_team_points }}</td>
+            <td></td>
+        </tr>
+    {% endfor %}
+</table>
+

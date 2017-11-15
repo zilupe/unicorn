@@ -15,7 +15,22 @@ class Team(Base):
 
     @property
     def link(self):
-        return '<a href="/team_{}.html">{}</a>'.format(self.id, self.name)
+        return '<a href="team_{}.html">{}</a>'.format(self.id, self.name)
+
+    @property
+    def all_games(self):
+        all = []
+        all.extend(self.home_games)
+        all.extend(self.away_games)
+        return sorted(all, key=lambda g: g.starts_at, reverse=True)
+
+    @property
+    def all_seasons(self):
+        seasons = set(g.season for g in self.all_games)
+        return sorted(seasons, key=lambda s: s.first_week_date)
+
+
+Team.default_order_by = Team.name.asc(),
 
 
 class Season(Base):
@@ -28,6 +43,13 @@ class Season(Base):
 
     def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
+
+    @property
+    def link(self):
+        return '<a href="season_{}.html">{}</a>'.format(self.id, self.name)
+
+
+Season.default_order_by = Season.first_week_date.asc(),
 
 
 class Game(Base):
@@ -50,7 +72,18 @@ class Game(Base):
     away_team = relationship('Team', foreign_keys=[away_team_id], back_populates='away_games')
 
     def __repr__(self):
-        return '<{} {} vs {}>'.format(self.__class__.__name__, self.home_team, self.away_team)
+        return '<{} {} - {}>'.format(self.__class__.__name__, self.home_team, self.away_team)
+
+    @property
+    def name(self):
+        return '{} - {}'.format(self.home_team.name, self.away_team.name)
+
+    @property
+    def link(self):
+        return '<a href="game_{}.html">{}</a>'.format(self.id, self.name)
+
+
+Game.default_order_by = Game.starts_at.asc(),
 
 
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')

@@ -9,9 +9,16 @@ metadata = MetaData()
 
 
 class _Base:
+    default_order_by = None
+
     @classmethod
-    def get_all(cls):
-        return Session.query(cls)
+    def get_all(cls, order_by=None):
+        q = Session.query(cls)
+        if order_by:
+            q = q.order_by(*order_by)
+        elif cls.default_order_by:
+            q = q.order_by(*cls.default_order_by)
+        return q
 
     @classmethod
     def create(cls, **kwargs):

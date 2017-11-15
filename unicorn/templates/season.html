@@ -25,24 +25,22 @@
         </tr>
     </table>
 
-    {% for game in season.games %}
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Match-up</th>
+            <th>Score</th>
+        </tr>
+        </thead>
+        {% for game in season.games %}
+            <tr>
+                <td>{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ game.link|safe }}</td>
+                <td>{{ game.home_team_points }} - {{ game.away_team_points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 
-        <table>
-            <thead>
-            <tr>
-                <th colspan="2">{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</th>
-            </tr>
-            </thead>
-            <tr>
-                <th>{{ game.home_team.link|safe }}</th>
-                <td>{{ game.home_team_points }}</td>
-            </tr>
-            <tr>
-                <th>{{ game.away_team.link|safe }}</th>
-                <td>{{ game.away_team_points }}</td>
-            </tr>
-        </table>
-
-    {% endfor %}
 </body>
 </html>

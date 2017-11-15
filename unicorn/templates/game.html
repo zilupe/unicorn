@@ -1,0 +1,16 @@
+
+
+<h1>{{ game.home_team.link|safe }} - {{ game.away_team.link|safe }}</h1>
+<h2>{{ game.home_team_points }} - {{ game.away_team_points }}</h2>
+
+
+<table>
+    <tr>
+        <th>Season:</th>
+        <td>{{ game.season.link|safe }}</td>
+    </tr>
+    <tr>
+        <th>Starts At:</th>
+        <td>{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</td>
+    </tr>
+</table>
