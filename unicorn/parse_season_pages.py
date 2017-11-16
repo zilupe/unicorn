@@ -1,11 +1,13 @@
+from unicorn.app import run_in_app_context
 from unicorn.configuration import logging
 from unicorn.models import Season, Team, Game
-from unicorn.season_pages import parse_seasons
+from unicorn.scrapers.season_pages import parse_seasons
 
 
 log = logging.getLogger(__name__)
 
 
+@run_in_app_context
 def main():
     all_teams = {}
 
@@ -46,5 +48,4 @@ def main():
 
 
 if __name__ == '__main__':
-    import unicorn.db.connection  # configure db connection
     main()

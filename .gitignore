@@ -1,5 +1,4 @@
-season-pages/
-tests/.cache/
-__pycache__
-unicorn.db
+.cache
 build/
+input/
+__pycache__

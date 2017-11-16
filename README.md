@@ -8,3 +8,10 @@
     truncate games;
     delete from teams;
     delete from seasons;
+
+
+
+
+    python -m unicorn.recreate_tables
+    python -m unicorn.parse_season_pages
+

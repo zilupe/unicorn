@@ -5,10 +5,11 @@ from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
 
+from unicorn import unicorn_root_dir
 
 log = logging.getLogger(__name__)
 
-source_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'season-pages'))
+source_dir = os.path.join(unicorn_root_dir, 'input/season-pages')
 
 
 def parse_team_link(team_link):
@@ -116,6 +117,8 @@ def _parse_season(season_page_path):
 
 def parse_seasons():
     for source_filename in os.listdir(source_dir):
+        if not source_filename.endswith('.htm'):
+            continue
         full_source_path = os.path.join(source_dir, source_filename)
         try:
             yield _parse_season(full_source_path)

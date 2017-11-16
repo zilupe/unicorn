@@ -3,6 +3,7 @@ from unicorn.core.pages import generate_pages, write_page, generate_page
 from unicorn.models import Season, Team, Game
 
 
+@run_in_app_context
 def main():
     object_types = (
         ('season', Season),
@@ -32,4 +33,4 @@ def main():
 
 
 if __name__ == '__main__':
-    run_in_app_context(main)
+    main()

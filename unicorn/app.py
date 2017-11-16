@@ -1,3 +1,5 @@
+import functools
+
 from unicorn.core.apps import App
 
 
@@ -14,6 +16,10 @@ def create_app(**kwargs):
     return app
 
 
-def run_in_app_context(func):
-    with create_app():
-        func()
+def run_in_app_context(f):
+    @functools.wraps(f)
+    def wrapped(*args, **kwargs):
+        with create_app():
+            f()
+
+    return wrapped
