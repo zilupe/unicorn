@@ -2,6 +2,9 @@
 
 <h3>All Seasons</h3>
 
+<p>First game ever: {{ team.all_games[-1].starts_at.strftime('%d/%m/%Y') }} </p>
+<p>Last game: {{ team.all_games[0].starts_at.strftime('%d/%m/%Y') }} </p>
+
 <ul>
     {% for season in team.all_seasons %}
         <li>{{ season.link|safe }}</li>

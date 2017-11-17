@@ -9,6 +9,8 @@ log = logging.getLogger(__name__)
 
 @run_in_app_context
 def main():
+    log.info('parsing season pages')
+
     all_teams = {}
 
     for team in Team.get_all():
