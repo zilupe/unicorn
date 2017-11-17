@@ -21,6 +21,10 @@ class _Base:
         return q
 
     @classmethod
+    def get_count(cls):
+        return Session.query(cls).count()
+
+    @classmethod
     def create(cls, **kwargs):
         inst = cls(**kwargs)
         Session.add(inst)
