@@ -1,4 +1,4 @@
-from unicorn.models import Season, Team, TeamSeason
+from unicorn.models import Season, Team, TeamSeason, Game
 
 
 def store_season_page(page):
@@ -19,3 +19,16 @@ def store_season_page(page):
             season_id=season_obj.id,
             team_name=None,
         )
+
+    for game_day in page.game_days:
+        for game in game_day.games:
+            game_obj = Game.create(
+                id=game.id,
+                season_id=season_obj.id,
+                season_stage=game.season_stage,
+                starts_at=game.starts_at,
+                home_team_id=game.home_team_id,
+                home_team_points=game.home_team_points,
+                away_team_id=game.away_team_id,
+                away_team_points=game.away_team_points,
+            )

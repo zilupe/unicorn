@@ -3,6 +3,8 @@ from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
 
+from unicorn.values import SeasonStages
+
 
 def parse_gm_date(date_str):
     """
@@ -74,10 +76,18 @@ class SeasonPage:
         self.game_days = []
         self.teams = {}
 
+        season_stage = SeasonStages.regular
+
         for week_number, t in enumerate(self.soup.find_all('table', class_='FTable')):
             week_date = parse_gm_date(t.find('tr', class_='FHeader').find('td').text.strip())
             week_games = []
             for g in t.find_all('tr', class_='FRow'):
+                sc = g.find('td', class_='FTitle')
+                if sc:
+                    decoded_ss = SeasonStages.decode_gm_season_stage(sc.text.strip())
+                    if decoded_ss is not None:
+                        season_stage = decoded_ss
+
                 tc = g.find('td', class_='FDate')
                 if not tc:
                     continue
@@ -101,9 +111,10 @@ class SeasonPage:
 
                 game = Game(
                     id=game_id,
-                    time=game_time.replace(
+                    starts_at=game_time.replace(
                         year=week_date.year, month=week_date.month, day=week_date.day
                     ),
+                    season_stage=season_stage,
                     venue=game_venue,
                     home_team_id=int(extract_from_link(htc.find('a'), 'TeamId')),
                     home_team_points=int(game_score[0]),
