@@ -4,21 +4,13 @@ from sqlalchemy.orm import relationship
 from unicorn.db.base import Base
 
 
-season_teams_table = Table(
-    'season_teams',
-    Base.metadata,
-    Column('season_id', Integer, ForeignKey('seasons.id')),
-    Column('team_id', Integer, ForeignKey('teams.id')),
-    Column('team_name', String(50)),
-)
-
-
 class Team(Base):
     __tablename__ = 'teams'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
-    seasons = relationship('Season', secondary=season_teams_table)
+
+    seasons = relationship('TeamSeason', back_populates='team')
 
     def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
@@ -50,7 +42,8 @@ class Season(Base):
     name = Column(String(50))
     first_week_date = Column(Date)
     last_week_date = Column(Date)
-    teams = relationship('Team', secondary=season_teams_table)
+
+    teams = relationship('TeamSeason', back_populates='season')
 
     def __repr__(self):
         return '<{} {!r}>'.format(self.__class__.__name__, self.name)
@@ -100,6 +93,18 @@ Game.default_order_by = Game.starts_at.asc(),
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')
 Team.home_games = relationship('Game', foreign_keys=Game.home_team_id, order_by=Game.starts_at, back_populates='home_team')
 Team.away_games = relationship('Game', foreign_keys=Game.away_team_id, order_by=Game.starts_at, back_populates='away_team')
+
+
+class TeamSeason(Base):
+    __tablename__ = 'team_seasons'
+
+    team_id = Column(Integer, ForeignKey('teams.id'), primary_key=True)
+    team = relationship('Team', back_populates='seasons')
+
+    season_id = Column(Integer, ForeignKey('seasons.id'), primary_key=True)
+    season = relationship('Season', back_populates='teams')
+
+    team_name = Column(String)
 
 
 # class Parent(Base):

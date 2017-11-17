@@ -1,4 +1,4 @@
-from unicorn.models import Season, Team
+from unicorn.models import Season, Team, TeamSeason
 
 
 def store_season_page(page):
@@ -14,4 +14,8 @@ def store_season_page(page):
             id=team.id
         )
 
-        season_obj.teams.append(team_obj)
+        team_season_obj = TeamSeason.create(
+            team_id=team_obj.id,
+            season_id=season_obj.id,
+            team_name=None,
+        )
