@@ -110,6 +110,7 @@ class TeamSeason(Base):
     team_name = Column(String(50))
 
     st_position = Column(Integer)
+    st_played = Column(Integer)
     st_won = Column(Integer)
     st_lost = Column(Integer)
     st_drawn = Column(Integer)

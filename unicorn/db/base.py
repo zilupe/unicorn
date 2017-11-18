@@ -21,6 +21,10 @@ class _Base:
         return q
 
     @classmethod
+    def get_by_id(cls, id):
+        return Session.query(cls).filter(cls.id == id).one()
+
+    @classmethod
     def get_count(cls):
         return Session.query(cls).count()
 

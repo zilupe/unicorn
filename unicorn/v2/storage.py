@@ -24,6 +24,18 @@ def store_season_page(page):
             team_id=team_obj.id,
             season_id=season_obj.id,
             team_name=None,
+            st_position=team.position,
+            st_played=team.played,
+            st_won=team.won,
+            st_lost=team.lost,
+            st_drawn=team.drawn,
+            st_forfeit_for=team.forfeit_for,
+            st_forfeit_against=team.forfeit_against,
+            st_score_for=team.score_for,
+            st_score_against=team.score_against,
+            st_score_difference=team.score_difference,
+            st_bonus_points=team.bonus_points,
+            st_points=team.points
         )
 
     for game_day in page.game_days:
