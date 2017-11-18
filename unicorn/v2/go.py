@@ -4,6 +4,7 @@ from unicorn import unicorn_root_dir
 from unicorn.app import run_in_app_context
 from unicorn.configuration import logging
 from unicorn.v2 import process_season_page
+from unicorn.v2.franchises import load_franchises
 
 source_dir = os.path.join(unicorn_root_dir, 'input/season-pages')
 
@@ -19,6 +20,8 @@ def get_season_page_filenames():
 
 @run_in_app_context
 def main():
+    load_franchises()
+
     for filename in get_season_page_filenames():
         log.info('Parsing {}'.format(filename))
         process_season_page(filename)

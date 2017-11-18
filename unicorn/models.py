@@ -10,6 +10,7 @@ class Franchise(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
+    status = Column(String(20))
 
     teams = relationship('Team', back_populates='franchise')
 

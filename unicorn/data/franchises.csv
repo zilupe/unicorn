@@ -1,4 +1,4 @@
-franchise_id,name,status
+id,name,status
 1,"Supernova",inactive
 2,"Upper Street Ballers",inactive
 3,"Camden Hells",inactive
@@ -12,6 +12,7 @@ franchise_id,name,status
 11,"Burritos",active
 12,"Ocelots",active
 13,"NOT reloaded",unknown
-14,"Markit aka U.N.B.A.",active
+14,"U.N.B.A.",active
 15,"RELOADED",active
-16,"Alley-Oops!",active
+16,"Alley-Oops",active
+17,"Halo Hoops",active
