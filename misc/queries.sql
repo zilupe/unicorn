@@ -27,3 +27,21 @@ join (
   group by g.away_team_id
 ) as aa on t.id = aa.away_team_id
 group by t.id;
+
+
+
+select * from teams where season_id = 105 order by st_position;
+
+select * from seasons order by first_week_date asc;
+
+select * from games where home_team_score is null or away_team_score is null;
+
+select f.id, f.name, s.id, s.name, s.first_week_date, s.last_week_date, t.name
+from franchises as f
+left join teams as t on f.id = t.franchise_id
+left join seasons as s on t.season_id = s.id
+order by f.id asc, s.first_week_date asc;
+
+select f.id, f.name, count(*) from franchises as f
+left join teams as t on f.id = t.franchise_id
+group by f.id;
