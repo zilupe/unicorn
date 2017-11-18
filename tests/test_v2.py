@@ -25,11 +25,11 @@ def test_processes_autumn_2014_season_page(db):
 
     first_game = all_games[0]
     assert first_game.id == 50627
-    assert first_game.home_team_id == 3770
+    assert first_game.home_team_id == '0055.3770'
     assert first_game.home_team_score == 41
     assert first_game.home_team_outcome == GameOutcomes.lost
     assert first_game.home_team_points == 1
-    assert first_game.away_team_id == 2716
+    assert first_game.away_team_id == '0055.2716'
     assert first_game.away_team_score == 52
     assert first_game.away_team_outcome == GameOutcomes.won
     assert first_game.away_team_points == 3
@@ -61,18 +61,18 @@ def test_processes_autumn_2014_season_page(db):
     assert all_games[-2].season_stage == SeasonStages.final1st
     assert all_games[-1].season_stage == SeasonStages.final3rd
 
-    # Supernova aka LKA Clippers TeamSeason
-    ts = all_games[-2].home_team.seasons[0]
-    assert ts.st_position == 1
-    assert ts.st_played == 6
-    assert ts.st_won == 5
-    assert ts.st_lost == 1
-    assert ts.st_drawn == 0
+    # LKA Clippers
+    ht = all_games[-2].home_team
+    assert ht.st_position == 1
+    assert ht.st_played == 6
+    assert ht.st_won == 5
+    assert ht.st_lost == 1
+    assert ht.st_drawn == 0
     # Looks like GoMammoth don't actually register forfeits properly.
-    assert ts.st_forfeit_for == 0
-    assert ts.st_forfeit_against == 0
-    assert ts.st_score_for == 279
-    assert ts.st_score_against == 229
-    assert ts.st_score_difference == 50
-    assert ts.st_bonus_points == 0
-    assert ts.st_points == 16
+    assert ht.st_forfeit_for == 0
+    assert ht.st_forfeit_against == 0
+    assert ht.st_score_for == 279
+    assert ht.st_score_against == 229
+    assert ht.st_score_difference == 50
+    assert ht.st_bonus_points == 0
+    assert ht.st_points == 16

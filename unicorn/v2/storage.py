@@ -1,10 +1,42 @@
-from sqlalchemy.orm.exc import NoResultFound
+import csv
+import os.path
 
-from unicorn.db.base import Session
-from unicorn.models import Season, Team, TeamSeason, Game
+from unicorn import unicorn_root_dir
+from unicorn.configuration import logging
+from unicorn.models import Season, Team, Game, Franchise
+
+log = logging.getLogger(__name__)
+
+
+class Franchises:
+    def __init__(self):
+        self._franchises = {f.id: f for f in Franchise.get_all()}
+        self._franchise_seasons = []
+        with open(os.path.join(unicorn_root_dir, 'unicorn/data/franchise_seasons.csv')) as f:
+            for row in csv.DictReader(f):
+                franchise_id = int(row['franchise_id'])
+                if franchise_id not in self._franchises:
+                    self._franchises[franchise_id] = Franchise.create(id=franchise_id)
+                self._franchise_seasons.append({
+                    'season_id': int(row['season_id']),
+                    'gm_team_id': int(row['gm_team_id']),
+                    'franchise_id': int(row['franchise_id']),
+                    'team_name': row['team_name'],
+                })
+
+    def get_franchise_and_team_name(self, season_id, gm_team_id):
+        for fs in self._franchise_seasons:
+            if fs['season_id'] == season_id and fs['gm_team_id'] == gm_team_id:
+                return self._franchises[fs['franchise_id']], fs['team_name']
+        log.warning('Did not find franchise for season_id={} gm_team_id={}'.format(season_id, gm_team_id))
+        return None, None
 
 
 def store_season_page(page):
+
+    # TODO This is a bit inefficient
+    franchises = Franchises()
+
     season_obj = Season.create(
         id=page.season_id,
         name=page.season_name,
@@ -13,17 +45,13 @@ def store_season_page(page):
     )
 
     for team in page.teams.values():
-        try:
-            team_obj = Session.query(Team).filter(Team.id == team.id).one()
-        except NoResultFound:
-            team_obj = Team.create(
-                id=team.id
-            )
+        franchise, team_name = franchises.get_franchise_and_team_name(season_obj.id, team.gm_id)
 
-        team_season_obj = TeamSeason.create(
-            team_id=team_obj.id,
+        Team.create(
+            id=team.id,
             season_id=season_obj.id,
-            team_name=None,
+            franchise_id=franchise.id if franchise else None,
+            name=team_name,
             st_position=team.position,
             st_played=team.played,
             st_won=team.won,
@@ -40,7 +68,7 @@ def store_season_page(page):
 
     for game_day in page.game_days:
         for game in game_day.games:
-            game_obj = Game.create(
+            Game.create(
                 id=game.id,
                 season_id=season_obj.id,
                 season_stage=game.season_stage,

@@ -64,9 +64,11 @@ class SeasonPage:
         self.season_name = None
         self.teams = None
 
-        # Not important for us at the moment
-        self.league_id = None
-        self.division_id = None
+    def unicorn_team_id(self, gm_team_id):
+        """
+        Build unicorn team id which consists of GM SeasonId concatenated with GM TeamId
+        """
+        return '{:0>4}.{}'.format(int(self.season_id), int(gm_team_id))
 
     def parse(self, input_str):
         # Do not extract team names because we are assigning them manually --
@@ -76,12 +78,17 @@ class SeasonPage:
 
         self.season_name = self.soup.find('head').find('title').text.strip().split(' - ')[4]
 
+        if self.season_id is None:
+            self.season_id = int(extract_from_link(self.soup.find('h3').find('a'), 'SeasonId'))
+
         self.teams = {}
         for i, st_tr in enumerate(self.soup.find('table', class_='STTable').find_all('tr', class_='STRow')):
-            team_id = int(extract_from_link(st_tr.find('td', class_='STTeamCell').find('a'), 'TeamId'))
+            gm_team_id = int(extract_from_link(st_tr.find('td', class_='STTeamCell').find('a'), 'TeamId'))
+            team_id = self.unicorn_team_id(gm_team_id)
             tds = st_tr.find_all('td')
             self.teams[team_id] = Team(
                 id=team_id,
+                gm_id=gm_team_id,
                 position=i + 1,
                 played=int(tds[2].text.strip()),
                 won=int(tds[3].text.strip()),
@@ -134,11 +141,6 @@ class SeasonPage:
                 htc = g.find('td', class_='FHomeTeam')
                 atc = g.find('td', class_='FAwayTeam')
 
-                if self.season_id is None:
-                    self.season_id = int(extract_from_link(htc.find('a'), 'SeasonId'))
-                    self.league_id = int(extract_from_link(htc.find('a'), 'LeagueId'))
-                    self.division_id = int(extract_from_link(htc.find('a'), 'DivisionId'))
-
                 game = Game(
                     id=game_id,
                     starts_at=game_time.replace(
@@ -146,9 +148,9 @@ class SeasonPage:
                     ),
                     season_stage=season_stage,
                     venue=game_venue,
-                    home_team_id=int(extract_from_link(htc.find('a'), 'TeamId')),
+                    home_team_id=self.unicorn_team_id(extract_from_link(htc.find('a'), 'TeamId')),
                     home_team_score=int(game_score[0]) if game_score[0] is not None else None,
-                    away_team_id=int(extract_from_link(atc.find('a'), 'TeamId')),
+                    away_team_id=self.unicorn_team_id(extract_from_link(atc.find('a'), 'TeamId')),
                     away_team_score=int(game_score[1]) if game_score[1] is not None else None,
                 )
 

@@ -16,7 +16,7 @@ class _Base:
         q = Session.query(cls)
         if order_by:
             q = q.order_by(*order_by)
-        elif cls.default_order_by:
+        elif cls.default_order_by is not None:
             q = q.order_by(*cls.default_order_by)
         return q
 
