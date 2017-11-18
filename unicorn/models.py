@@ -69,6 +69,14 @@ class Game(Base):
 
     sides = relationship('GameSide', back_populates='game')
 
+    @property
+    def home_side(self):
+        return self.sides[0]
+
+    @property
+    def away_side(self):
+        return self.sides[1]
+
 
 class GameSide(Base):
     __tablename__ = 'game_sides'

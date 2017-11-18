@@ -3,7 +3,7 @@ import os.path
 
 from unicorn import unicorn_root_dir
 from unicorn.configuration import logging
-from unicorn.models import Season, Team, Game, Franchise
+from unicorn.models import Season, Team, Game, Franchise, GameSide
 
 log = logging.getLogger(__name__)
 
@@ -73,12 +73,26 @@ def store_season_page(page):
                 season_id=season_obj.id,
                 season_stage=game.season_stage,
                 starts_at=game.starts_at,
-                home_team_id=game.home_team_id,
-                home_team_score=game.home_team_score,
-                home_team_points=game.home_team_points,
-                home_team_outcome=game.home_team_outcome,
-                away_team_id=game.away_team_id,
-                away_team_points=game.away_team_points,
-                away_team_score=game.away_team_score,
-                away_team_outcome=game.away_team_outcome,
+                sides=[
+                    GameSide(
+                        team_id=game.home_team_id,
+                        score=game.home_team_score,
+                        outcome=game.home_team_outcome,
+                        points=game.home_team_points,
+                    ),
+                    GameSide(
+                        team_id=game.away_team_id,
+                        score=game.away_team_score,
+                        outcome=game.away_team_outcome,
+                        points=game.away_team_points,
+                    ),
+                ],
+                # home_team_id=game.home_team_id,
+                # home_team_score=game.home_team_score,
+                # home_team_points=game.home_team_points,
+                # home_team_outcome=game.home_team_outcome,
+                # away_team_id=game.away_team_id,
+                # away_team_points=game.away_team_points,
+                # away_team_score=game.away_team_score,
+                # away_team_outcome=game.away_team_outcome,
             )
