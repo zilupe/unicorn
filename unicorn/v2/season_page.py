@@ -112,13 +112,22 @@ class SeasonPage:
                 tc = g.find('td', class_='FDate')
                 if not tc:
                     continue
-                game_time = parse_gm_time(tc.text.strip())
+                game_time_str = tc.text.strip()
+                if game_time_str == 'Bye':
+                    continue
+                game_time = parse_gm_time(game_time_str)
 
                 ic = g.find('td', class_='FScore')
                 if not ic:
                     continue
                 game_id = int(ic.find('nobr')['data-fixture-id'])
-                game_score = ic.find('nobr').find('div').find('nobr').text.strip().split(' - ')
+
+                if ic.find('nobr').find('div'):
+                    game_score = (
+                        ic.find('nobr').find('div').find('nobr').text.strip().split(' - ')
+                    )
+                else:
+                    game_score = (None, None)
 
                 game_venue = g.find('td', class_='FPlayingArea').text.strip()
 
@@ -138,9 +147,9 @@ class SeasonPage:
                     season_stage=season_stage,
                     venue=game_venue,
                     home_team_id=int(extract_from_link(htc.find('a'), 'TeamId')),
-                    home_team_score=int(game_score[0]),
+                    home_team_score=int(game_score[0]) if game_score[0] is not None else None,
                     away_team_id=int(extract_from_link(atc.find('a'), 'TeamId')),
-                    away_team_score=int(game_score[1]),
+                    away_team_score=int(game_score[1]) if game_score[1] is not None else None,
                 )
 
                 game.home_team_outcome, game.away_team_outcome = GameOutcomes.from_scores(

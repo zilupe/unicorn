@@ -1,3 +1,6 @@
+from sqlalchemy.orm.exc import NoResultFound
+
+from unicorn.db.base import Session
 from unicorn.models import Season, Team, TeamSeason, Game
 
 
@@ -10,9 +13,12 @@ def store_season_page(page):
     )
 
     for team in page.teams.values():
-        team_obj = Team.create(
-            id=team.id
-        )
+        try:
+            team_obj = Session.query(Team).filter(Team.id == team.id).one()
+        except NoResultFound:
+            team_obj = Team.create(
+                id=team.id
+            )
 
         team_season_obj = TeamSeason.create(
             team_id=team_obj.id,

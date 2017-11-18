@@ -107,7 +107,7 @@ class TeamSeason(Base):
     season_id = Column(Integer, ForeignKey('seasons.id'), primary_key=True)
     season = relationship('Season', back_populates='teams')
 
-    team_name = Column(String)
+    team_name = Column(String(50))
 
     st_position = Column(Integer)
     st_won = Column(Integer)
