@@ -7,7 +7,7 @@ from unicorn.v2 import process_season_page
 from unicorn.values import SeasonStages, GameOutcomes
 
 
-def test_processes_autumn_2014_season_page(db):
+def test_processes_autumn_2014_season_page(app_context, db):
     input_file = os.path.join(unicorn_root_dir, 'input/season-pages/2014-Autumn.htm')
     assert os.path.isfile(input_file)
 

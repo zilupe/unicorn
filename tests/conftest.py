@@ -1,6 +1,16 @@
 import pytest
 from sqlalchemy import create_engine
 
+from unicorn.app import create_app
+
+
+@pytest.fixture(scope='session')
+def app_context():
+    app_context = create_app().app_context()
+    app_context.push()
+    yield app_context
+    app_context.pop()
+
 
 @pytest.fixture(scope='session')
 def db():
