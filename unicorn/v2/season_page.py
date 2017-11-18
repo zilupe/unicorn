@@ -69,13 +69,34 @@ class SeasonPage:
         self.division_id = None
 
     def parse(self, input_str):
+        # Do not extract team names because we are assigning them manually --
+        # GoMammoth shows the latest team name in all seasons.
+
         self.soup = BeautifulSoup(input_str, 'html.parser')
 
         self.season_name = self.soup.find('head').find('title').text.strip().split(' - ')[4]
 
-        self.game_days = []
         self.teams = {}
+        for i, st_tr in enumerate(self.soup.find('table', class_='STTable').find_all('tr', class_='STRow')):
+            team_id = int(extract_from_link(st_tr.find('td', class_='STTeamCell').find('a'), 'TeamId'))
+            tds = st_tr.find_all('td')
+            self.teams[team_id] = Team(
+                id=team_id,
+                position=i + 1,
+                played=int(tds[2].text.strip()),
+                won=int(tds[3].text.strip()),
+                lost=int(tds[4].text.strip()),
+                drawn=int(tds[5].text.strip()),
+                forfeit_for=int(tds[6].text.strip()),
+                forfeit_against=int(tds[7].text.strip()),
+                score_for=int(tds[8].text.strip()),
+                score_against=int(tds[9].text.strip()),
+                score_difference=int(tds[10].text.strip()),
+                bonus_points=int(tds[11].text.strip()),
+                points=int(tds[12].find('a').text.strip()),
+            )
 
+        self.game_days = []
         season_stage = SeasonStages.regular
 
         for week_number, t in enumerate(self.soup.find_all('table', class_='FTable')):
@@ -130,12 +151,6 @@ class SeasonPage:
                 game.away_team_points = GameOutcomes.get_points_for(game.away_team_outcome, season_stage)
 
                 week_games.append(game)
-
-                if game.home_team_id not in self.teams:
-                    self.teams[game.home_team_id] = Team(id=game.home_team_id)
-
-                if game.away_team_id not in self.teams:
-                    self.teams[game.away_team_id] = Team(id=game.away_team_id)
 
             self.game_days.append(GameDay(
                 date=week_date,

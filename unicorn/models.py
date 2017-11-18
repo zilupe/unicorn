@@ -109,28 +109,14 @@ class TeamSeason(Base):
 
     team_name = Column(String)
 
-
-# class Parent(Base):
-#     __tablename__ = 'left'
-#     id = Column(Integer, primary_key=True)
-#     children = relationship("Child",
-#                     secondary=association_table)
-#
-# class Child(Base):
-#     __tablename__ = 'right'
-#     id = Column(Integer, primary_key=True)
-
-
-# class SeasonTeam(Base):
-#     __tablename__ = 'season_teams'
-#
-#     season_id = Column(Integer, ForeignKey('seasons.id'), primary_key=True)
-#     season = relationship('Season', back_populates='teams')
-#
-#     team_id = Column(Integer, ForeignKey('teams.id'), primary_key=True)
-#     team = relationship('Team', back_populates='seasons')
-#     team_name = Column(String(50))
-
-
-# Season.teams = relationship('SeasonTeam', order_by=SeasonTeam.team_name)
-# Team.seasons = relationship('SeasonTeam')
+    st_position = Column(Integer)
+    st_won = Column(Integer)
+    st_lost = Column(Integer)
+    st_drawn = Column(Integer)
+    st_forfeit_for = Column(Integer)
+    st_forfeit_against = Column(Integer)
+    st_score_for = Column(Integer)
+    st_score_against = Column(Integer)
+    st_score_difference = Column(Integer)
+    st_bonus_points = Column(Integer)
+    st_points = Column(Integer)
