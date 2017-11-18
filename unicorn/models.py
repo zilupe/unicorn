@@ -87,8 +87,9 @@ class GameSide(Base):
 
     @property
     def opposition(self):
-        # Should inspect game.sides and return the one that is not itself
-        raise NotImplementedError()
+        for side in self.game.sides:
+            if side != self:
+                return side
 
 
 class Season(Base):

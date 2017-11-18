@@ -35,3 +35,6 @@ def test_models(db):
     assert len(team1.games) == 1
     assert len(team2.games) == 2
     assert len(team3.games) == 1
+
+    assert team2.games[0].opposition.team == team1
+    assert team2.games[1].opposition.team == team3
