@@ -3,7 +3,7 @@ from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
 
-from unicorn.values import SeasonStages
+from unicorn.values import SeasonStages, GameOutcomes
 
 
 def parse_gm_date(date_str):
@@ -117,10 +117,18 @@ class SeasonPage:
                     season_stage=season_stage,
                     venue=game_venue,
                     home_team_id=int(extract_from_link(htc.find('a'), 'TeamId')),
-                    home_team_points=int(game_score[0]),
+                    home_team_score=int(game_score[0]),
                     away_team_id=int(extract_from_link(atc.find('a'), 'TeamId')),
-                    away_team_points=int(game_score[1]),
+                    away_team_score=int(game_score[1]),
                 )
+
+                game.home_team_outcome, game.away_team_outcome = GameOutcomes.from_scores(
+                    game.home_team_score,
+                    game.away_team_score,
+                )
+                game.home_team_points = GameOutcomes.get_points_for(game.home_team_outcome, season_stage)
+                game.away_team_points = GameOutcomes.get_points_for(game.away_team_outcome, season_stage)
+
                 week_games.append(game)
 
                 if game.home_team_id not in self.teams:
