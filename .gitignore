@@ -1,4 +1,5 @@
 .cache
 build/
+dist/
 input/
 __pycache__
