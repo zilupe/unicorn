@@ -307,11 +307,23 @@ class GameSide(Base):
     def is_lost(self):
         return self.is_decided and self.outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against)
 
-    @property
+    @cached_property
     def opponent(self):
         for side in self.game.sides:
             if side != self:
                 return side
+
+    @cached_property
+    def score_link(self):
+        """
+        This is different from Game.score_link because this always prints the current side first!
+        """
+        return '<a href="{}">{} - {}{}</a>'.format(
+            self.game.simple_url,
+            self.score,
+            self.opponent.score,
+            '<sup>MS</sup>' if self.game.score_status > 1 else '',
+        )
 
 
 class Season(Base):
