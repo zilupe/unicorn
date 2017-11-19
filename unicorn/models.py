@@ -78,6 +78,56 @@ class Team(Base):
                 return '{}*'.format(self.franchise.name)
         return self.name
 
+    @property
+    def regular_games(self):
+        return [gs for gs in self.games if gs.game.is_regular]
+
+    @cached_property
+    def regular_num_games_decided(self):
+        return sum(1 for gs in self.regular_games if gs.is_decided)
+
+    @cached_property
+    def regular_score_difference_avg(self):
+        if not self.regular_num_games_decided:
+            return 0
+        return self.regular_score_difference / self.regular_num_games_decided
+
+    @cached_property
+    def regular_points_avg(self):
+        if not self.regular_num_games_decided:
+            return 0
+        return self.regular_points / self.regular_num_games_decided
+
+    @cached_property
+    def regular_record_str(self):
+        return '{}-{}-{}'.format(
+            self.regular_won + self.regular_forfeits_for,
+            self.regular_drawn,
+            self.regular_lost + self.regular_forfeits_against,
+        )
+
+    @cached_property
+    def finals_games(self):
+        return [gs for gs in self.games if not gs.game.is_regular]
+
+    @cached_property
+    def finals_score_difference(self):
+        return sum(gs.score - gs.opponent.score for gs in self.finals_games if gs.is_decided)
+
+    @cached_property
+    def finals_score_difference_avg(self):
+        if not self.finals_num_games_decided:
+            return 0
+        return self.finals_score_difference / self.finals_num_games_decided
+
+    @cached_property
+    def finals_num_games_decided(self):
+        return sum(1 for gs in self.finals_games if gs.is_decided)
+
+    @cached_property
+    def finals_record_str(self):
+        return 'NOT IMPLEMENTED'
+
 
 Team.default_order_by = Team.name.asc(),
 
@@ -95,6 +145,10 @@ class Game(Base):
     notes = Column(Text)
 
     sides = relationship('GameSide', back_populates='game')
+
+    @property
+    def is_regular(self):
+        return self.season_stage == SeasonStages.regular
 
     @property
     def home_side(self):
@@ -121,7 +175,6 @@ class Game(Base):
         )
 
 
-
 class GameSide(Base):
     __tablename__ = 'game_sides'
 
@@ -136,6 +189,10 @@ class GameSide(Base):
 
     game_id = Column(Integer, ForeignKey('games.id'))
     game = relationship('Game', back_populates='sides')
+
+    @property
+    def is_decided(self):
+        return self.score is not None and self.outcome in GameOutcomes.decided
 
     @property
     def opponent(self):
