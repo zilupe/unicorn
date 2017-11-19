@@ -1,7 +1,25 @@
 <h1>All Seasons</h1>
 
-<ul>
-    {% for page in pages %}
-        <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>First Week</th>
+            <th>Last Week</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for season in seasons_all %}
+        <tr>
+            <td>{{ season.id }}</td>
+            <td>{{ season.name }}</td>
+            <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
+            <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
+        </tr>
     {% endfor %}
-</ul>
+
+    </tbody>
+
+</table>

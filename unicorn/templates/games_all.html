@@ -1,7 +1,29 @@
 <h1>All Games</h1>
 
-<ul>
-    {% for page in pages %}
-        <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Home</th>
+            <th>Away</th>
+            <th>Score</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for game in games_all %}
+        <tr>
+            <td>{{ game.id }}</td>
+            <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
+            <td>{{ game.starts_at.strftime('%H:%M') }}</td>
+            <td style="text-align: right"><a href="team_{{ game.home_side.team.id }}.html">{{ game.home_side.team.name }}</a></td>
+            <td style="text-align: left"><a href="team_{{ game.away_side.team.id }}.html">{{ game.away_side.team.name }}</a></td>
+            <td><a href="game_{{ game.id }}.html">{{ game.home_side.score }} - {{ game.away_side.score }}</a></td>
+        </tr>
     {% endfor %}
-</ul>
+
+    </tbody>
+
+</table>

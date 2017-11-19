@@ -94,7 +94,7 @@ class GameSide(Base):
     game = relationship('Game', back_populates='sides')
 
     @property
-    def opposition(self):
+    def opponent(self):
         for side in self.game.sides:
             if side != self:
                 return side

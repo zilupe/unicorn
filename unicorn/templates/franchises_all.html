@@ -1,0 +1,18 @@
+<h1>All Franchises</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    {% for franchise in franchises_all %}
+        <tr>
+            <td>{{ franchise.id }}</td>
+            <td><a href="franchise_{{ franchise.id }}.html">{{ franchise.name }}</a></td>
+            <td>{{ franchise.status }}</td>
+        </tr>
+    {% endfor %}
+</table>

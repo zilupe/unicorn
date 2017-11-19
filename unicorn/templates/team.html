@@ -1,36 +1,111 @@
 <h1>{{ team.name }}</h1>
 
-<h3>All Seasons</h3>
+<table>
+    <tr>
+        <td>Season</td>
+        <td>
+            <a href="season_{{ team.season.id }}.html">{{ team.season.name }}</a>
+            ({{ team.season.first_week_date.strftime('%d/%m/%Y') }} - {{ team.season.last_week_date.strftime('%d/%m/%Y') }})
+        </td>
+    </tr>
+    <tr>
+        <td>Franchise</td>
+        <td><a href="franchise_{{ team.franchise.id }}.html">{{ team.franchise.name }}</a></td>
+    </tr>
+    <tr>
+        <td>Team Name</td>
+        <td>{{ team.name }}</td>
+    </tr>
+</table>
 
-<p>First game ever: {{ team.all_games[-1].starts_at.strftime('%d/%m/%Y') }} </p>
-<p>Last game: {{ team.all_games[0].starts_at.strftime('%d/%m/%Y') }} </p>
 
-<ul>
-    {% for season in team.all_seasons %}
-        <li>{{ season.link|safe }}</li>
-    {% endfor %}
-</ul>
-
-<h3>All Games</h3>
+<h2>Regular Season Summary</h2>
 
 <table>
     <thead>
-    <tr>
-        <th>Season</th>
-        <th>Date</th>
-        <th>Match-up</th>
-        <th>Score</th>
-        <th>Outcome</th>
-    </tr>
-    </thead>
-    {% for game in team.all_games %}
         <tr>
-            <td>{{ game.season.link|safe }}</td>
-            <td>{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</td>
-            <td>{{ game.link|safe }}</td>
-            <td>{{ game.home_team_points }} - {{ game.away_team_points }}</td>
+            <td>Rank</td>
+            <td>Played</td>
+            <td>Won</td>
+            <td>Forfeits For</td>
+            <td>Drawn</td>
+            <td>Lost</td>
+            <td>Forfeits Against</td>
+            <td>For</td>
+            <td>Against</td>
+            <td>Difference</td>
+            <td>Bonus Points</td>
+            <td>Points</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ team.st_position }}</td>
+            <td>{{ team.st_played }}</td>
+            <td>{{ team.st_won }}</td>
+            <td>{{ team.st_forfeit_for }}</td>
+            <td>{{ team.st_drawn }}</td>
+            <td>{{ team.st_lost }}</td>
+            <td>{{ team.st_forfeit_against }}</td>
+            <td>{{ team.st_score_for }}</td>
+            <td>{{ team.st_score_against }}</td>
+            <td>{{ team.st_score_difference }}</td>
+            <td>{{ team.st_bonus_points }}</td>
+            <td>{{ team.st_points }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{ '%0.2f'| format(team.st_score_for / team.st_played) }}</td>
+            <td>{{ '%0.2f'| format(team.st_score_against / team.st_played) }}</td>
+            <td>{{ '%+0.2f'| format(team.st_score_difference / team.st_played) }}</td>
+            <td></td>
             <td></td>
         </tr>
+    </tbody>
+</table>
+
+<h2>All Games</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Season Stage</th>
+            <th>Opponent</th>
+            <th>Score</th>
+            <th>Outcome</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for g in team.games %}
+        <tr>
+            <td>{{ g.game.id }}</td>
+            <td>{{ g.game.starts_at.strftime('%d/%m/%Y') }}</td>
+            <td>{{ g.game.starts_at.strftime('%H:%M') }}</td>
+            <td>{{ g.game.season_stage }}</td>
+            <td>
+                <a href="team_{{ g.opponent.team.id }}.html">{{ g.opponent.team.name }}</a>
+                {% if g.game.season_stage == 'regular' %}
+                    <sup>({{ g.opponent.team.st_position }})</sup>
+                {% endif %}
+            </td>
+            <td>{{ g.score }} - {{ g.opponent.score }}</td>
+            <td>{{ g.outcome }}</td>
+            <td>{{ g.points }}</td>
+        </tr>
     {% endfor %}
+
+    </tbody>
+
 </table>
 

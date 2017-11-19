@@ -1,0 +1,28 @@
+<p>
+    <a href="franchises_all.html">Back to All Franchises</a>
+</p>
+
+<h1>{{ franchise.name }} <sup>{{ franchise.status }}</sup></h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Season ID</th>
+            <th>Season</th>
+            <th>Team</th>
+            <th>Regular Season</th>
+            <th>Final Rank</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in franchise.teams %}
+            <tr>
+                <td>{{ team.season.id }}</td>
+                <td>{{ team.season.name }}</td>
+                <td><a href="team_{{ team.id }}.html">{{ team.name }}</a></td>
+                <td>{{ team.st_position }}</td>
+                <td>&nbsp;</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

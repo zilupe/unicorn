@@ -1,7 +1,25 @@
 <h1>All Teams</h1>
 
-<ul>
-    {% for page in pages %}
-        <li><a href="{{ page.path }}">{{ page.name }}</a></li>
+<table>
+    <thead>
+        <tr>
+            <th>Season</th>
+            <th>Franchise</th>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for team in teams_all %}
+        <tr>
+            <td>{{ team.season.name }}</td>
+            <td>{{ team.franchise.name }}</td>
+            <td>{{ team.id }}</td>
+            <td>{{ team.name }}</td>
+        </tr>
     {% endfor %}
-</ul>
+
+    </tbody>
+
+</table>
