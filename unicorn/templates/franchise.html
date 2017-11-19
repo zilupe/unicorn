@@ -29,18 +29,28 @@
             <th rowspan="2">Season ID</th>
             <th rowspan="2">Season</th>
             <th rowspan="2">Team</th>
-            <th colspan="6">Regular Season</th>
-            <th colspan="5">Finals</th>
+            <th colspan="7">Regular Season</th>
+            <th colspan="6">Finals</th>
+            <th colspan="5">Totals</th>
         </tr>
         <tr>
-            <th>Rank</th>
             <th>Points</th>
             <th>Record</th>
+            <th>Win %</th>
             <th>For</th>
             <th>Against</th>
             <th>+/-</th>
             <th>Rank</th>
+
             <th>Record</th>
+            <th>Win %</th>
+            <th>For</th>
+            <th>Against</th>
+            <th>+/-</th>
+            <th>Rank</th>
+
+            <th>Record</th>
+            <th>Win %</th>
             <th>For</th>
             <th>Against</th>
             <th>+/-</th>
@@ -52,17 +62,28 @@
                 <td>{{ team.season.id }}</td>
                 <td>{{ team.season.simple_link|safe }}</td>
                 <td>{{ team.simple_link|safe }}</td>
-                <td>{{ team.regular_rank }}</td>
+
                 <td>{{ '%.2f'| format(team.regular_points_avg) }}</td>
                 <td>{{ team.regular_record_str }}</td>
-                <td style="text-align: right">{{ '%.2f'| format(team.regular_score_for_avg) }}</td>
-                <td style="text-align: right">{{ '%.2f'| format(team.regular_score_against_avg) }}</td>
-                <td style="text-align: right">{{ '%+.2f'| format(team.regular_score_difference_avg) }}</td>
-                <td>{{ team.finals_rank }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.regular_win_percentage) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.regular_score_for_avg) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.regular_score_against_avg) }}</td>
+                <td style="text-align: right">{{ '%+.1f'| format(team.regular_score_difference_avg) }}</td>
+                <td>{{ team.regular_rank }}</td>
+
+
                 <td>{{ team.finals_record_str }}</td>
-                <td style="text-align: right">{{ '%.2f'| format(team.finals_score_for_avg) }}</td>
-                <td style="text-align: right">{{ '%.2f'| format(team.finals_score_against_avg) }}</td>
-                <td style="text-align: right">{{ '%+.2f'| format(team.finals_score_difference_avg) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.finals_win_percentage) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.finals_score_for_avg) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.finals_score_against_avg) }}</td>
+                <td style="text-align: right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
+                <td>{{ team.finals_rank }}</td>
+
+                <td>{{ team.total_record_str }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.total_win_percentage) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.total_score_for_avg) }}</td>
+                <td style="text-align: right">{{ '%.1f'| format(team.total_score_against_avg) }}</td>
+                <td style="text-align: right">{{ '%+.1f'| format(team.total_score_difference_avg) }}</td>
             </tr>
         {% endfor %}
     </tbody>

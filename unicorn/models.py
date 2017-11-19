@@ -78,37 +78,76 @@ class Team(Base):
                 return '{}*'.format(self.franchise.name)
         return self.name
 
-    @property
+    @cached_property
     def regular_games(self):
         return [gs for gs in self.games if gs.game.is_regular]
 
     @cached_property
-    def regular_num_games_decided(self):
-        return sum(1 for gs in self.regular_games if gs.is_decided)
+    def finals_games(self):
+        return [gs for gs in self.games if not gs.game.is_regular]
 
-    @cached_property
-    def regular_score_for_avg(self):
-        if not self.regular_num_games_decided:
-            return 0
-        return sum(gs.score for gs in self.regular_games if gs.is_decided) / self.regular_num_games_decided
+    def __getattr__(self, item):
+        parts = item.split('_')
 
-    @cached_property
-    def regular_score_against_avg(self):
-        if not self.regular_num_games_decided:
-            return 0
-        return sum(gs.opponent.score for gs in self.regular_games if gs.is_decided) / self.regular_num_games_decided
+        if len(parts) < 2:
+            raise AttributeError(item)
 
-    @cached_property
-    def regular_score_difference_avg(self):
-        if not self.regular_num_games_decided:
-            return 0
-        return self.regular_score_difference / self.regular_num_games_decided
+        prefix = parts[0]
+        suffix = parts[-1]
 
-    @cached_property
-    def regular_points_avg(self):
-        if not self.regular_num_games_decided:
-            return 0
-        return self.regular_points / self.regular_num_games_decided
+        if prefix not in ('regular', 'finals', 'total'):
+            raise AttributeError(item)
+
+        without_prefix = '_'.join(parts[1:])
+
+        if prefix in ('regular', 'finals'):
+            games = getattr(self, '{}_games'.format(prefix))
+        else:
+            games = self.games
+
+        num_games_decided = sum(1 for gs in games if gs.is_decided)
+
+        if without_prefix == 'num_games_decided':
+            return num_games_decided
+
+        elif without_prefix == 'win_percentage':
+            if num_games_decided == 0:
+                return 0
+            return 100.0 * sum(1 for gs in games if gs.is_won) / num_games_decided
+
+        elif suffix == 'avg':
+            # Automatic finals|regular_<stat>_avg calculation
+
+            if num_games_decided == 0:
+                return 0
+
+            metric = without_prefix.rsplit('_', 1)[0]
+            if hasattr(self, metric):
+                # Metric available on Team
+                total = getattr(self, metric)
+            elif hasattr(GameSide, metric):
+                # Metric available on GameSide, must sum up
+                total = sum(getattr(gs, metric) for gs in games if gs.is_decided)
+            elif metric == 'score_for':
+                # Custom metric
+                total = sum(gs.score for gs in games if gs.is_decided)
+            elif metric == 'score_against':
+                # Custom metric
+                total = sum(gs.opponent.score for gs in games if gs.is_decided)
+            elif metric == 'score_difference':
+                # Custom metric
+                total = sum(gs.score - gs.opponent.score for gs in games if gs.is_decided)
+            else:
+                raise AttributeError(item)
+
+            return total / num_games_decided
+
+        elif hasattr(GameSide, without_prefix):
+            # Must aggregate all games
+            return sum(getattr(gs, without_prefix) for gs in games)
+
+        else:
+            raise AttributeError(item)
 
     @cached_property
     def regular_record(self):
@@ -123,36 +162,6 @@ class Team(Base):
         return '-'.join(str(r) for r in self.regular_record)
 
     @cached_property
-    def finals_games(self):
-        return [gs for gs in self.games if not gs.game.is_regular]
-
-    @cached_property
-    def finals_score_for_avg(self):
-        if not self.finals_num_games_decided:
-            return 0
-        return sum(gs.score for gs in self.finals_games if gs.is_decided) / self.finals_num_games_decided
-
-    @cached_property
-    def finals_score_against_avg(self):
-        if not self.finals_num_games_decided:
-            return 0
-        return sum(gs.opponent.score for gs in self.finals_games if gs.is_decided) / self.finals_num_games_decided
-
-    @cached_property
-    def finals_score_difference(self):
-        return sum(gs.score - gs.opponent.score for gs in self.finals_games if gs.is_decided)
-
-    @cached_property
-    def finals_score_difference_avg(self):
-        if not self.finals_num_games_decided:
-            return 0
-        return self.finals_score_difference / self.finals_num_games_decided
-
-    @cached_property
-    def finals_num_games_decided(self):
-        return sum(1 for gs in self.finals_games if gs.is_decided)
-
-    @cached_property
     def finals_record(self):
         return (
             sum(1 for gs in self.finals_games if gs.is_won),
@@ -163,6 +172,20 @@ class Team(Base):
     @cached_property
     def finals_record_str(self):
         return '-'.join(str(r) for r in self.finals_record)
+
+    @cached_property
+    def total_record(self):
+        regular = self.regular_record
+        finals = self.finals_record
+        return (
+            regular[0] + finals[0],
+            regular[1] + finals[1],
+            regular[2] + finals[2],
+        )
+
+    @cached_property
+    def total_record_str(self):
+        return '-'.join(str(r) for r in self.total_record)
 
 
 Team.default_order_by = Team.name.asc(),
