@@ -26,14 +26,14 @@
         <td>Champions</td>
         <td>
             {% if season.is_over %}
-                <a href="team_{{ season.finals_champions.id }}.html">{{ season.finals_champions.name }}</a>
+                {{ season.finals_champions.simple_link|safe }}
             {% endif %}
         </td>
     </tr>
     <tr>
         <td>Regular Season Winners</td>
         <td>
-            <a href="team_{{ season.regular_champions.id }}.html">{{ season.regular_champions.name }}</a>
+            {{ season.regular_champions.simple_link|safe }}
         </td>
     </tr>
     <!--
@@ -82,7 +82,7 @@
     {% for team in season.teams_regular_order %}
         <tr>
             <td>{{ team.reg_position }}</td>
-            <td><a href="team_{{ team.id }}.html">{{ team.name }}</a></td>
+            <td>{{ team.simple_link|safe }}</td>
             <td>{{ team.reg_played }}</td>
             <td>{{ team.reg_won }}</td>
             <td>{{ team.reg_forfeits_for }}</td>
@@ -103,23 +103,15 @@
 <table>
     {% for game in season.games %}
         <tr>
-            <td><a href="game_{{ game.id }}.html">{{ game.id }}</a></td>
+            <td>{{ game.simple_link|safe }}</td>
             <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
             <td>{{ game.starts_at.strftime('%H:%M') }}</td>
             <td>{{ game.season_stage }}</td>
-            <td style="text-align: right">
-                <a href="team_{{ game.home_side.team.id }}.html">{{ game.home_side.team.name }}</a>
-            </td>
+            <td style="text-align: right">{{ game.home_side.team.simple_link|safe }}</td>
             <td> - </td>
-            <td style="text-align: left">
-                <a href="team_{{ game.away_side.team.id }}.html">{{ game.away_side.team.name }}</a>
-            </td>
+            <td style="text-align: left">{{ game.away_side.team.simple_link|safe }}</td>
             <td>
-                <a href="game_{{ game.id }}.html">
-                    {{ game.home_side.score }}
-                    -
-                    {{ game.away_side.score }}
-                </a>
+                {{ game.score_link|safe }}
             </td>
         </tr>
     {% endfor %}

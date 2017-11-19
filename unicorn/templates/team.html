@@ -4,13 +4,13 @@
     <tr>
         <td>Season</td>
         <td>
-            <a href="season_{{ team.season.id }}.html">{{ team.season.name }}</a>
-            ({{ team.season.first_week_date.strftime('%d/%m/%Y') }} - {{ team.season.last_week_date.strftime('%d/%m/%Y') }})
+            {{ team.season.simple_link|safe }}
+            {{ team.season.date_range_str }}
         </td>
     </tr>
     <tr>
         <td>Franchise</td>
-        <td><a href="franchise_{{ team.franchise.id }}.html">{{ team.franchise.name }}</a></td>
+        <td>{{ team.franchise.simple_link|safe }}</td>
     </tr>
     <tr>
         <td>Team Name</td>
@@ -102,7 +102,7 @@
             <td>{{ g.game.starts_at.strftime('%H:%M') }}</td>
             <td>{{ g.game.season_stage }}</td>
             <td>
-                <a href="team_{{ g.opponent.team.id }}.html">{{ g.opponent.team.name }}</a>
+                {{ g.opponent.team.simple_link|safe }}
                 {% if g.game.season_stage == 'regular' %}
                     <sup>({{ g.opponent.team.reg_position }})</sup>
                 {% endif %}

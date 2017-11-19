@@ -37,8 +37,8 @@
         {% for team in franchise.teams_sorted %}
             <tr>
                 <td>{{ team.season.id }}</td>
-                <td><a href="season_{{ team.season.id }}.html">{{ team.season.name }}</a></td>
-                <td><a href="team_{{ team.id }}.html">{{ team.name }}</a></td>
+                <td>{{ team.season.simple_link|safe }}</td>
+                <td>{{ team.simple_link|safe }}</td>
                 <td>{{ team.reg_position }}</td>
                 <td>{{ team.fin_position }}</td>
             </tr>

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
+from unicorn.core.utils import cached_property
 from unicorn.db.base import Base
 from unicorn.values import SeasonStages, GameOutcomes
 
@@ -14,16 +15,11 @@ class Franchise(Base):
 
     teams = relationship('Team', back_populates='franchise')
 
-    @property
+    @cached_property
     def teams_sorted(self):
         return sorted(self.teams, key=lambda t: t.season.first_week_date)
 
-    @property
-    def simple_link(self):
-        return '<a href="franchise_{}.html">{}</a>'.format(self.id, self.name)
-
-    # TODO This needs to be a cached property
-    @property
+    @cached_property
     def outcomes(self):
         outcomes = {GameOutcomes.won: 0, GameOutcomes.lost: 0, GameOutcomes.drawn: 0, GameOutcomes.missing: 0}
         for t in self.teams:
@@ -31,7 +27,7 @@ class Franchise(Base):
                 outcomes[GameOutcomes.to_simple[g.outcome]] += 1
         return outcomes
 
-    @property
+    @cached_property
     def num_titles(self):
         return sum(1 for t in self.teams if t.fin_position == 1)
 
@@ -82,10 +78,6 @@ class Team(Base):
                 return '{}*'.format(self.franchise.name)
         return self.name
 
-    @property
-    def simple_link(self):
-        return '<a href="team_{}.html">{}</a>'.format(self.id, self.name)
-
 
 Team.default_order_by = Team.name.asc(),
 
@@ -119,6 +111,15 @@ class Game(Base):
     @property
     def time_str(self):
         return self.starts_at.strftime('%H:%M')
+
+    @cached_property
+    def score_link(self):
+        return '<a href="{}">{} - {}</a>'.format(
+            self.simple_url,
+            self.home_side.score,
+            self.away_side.score,
+        )
+
 
 
 class GameSide(Base):
@@ -174,9 +175,10 @@ class Season(Base):
         return self.teams_finals_order[0]
 
     @property
-    def simple_link(self):
-        return '<a href="season_{}.html">{}</a>'.format(
-            self.id, self.name,
+    def date_range_str(self):
+        return '{} - {}'.format(
+            self.first_week_date.strftime('%d/%m/%Y'),
+            self.last_week_date.strftime('%d/%m/%Y'),
         )
 
 

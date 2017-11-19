@@ -16,7 +16,7 @@
     {% for franchise in franchises_all %}
         <tr>
             <td>{{ franchise.id }}</td>
-            <td><a href="franchise_{{ franchise.id }}.html">{{ franchise.name }}</a></td>
+            <td>{{ franchise.simple_link|safe }}</td>
             <td>{{ franchise.status }}</td>
             <td>{{ franchise.outcomes['W'] }}</td>
             <td>{{ franchise.outcomes['D'] }}</td>

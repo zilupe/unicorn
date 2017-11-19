@@ -18,13 +18,13 @@
             <td>{{ season.id }}</td>
             <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
             <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
-            <td><a href="season_{{ season.id }}.html">{{ season.name }}</a></td>
+            <td>{{ season.simple_link|safe }}</td>
             <td>
-                <a href="team_{{ season.regular_champions.id }}.html">{{ season.regular_champions.proud_name }}</a>
+                <a href="{{ season.regular_champions.simple_url }}">{{ season.regular_champions.proud_name }}</a>
             </td>
             <td>
                 {% if season.is_over %}
-                    <a href="team_{{ season.finals_champions.id }}.html">{{ season.finals_champions.proud_name }}</a>
+                    <a href="{{ season.finals_champions.simple_url }}">{{ season.finals_champions.proud_name }}</a>
                 {% endif %}
             </td>
         </tr>

@@ -18,9 +18,9 @@
             <td>{{ game.id }}</td>
             <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
             <td>{{ game.starts_at.strftime('%H:%M') }}</td>
-            <td style="text-align: right"><a href="team_{{ game.home_side.team.id }}.html">{{ game.home_side.team.name }}</a></td>
-            <td style="text-align: left"><a href="team_{{ game.away_side.team.id }}.html">{{ game.away_side.team.name }}</a></td>
-            <td><a href="game_{{ game.id }}.html">{{ game.home_side.score }} - {{ game.away_side.score }}</a></td>
+            <td style="text-align: right">{{ game.home_side.team.simple_link|safe }}</td>
+            <td style="text-align: left">{{ game.away_side.team.simple_link }}</td>
+            <td>{{ game.score_link|safe }}</td>
         </tr>
     {% endfor %}
 

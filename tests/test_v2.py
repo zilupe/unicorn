@@ -76,3 +76,8 @@ def test_processes_autumn_2014_season_page(app_context, db):
     assert ht.reg_score_difference == 50
     assert ht.reg_bonus_points == 0
     assert ht.reg_points == 16
+
+    # Test helpers
+    assert ht.type_name == 'team'
+    assert ht.simple_label == ht.name
+    assert ht.simple_link == '<a href="team_{}.html">{}</a>'.format(ht.id, ht.simple_label)
