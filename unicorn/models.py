@@ -2,7 +2,7 @@ from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from unicorn.db.base import Base
-from unicorn.values import SeasonStages
+from unicorn.values import SeasonStages, GameOutcomes
 
 
 class Franchise(Base):
@@ -17,6 +17,23 @@ class Franchise(Base):
     @property
     def teams_sorted(self):
         return sorted(self.teams, key=lambda t: t.season.first_week_date)
+
+    @property
+    def simple_link(self):
+        return '<a href="franchise_{}.html">{}</a>'.format(self.id, self.name)
+
+    # TODO This needs to be a cached property
+    @property
+    def outcomes(self):
+        outcomes = {GameOutcomes.won: 0, GameOutcomes.lost: 0, GameOutcomes.drawn: 0, GameOutcomes.missing: 0}
+        for t in self.teams:
+            for g in t.games:
+                outcomes[GameOutcomes.to_simple[g.outcome]] += 1
+        return outcomes
+
+    @property
+    def num_titles(self):
+        return sum(1 for t in self.teams if t.fin_position == 1)
 
 
 Franchise.default_order_by = Franchise.name.asc(),
@@ -58,6 +75,17 @@ class Team(Base):
 
     games = relationship('GameSide')
 
+    @property
+    def proud_name(self):
+        if self.franchise.name:
+            if self.name != self.franchise.name:
+                return '{}*'.format(self.franchise.name)
+        return self.name
+
+    @property
+    def simple_link(self):
+        return '<a href="team_{}.html">{}</a>'.format(self.id, self.name)
+
 
 Team.default_order_by = Team.name.asc(),
 
@@ -83,6 +111,14 @@ class Game(Base):
     @property
     def away_side(self):
         return self.sides[1]
+
+    @property
+    def date_str(self):
+        return self.starts_at.strftime('%d/%m/%Y')
+
+    @property
+    def time_str(self):
+        return self.starts_at.strftime('%H:%M')
 
 
 class GameSide(Base):
@@ -118,12 +154,30 @@ class Season(Base):
     teams = relationship('Team', back_populates='season')
 
     @property
+    def is_over(self):
+        return self.finals_champions.fin_position == 1
+
+    @property
     def teams_regular_order(self):
         return sorted(self.teams, key=lambda t: t.reg_position or 100)
 
     @property
+    def regular_champions(self):
+        return self.teams_regular_order[0]
+
+    @property
     def teams_finals_order(self):
         return sorted(self.teams, key=lambda t: t.fin_position or 100)
+
+    @property
+    def finals_champions(self):
+        return self.teams_finals_order[0]
+
+    @property
+    def simple_link(self):
+        return '<a href="season_{}.html">{}</a>'.format(
+            self.id, self.name,
+        )
 
 
 Season.default_order_by = Season.first_week_date.asc(),

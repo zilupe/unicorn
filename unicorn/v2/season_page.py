@@ -193,6 +193,12 @@ class SeasonPage:
                     elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
                         self.teams[game.home_team_id].fin_position = 8
                         self.teams[game.away_team_id].fin_position = 7
+                elif season_stage == SeasonStages.semifinal5th1:
+                    # In a 7 team league losing 5th place semifinal means you finish last (7th)
+                    if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
+                        self.teams[game.away_team_id].fin_position = 7
+                    elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
+                        self.teams[game.home_team_id].fin_position = 7
 
             self.game_days.append(GameDay(
                 date=week_date,

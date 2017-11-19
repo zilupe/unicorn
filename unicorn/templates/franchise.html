@@ -4,6 +4,25 @@
 
 <h1>{{ franchise.name }} <sup>{{ franchise.status }}</sup></h1>
 
+<h3>Summary</h3>
+
+<table>
+    <tr>
+        <td>Won</td>
+        <td>{{ franchise.outcomes['W'] }}</td>
+    </tr>
+    <tr>
+        <td>Drawn</td>
+        <td>{{ franchise.outcomes['D'] }}</td>
+    </tr>
+    <tr>
+        <td>Lost</td>
+        <td>{{ franchise.outcomes['L'] }}</td>
+    </tr>
+</table>
+
+<h3>All Seasons</h3>
+
 <table>
     <thead>
         <tr>

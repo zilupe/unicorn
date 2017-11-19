@@ -65,6 +65,15 @@ class GameOutcomes:
         missing: None,
     }
 
+    to_simple = {
+        won: won,
+        lost: lost,
+        drawn: drawn,
+        forfeit_for: won,
+        forfeit_against: lost,
+        missing: missing,
+    }
+
     @classmethod
     def from_scores(cls, home, away):
         if (home, away) == (20, 0):

@@ -25,15 +25,15 @@
     <tr>
         <td>Champions</td>
         <td>
-            {% if season.teams_finals_order[0].fin_position == 1 %}
-                <a href="team_{{ season.teams_finals_order[0].id }}.html">{{ season.teams_finals_order[0].name }}</a>
+            {% if season.is_over %}
+                <a href="team_{{ season.finals_champions.id }}.html">{{ season.finals_champions.name }}</a>
             {% endif %}
         </td>
     </tr>
     <tr>
         <td>Regular Season Winners</td>
         <td>
-            <a href="team_{{ season.teams_regular_order[0].id }}.html">{{ season.teams_regular_order[0].name }}</a>
+            <a href="team_{{ season.regular_champions.id }}.html">{{ season.regular_champions.name }}</a>
         </td>
     </tr>
     <!--
@@ -45,4 +45,82 @@
             <a href="https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx?LeagueId=505&SeasonId={{ season.id }}" rel="noreferrer">Visit</a>
         </td>
     </tr>
+</table>
+
+<h3>Final Ranking</h3>
+
+<table>
+    {% for team in season.teams_finals_order %}
+        <tr>
+            <td>{{ team.fin_position }}</td>
+            <td>{{ team.simple_link|safe }}</td>
+            <td>{{ team.franchise.simple_link|safe }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<h3>Regular Season Ranking</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>P</th>
+            <th>W</th>
+            <th>FF</th>
+            <th>D</th>
+            <th>L</th>
+            <th>FA</th>
+            <th>F</th>
+            <th>A</th>
+            <th>DIFF</th>
+            <th>BPTS</th>
+            <th>PTS</th>
+        </tr>
+    </thead>
+    {% for team in season.teams_regular_order %}
+        <tr>
+            <td>{{ team.reg_position }}</td>
+            <td><a href="team_{{ team.id }}.html">{{ team.name }}</a></td>
+            <td>{{ team.reg_played }}</td>
+            <td>{{ team.reg_won }}</td>
+            <td>{{ team.reg_forfeits_for }}</td>
+            <td>{{ team.reg_drawn }}</td>
+            <td>{{ team.reg_lost }}</td>
+            <td>{{ team.reg_forfeits_against }}</td>
+            <td>{{ team.reg_score_for }}</td>
+            <td>{{ team.reg_score_against }}</td>
+            <td>{{ team.reg_score_difference }}</td>
+            <td>{{ team.reg_bonus_points }}</td>
+            <td>{{ team.reg_points }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<h3>All Games</h3>
+
+<table>
+    {% for game in season.games %}
+        <tr>
+            <td><a href="game_{{ game.id }}.html">{{ game.id }}</a></td>
+            <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
+            <td>{{ game.starts_at.strftime('%H:%M') }}</td>
+            <td>{{ game.season_stage }}</td>
+            <td style="text-align: right">
+                <a href="team_{{ game.home_side.team.id }}.html">{{ game.home_side.team.name }}</a>
+            </td>
+            <td> - </td>
+            <td style="text-align: left">
+                <a href="team_{{ game.away_side.team.id }}.html">{{ game.away_side.team.name }}</a>
+            </td>
+            <td>
+                <a href="game_{{ game.id }}.html">
+                    {{ game.home_side.score }}
+                    -
+                    {{ game.away_side.score }}
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
 </table>

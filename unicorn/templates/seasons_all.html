@@ -4,9 +4,11 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
             <th>First Week</th>
             <th>Last Week</th>
+            <th>Name</th>
+            <th>Regular Season Winners</th>
+            <th>Champions</th>
         </tr>
     </thead>
     <tbody>
@@ -14,9 +16,17 @@
     {% for season in seasons_all %}
         <tr>
             <td>{{ season.id }}</td>
-            <td><a href="season_{{ season.id }}.html">{{ season.name }}</a></td>
             <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
             <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
+            <td><a href="season_{{ season.id }}.html">{{ season.name }}</a></td>
+            <td>
+                <a href="team_{{ season.regular_champions.id }}.html">{{ season.regular_champions.proud_name }}</a>
+            </td>
+            <td>
+                {% if season.is_over %}
+                    <a href="team_{{ season.finals_champions.id }}.html">{{ season.finals_champions.proud_name }}</a>
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
 

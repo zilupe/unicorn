@@ -6,6 +6,11 @@
             <th>ID</th>
             <th>Name</th>
             <th>Status</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+            <th>Win %</th>
+            <th>Championship Titles</th>
         </tr>
     </thead>
     {% for franchise in franchises_all %}
@@ -13,6 +18,11 @@
             <td>{{ franchise.id }}</td>
             <td><a href="franchise_{{ franchise.id }}.html">{{ franchise.name }}</a></td>
             <td>{{ franchise.status }}</td>
+            <td>{{ franchise.outcomes['W'] }}</td>
+            <td>{{ franchise.outcomes['D'] }}</td>
+            <td>{{ franchise.outcomes['L'] }}</td>
+            <td>{{ '%0.2f'| format(100.0 * franchise.outcomes['W'] / (franchise.outcomes['W'] + franchise.outcomes['D'] + franchise.outcomes['L'])) }}</td>
+            <td>{{ franchise.num_titles }}</td>
         </tr>
     {% endfor %}
 </table>
