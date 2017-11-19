@@ -14,7 +14,7 @@
     {% for season in seasons_all %}
         <tr>
             <td>{{ season.id }}</td>
-            <td>{{ season.name }}</td>
+            <td><a href="season_{{ season.id }}.html">{{ season.name }}</a></td>
             <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
             <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
         </tr>

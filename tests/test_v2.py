@@ -63,16 +63,16 @@ def test_processes_autumn_2014_season_page(app_context, db):
 
     # LKA Clippers
     ht = all_games[-2].home_side.team
-    assert ht.st_position == 1
-    assert ht.st_played == 6
-    assert ht.st_won == 5
-    assert ht.st_lost == 1
-    assert ht.st_drawn == 0
+    assert ht.reg_position == 1
+    assert ht.reg_played == 6
+    assert ht.reg_won == 5
+    assert ht.reg_lost == 1
+    assert ht.reg_drawn == 0
     # Looks like GoMammoth don't actually register forfeits properly.
-    assert ht.st_forfeit_for == 0
-    assert ht.st_forfeit_against == 0
-    assert ht.st_score_for == 279
-    assert ht.st_score_against == 229
-    assert ht.st_score_difference == 50
-    assert ht.st_bonus_points == 0
-    assert ht.st_points == 16
+    assert ht.reg_forfeits_for == 0
+    assert ht.reg_forfeits_against == 0
+    assert ht.reg_score_for == 279
+    assert ht.reg_score_against == 229
+    assert ht.reg_score_difference == 50
+    assert ht.reg_bonus_points == 0
+    assert ht.reg_points == 16

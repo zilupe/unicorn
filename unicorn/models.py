@@ -40,18 +40,21 @@ class Team(Base):
     name = Column(String(50))
 
     # Standings table columns
-    st_position = Column(Integer)
-    st_played = Column(Integer)
-    st_won = Column(Integer)
-    st_lost = Column(Integer)
-    st_drawn = Column(Integer)
-    st_forfeit_for = Column(Integer)
-    st_forfeit_against = Column(Integer)
-    st_score_for = Column(Integer)
-    st_score_against = Column(Integer)
-    st_score_difference = Column(Integer)
-    st_bonus_points = Column(Integer)
-    st_points = Column(Integer)
+    reg_position = Column(Integer)
+    reg_played = Column(Integer)
+    reg_won = Column(Integer)
+    reg_lost = Column(Integer)
+    reg_drawn = Column(Integer)
+    reg_forfeits_for = Column(Integer)
+    reg_forfeits_against = Column(Integer)
+    reg_score_for = Column(Integer)
+    reg_score_against = Column(Integer)
+    reg_score_difference = Column(Integer)
+    reg_bonus_points = Column(Integer)
+    reg_points = Column(Integer)
+
+    # Finals aggregates
+    fin_position = Column(Integer)
 
     games = relationship('GameSide')
 
@@ -113,6 +116,14 @@ class Season(Base):
     last_week_date = Column(Date)
 
     teams = relationship('Team', back_populates='season')
+
+    @property
+    def teams_regular_order(self):
+        return sorted(self.teams, key=lambda t: t.reg_position or 100)
+
+    @property
+    def teams_finals_order(self):
+        return sorted(self.teams, key=lambda t: t.fin_position or 100)
 
 
 Season.default_order_by = Season.first_week_date.asc(),

@@ -18,10 +18,10 @@
         {% for team in franchise.teams_sorted %}
             <tr>
                 <td>{{ team.season.id }}</td>
-                <td>{{ team.season.name }}</td>
+                <td><a href="season_{{ team.season.id }}.html">{{ team.season.name }}</a></td>
                 <td><a href="team_{{ team.id }}.html">{{ team.name }}</a></td>
-                <td>{{ team.st_position }}</td>
-                <td>&nbsp;</td>
+                <td>{{ team.reg_position }}</td>
+                <td>{{ team.fin_position }}</td>
             </tr>
         {% endfor %}
     </tbody>

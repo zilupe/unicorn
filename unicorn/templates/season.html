@@ -1,46 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Season Summary</title>
-</head>
-<body>
-    <h1>{{ season.id }} - {{ season.name }}</h1>
+<p>
+    <a href="seasons_all.html">Back to All Seasons</a>
+</p>
 
-    <table>
-        <tr>
-            <th>ID</th>
-            <td>{{ season.id }}</td>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <td>{{ season.name }}</td>
-        </tr>
-        <tr>
-            <th>First Day</th>
-            <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
-        </tr>
-        <tr>
-            <th>Last Day</th>
-            <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
-        </tr>
-    </table>
+<h1>{{ season.name }}</h1>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Match-up</th>
-            <th>Score</th>
-        </tr>
-        </thead>
-        {% for game in season.games %}
-            <tr>
-                <td>{{ game.starts_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                <td>{{ game.link|safe }}</td>
-                <td>{{ game.home_team_points }} - {{ game.away_team_points }}</td>
-            </tr>
-        {% endfor %}
-    </table>
 
-</body>
-</html>
+<table>
+    <tr>
+        <td>ID</td>
+        <td>{{ season.id }}</td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>{{ season.name }}</td>
+    </tr>
+    <tr>
+        <td>First Day</td>
+        <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
+    </tr>
+    <tr>
+        <td>Last Day</td>
+        <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
+    </tr>
+    <tr>
+        <td>Champions</td>
+        <td>
+            {% if season.teams_finals_order[0].fin_position == 1 %}
+                <a href="team_{{ season.teams_finals_order[0].id }}.html">{{ season.teams_finals_order[0].name }}</a>
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Regular Season Winners</td>
+        <td>
+            <a href="team_{{ season.teams_regular_order[0].id }}.html">{{ season.teams_regular_order[0].name }}</a>
+        </td>
+    </tr>
+    <!--
+    Need division id, otherwise the link is invalid as the division has changed...
+    -->
+    <tr>
+        <td>Go Mammoth Page</td>
+        <td>
+            <a href="https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx?LeagueId=505&SeasonId={{ season.id }}" rel="noreferrer">Visit</a>
+        </td>
+    </tr>
+</table>

@@ -16,6 +16,14 @@
         <td>Team Name</td>
         <td>{{ team.name }}</td>
     </tr>
+    <tr>
+        <td>Finals Position</td>
+        <td>{{ team.fin_position }}</td>
+    </tr>
+    <tr>
+        <td>Regular Season Position</td>
+        <td>{{ team.reg_position }}</td>
+    </tr>
 </table>
 
 
@@ -40,18 +48,18 @@
     </thead>
     <tbody>
         <tr>
-            <td>{{ team.st_position }}</td>
-            <td>{{ team.st_played }}</td>
-            <td>{{ team.st_won }}</td>
-            <td>{{ team.st_forfeit_for }}</td>
-            <td>{{ team.st_drawn }}</td>
-            <td>{{ team.st_lost }}</td>
-            <td>{{ team.st_forfeit_against }}</td>
-            <td>{{ team.st_score_for }}</td>
-            <td>{{ team.st_score_against }}</td>
-            <td>{{ team.st_score_difference }}</td>
-            <td>{{ team.st_bonus_points }}</td>
-            <td>{{ team.st_points }}</td>
+            <td>{{ team.reg_position }}</td>
+            <td>{{ team.reg_played }}</td>
+            <td>{{ team.reg_won }}</td>
+            <td>{{ team.reg_forfeits_for }}</td>
+            <td>{{ team.reg_drawn }}</td>
+            <td>{{ team.reg_lost }}</td>
+            <td>{{ team.reg_forfeits_against }}</td>
+            <td>{{ team.reg_score_for }}</td>
+            <td>{{ team.reg_score_against }}</td>
+            <td>{{ team.reg_score_difference }}</td>
+            <td>{{ team.reg_bonus_points }}</td>
+            <td>{{ team.reg_points }}</td>
         </tr>
         <tr>
             <td></td>
@@ -61,9 +69,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>{{ '%0.2f'| format(team.st_score_for / team.st_played) }}</td>
-            <td>{{ '%0.2f'| format(team.st_score_against / team.st_played) }}</td>
-            <td>{{ '%+0.2f'| format(team.st_score_difference / team.st_played) }}</td>
+            <td>{{ '%0.2f'| format(team.reg_score_for / team.reg_played) }}</td>
+            <td>{{ '%0.2f'| format(team.reg_score_against / team.reg_played) }}</td>
+            <td>{{ '%+0.2f'| format(team.reg_score_difference / team.reg_played) }}</td>
             <td></td>
             <td></td>
         </tr>
@@ -96,12 +104,16 @@
             <td>
                 <a href="team_{{ g.opponent.team.id }}.html">{{ g.opponent.team.name }}</a>
                 {% if g.game.season_stage == 'regular' %}
-                    <sup>({{ g.opponent.team.st_position }})</sup>
+                    <sup>({{ g.opponent.team.reg_position }})</sup>
                 {% endif %}
             </td>
             <td>{{ g.score }} - {{ g.opponent.score }}</td>
             <td>{{ g.outcome }}</td>
-            <td>{{ g.points }}</td>
+            <td>
+                {% if g.game.season_stage == 'regular' %}
+                    {{ g.points }}
+                {% endif %}
+            </td>
         </tr>
     {% endfor %}
 

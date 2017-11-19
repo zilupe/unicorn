@@ -101,6 +101,8 @@ class SeasonPage:
                 score_difference=int(tds[10].text.strip()),
                 bonus_points=int(tds[11].text.strip()),
                 points=int(tds[12].find('a').text.strip()),
+
+                fin_position=None,
             )
 
         self.game_days = []
@@ -162,6 +164,35 @@ class SeasonPage:
                 game.away_team_points = GameOutcomes.get_points_for(game.away_team_outcome, season_stage)
 
                 week_games.append(game)
+
+                if season_stage == SeasonStages.final1st:
+                    if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
+                        self.teams[game.home_team_id].fin_position = 1
+                        self.teams[game.away_team_id].fin_position = 2
+                    elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
+                        self.teams[game.home_team_id].fin_position = 2
+                        self.teams[game.away_team_id].fin_position = 1
+                elif season_stage == SeasonStages.final3rd:
+                    if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
+                        self.teams[game.home_team_id].fin_position = 3
+                        self.teams[game.away_team_id].fin_position = 4
+                    elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
+                        self.teams[game.home_team_id].fin_position = 4
+                        self.teams[game.away_team_id].fin_position = 3
+                elif season_stage == SeasonStages.final5th:
+                    if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
+                        self.teams[game.home_team_id].fin_position = 5
+                        self.teams[game.away_team_id].fin_position = 6
+                    elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
+                        self.teams[game.home_team_id].fin_position = 6
+                        self.teams[game.away_team_id].fin_position = 5
+                elif season_stage == SeasonStages.final7th:
+                    if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
+                        self.teams[game.home_team_id].fin_position = 7
+                        self.teams[game.away_team_id].fin_position = 8
+                    elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
+                        self.teams[game.home_team_id].fin_position = 8
+                        self.teams[game.away_team_id].fin_position = 7
 
             self.game_days.append(GameDay(
                 date=week_date,
