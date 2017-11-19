@@ -80,6 +80,14 @@ def generate_page(template, **context_extras):
     return template_obj.render(**context_extras)
 
 
+def generate_page_inside_container(template, **context_extras):
+    template_obj = env.get_template(template)
+    container_template = env.get_template('components/container.html')
+    return container_template.render(
+        main_content=template_obj.render(**context_extras)
+    )
+
+
 def write_page(path, content):
     full_path = os.path.join(unicorn_build_dir, path)
     with open(full_path, 'w') as f:

@@ -1,5 +1,5 @@
 from unicorn.app import run_in_app_context
-from unicorn.core.pages import generate_pages, write_page, generate_page
+from unicorn.core.pages import generate_pages, write_page, generate_page, generate_page_inside_container
 from unicorn.models import Season, Team, Game, Franchise
 
 
@@ -24,19 +24,30 @@ def main():
             }
         )
 
-        pages = []
         for page, content in generator:
-            pages.append(page)
-            write_page(page.path, content)
+            write_page(
+                page.path,
+                generate_page(
+                    'components/container.html',
+                    main_content=content,
+                ),
+            )
 
         write_page(
             '{}s_all.html'.format(obj_name),
             generate_page(
-                '{}s_all.html'.format(obj_name),
-                pages=pages,
-                **{'{}s_all'.format(obj_name): all_objects}
+                'components/container.html',
+                main_content=generate_page(
+                    '{}s_all.html'.format(obj_name),
+                    **{'{}s_all'.format(obj_name): all_objects}
+                )
             )
         )
+
+    # Other Pages
+
+    # Home page
+    write_page('index.html', generate_page_inside_container('home.html'))
 
 
 if __name__ == '__main__':
