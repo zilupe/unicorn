@@ -30,7 +30,7 @@ group by t.id;
 
 
 
-select * from teams where season_id = 105 order by reg_position;
+select * from teams where season_id = 105 order by regular_rank;
 
 select * from seasons order by first_week_date asc;
 

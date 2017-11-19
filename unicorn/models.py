@@ -29,7 +29,7 @@ class Franchise(Base):
 
     @cached_property
     def num_titles(self):
-        return sum(1 for t in self.teams if t.fin_position == 1)
+        return sum(1 for t in self.teams if t.finals_rank == 1)
 
 
 Franchise.default_order_by = Franchise.name.asc(),
@@ -53,21 +53,21 @@ class Team(Base):
     name = Column(String(50))
 
     # Standings table columns
-    reg_position = Column(Integer)
-    reg_played = Column(Integer)
-    reg_won = Column(Integer)
-    reg_lost = Column(Integer)
-    reg_drawn = Column(Integer)
-    reg_forfeits_for = Column(Integer)
-    reg_forfeits_against = Column(Integer)
-    reg_score_for = Column(Integer)
-    reg_score_against = Column(Integer)
-    reg_score_difference = Column(Integer)
-    reg_bonus_points = Column(Integer)
-    reg_points = Column(Integer)
+    regular_rank = Column(Integer)
+    regular_played = Column(Integer)
+    regular_won = Column(Integer)
+    regular_lost = Column(Integer)
+    regular_drawn = Column(Integer)
+    regular_forfeits_for = Column(Integer)
+    regular_forfeits_against = Column(Integer)
+    regular_score_for = Column(Integer)
+    regular_score_against = Column(Integer)
+    regular_score_difference = Column(Integer)
+    regular_bonus_points = Column(Integer)
+    regular_points = Column(Integer)
 
     # Finals aggregates
-    fin_position = Column(Integer)
+    finals_rank = Column(Integer)
 
     games = relationship('GameSide')
 
@@ -154,32 +154,48 @@ class Season(Base):
 
     teams = relationship('Team', back_populates='season')
 
-    @property
-    def is_over(self):
-        return self.finals_champions.fin_position == 1
+    @cached_property
+    def first_week_date_str(self):
+        return self.first_week_date.strftime('%d/%m/%Y')
 
-    @property
-    def teams_regular_order(self):
-        return sorted(self.teams, key=lambda t: t.reg_position or 100)
-
-    @property
-    def regular_champions(self):
-        return self.teams_regular_order[0]
-
-    @property
-    def teams_finals_order(self):
-        return sorted(self.teams, key=lambda t: t.fin_position or 100)
-
-    @property
-    def finals_champions(self):
-        return self.teams_finals_order[0]
+    @cached_property
+    def last_week_date_str(self):
+        return self.last_week_date.strftime('%d/%m/%Y')
 
     @property
     def date_range_str(self):
-        return '{} - {}'.format(
-            self.first_week_date.strftime('%d/%m/%Y'),
-            self.last_week_date.strftime('%d/%m/%Y'),
-        )
+        return '{} - {}'.format(self.first_week_date_str, self.last_week_date_str)
+
+    @cached_property
+    def regular_finished(self):
+        # TODO Implement this
+        return True
+
+    @cached_property
+    def regular_teams_ranked(self):
+        """
+        Teams in the order they are ranked in the regular season.
+        """
+        return sorted(self.teams, key=lambda t: t.regular_rank or 100)
+
+    @cached_property
+    def regular_champions(self):
+        return self.regular_teams_ranked[0]
+
+    @cached_property
+    def finals_finished(self):
+        return self.finals_champions.finals_rank == 1
+
+    @cached_property
+    def finals_teams_ranked(self):
+        """
+        Teams in the order they are ranked after the finals.
+        """
+        return sorted(self.teams, key=lambda t: t.finals_rank or 100)
+
+    @cached_property
+    def finals_champions(self):
+        return self.finals_teams_ranked[0]
 
 
 Season.default_order_by = Season.first_week_date.asc(),

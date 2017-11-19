@@ -23,7 +23,7 @@
                 <a href="{{ season.regular_champions.simple_url }}">{{ season.regular_champions.proud_name }}</a>
             </td>
             <td>
-                {% if season.is_over %}
+                {% if season.finals_finished %}
                     <a href="{{ season.finals_champions.simple_url }}">{{ season.finals_champions.proud_name }}</a>
                 {% endif %}
             </td>

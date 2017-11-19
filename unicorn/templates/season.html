@@ -16,16 +16,16 @@
     </tr>
     <tr>
         <td>First Day</td>
-        <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
+        <td>{{ season.first_week_date_str }}</td>
     </tr>
     <tr>
         <td>Last Day</td>
-        <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
+        <td>{{ season.last_week_date_str }}</td>
     </tr>
     <tr>
         <td>Champions</td>
         <td>
-            {% if season.is_over %}
+            {% if season.finals_finished %}
                 {{ season.finals_champions.simple_link|safe }}
             {% endif %}
         </td>
@@ -50,9 +50,9 @@
 <h3>Final Ranking</h3>
 
 <table>
-    {% for team in season.teams_finals_order %}
+    {% for team in season.finals_teams_ranked %}
         <tr>
-            <td>{{ team.fin_position }}</td>
+            <td>{{ team.finals_rank }}</td>
             <td>{{ team.simple_link|safe }}</td>
             <td>{{ team.franchise.simple_link|safe }}</td>
         </tr>
@@ -79,21 +79,21 @@
             <th>PTS</th>
         </tr>
     </thead>
-    {% for team in season.teams_regular_order %}
+    {% for team in season.regular_teams_ranked %}
         <tr>
-            <td>{{ team.reg_position }}</td>
+            <td>{{ team.regular_rank }}</td>
             <td>{{ team.simple_link|safe }}</td>
-            <td>{{ team.reg_played }}</td>
-            <td>{{ team.reg_won }}</td>
-            <td>{{ team.reg_forfeits_for }}</td>
-            <td>{{ team.reg_drawn }}</td>
-            <td>{{ team.reg_lost }}</td>
-            <td>{{ team.reg_forfeits_against }}</td>
-            <td>{{ team.reg_score_for }}</td>
-            <td>{{ team.reg_score_against }}</td>
-            <td>{{ team.reg_score_difference }}</td>
-            <td>{{ team.reg_bonus_points }}</td>
-            <td>{{ team.reg_points }}</td>
+            <td>{{ team.regular_played }}</td>
+            <td>{{ team.regular_won }}</td>
+            <td>{{ team.regular_forfeits_for }}</td>
+            <td>{{ team.regular_drawn }}</td>
+            <td>{{ team.regular_lost }}</td>
+            <td>{{ team.regular_forfeits_against }}</td>
+            <td>{{ team.regular_score_for }}</td>
+            <td>{{ team.regular_score_against }}</td>
+            <td>{{ team.regular_score_difference }}</td>
+            <td>{{ team.regular_bonus_points }}</td>
+            <td>{{ team.regular_points }}</td>
         </tr>
     {% endfor %}
 </table>
