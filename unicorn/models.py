@@ -14,6 +14,10 @@ class Franchise(Base):
 
     teams = relationship('Team', back_populates='franchise')
 
+    @property
+    def teams_sorted(self):
+        return sorted(self.teams, key=lambda t: t.season.first_week_date)
+
 
 Franchise.default_order_by = Franchise.name.asc(),
 

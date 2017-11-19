@@ -11,11 +11,11 @@
             <th>Season</th>
             <th>Team</th>
             <th>Regular Season</th>
-            <th>Final Rank</th>
+            <th>Finals</th>
         </tr>
     </thead>
     <tbody>
-        {% for team in franchise.teams %}
+        {% for team in franchise.teams_sorted %}
             <tr>
                 <td>{{ team.season.id }}</td>
                 <td>{{ team.season.name }}</td>
