@@ -87,6 +87,18 @@ class Team(Base):
         return sum(1 for gs in self.regular_games if gs.is_decided)
 
     @cached_property
+    def regular_score_for_avg(self):
+        if not self.regular_num_games_decided:
+            return 0
+        return sum(gs.score for gs in self.regular_games if gs.is_decided) / self.regular_num_games_decided
+
+    @cached_property
+    def regular_score_against_avg(self):
+        if not self.regular_num_games_decided:
+            return 0
+        return sum(gs.opponent.score for gs in self.regular_games if gs.is_decided) / self.regular_num_games_decided
+
+    @cached_property
     def regular_score_difference_avg(self):
         if not self.regular_num_games_decided:
             return 0
@@ -99,16 +111,32 @@ class Team(Base):
         return self.regular_points / self.regular_num_games_decided
 
     @cached_property
-    def regular_record_str(self):
-        return '{}-{}-{}'.format(
+    def regular_record(self):
+        return (
             self.regular_won + self.regular_forfeits_for,
             self.regular_drawn,
             self.regular_lost + self.regular_forfeits_against,
         )
 
     @cached_property
+    def regular_record_str(self):
+        return '-'.join(str(r) for r in self.regular_record)
+
+    @cached_property
     def finals_games(self):
         return [gs for gs in self.games if not gs.game.is_regular]
+
+    @cached_property
+    def finals_score_for_avg(self):
+        if not self.finals_num_games_decided:
+            return 0
+        return sum(gs.score for gs in self.finals_games if gs.is_decided) / self.finals_num_games_decided
+
+    @cached_property
+    def finals_score_against_avg(self):
+        if not self.finals_num_games_decided:
+            return 0
+        return sum(gs.opponent.score for gs in self.finals_games if gs.is_decided) / self.finals_num_games_decided
 
     @cached_property
     def finals_score_difference(self):
@@ -125,8 +153,16 @@ class Team(Base):
         return sum(1 for gs in self.finals_games if gs.is_decided)
 
     @cached_property
+    def finals_record(self):
+        return (
+            sum(1 for gs in self.finals_games if gs.is_won),
+            sum(1 for gs in self.finals_games if gs.is_drawn),  # Finals should not have draws, should they?
+            sum(1 for gs in self.finals_games if gs.is_lost),
+        )
+
+    @cached_property
     def finals_record_str(self):
-        return 'NOT IMPLEMENTED'
+        return '-'.join(str(r) for r in self.finals_record)
 
 
 Team.default_order_by = Team.name.asc(),
@@ -193,6 +229,18 @@ class GameSide(Base):
     @property
     def is_decided(self):
         return self.score is not None and self.outcome in GameOutcomes.decided
+
+    @property
+    def is_won(self):
+        return self.is_decided and self.outcome in (GameOutcomes.won, GameOutcomes.forfeit_for)
+
+    @property
+    def is_drawn(self):
+        return self.is_decided and self.outcome in (GameOutcomes.drawn,)
+
+    @property
+    def is_lost(self):
+        return self.is_decided and self.outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against)
 
     @property
     def opponent(self):
