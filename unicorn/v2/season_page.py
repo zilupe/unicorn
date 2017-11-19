@@ -138,8 +138,8 @@ class SeasonPage:
                 game_score_status = ScoreStatuses.winner_and_score_ok
                 game_score_status_comments = None
 
-                if game_id in current_app.fake_scores:
-                    fs = current_app.fake_scores[game_id]
+                if game_id in current_app.manual_scores:
+                    fs = current_app.manual_scores[game_id]
                     game_score = (fs['home_team_score'], fs['away_team_score'])
                     game_score_status = fs['score_status']
                     game_score_status_comments = fs['score_status_comments']
@@ -150,7 +150,7 @@ class SeasonPage:
                         )
                     else:
                         log.warning((
-                            'Encountered a game with no score and no fake score provided: '
+                            'Encountered a game with no score and no manual score provided: '
                             'week_date={} game_time={} game_id={}'
                         ).format(week_date, game_time, game_id))
                         game_score = (None, None)

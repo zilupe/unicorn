@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 app_data = AttrDict({
     'franchises': None,
     'franchise_seasons': None,
-    'fake_scores': None,
+    'manual_scores': None,
 })
 
 
@@ -43,20 +43,20 @@ class UnicornApp(App):
         return app_data.franchise_seasons
 
     @property
-    def fake_scores(self):
-        if app_data.fake_scores is None:
-            app_data.fake_scores = {}
-            with open(os.path.join(unicorn_root_dir, 'unicorn/data/fake_scores.csv')) as f:
+    def manual_scores(self):
+        if app_data.manual_scores is None:
+            app_data.manual_scores = {}
+            with open(os.path.join(unicorn_root_dir, 'unicorn/data/manual_scores.csv')) as f:
                 for row in csv.DictReader(f):
                     game_id = int(row['game_id'])
-                    self.fake_scores[game_id] = {
+                    self.manual_scores[game_id] = {
                         'game_id': game_id,
                         'home_team_score': int(row['home_team_score']),
                         'away_team_score': int(row['away_team_score']),
                         'score_status': int(row['score_status']),
                         'score_status_comments': row['score_status_comments'],
                     }
-        return app_data.fake_scores
+        return app_data.manual_scores
 
     def get_franchise_and_team_name(self, season_id, gm_team_id):
         for fs in self.franchise_seasons:
