@@ -1,12 +1,12 @@
 <h1>All Seasons</h1>
 
-<table>
+<table class="table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>Name</th>
             <th>First Week</th>
             <th>Last Week</th>
-            <th>Name</th>
+            <th>Teams</th>
             <th>Regular Season Winners</th>
             <th>Champions</th>
         </tr>
@@ -15,16 +15,23 @@
 
     {% for season in seasons_all %}
         <tr>
-            <td>{{ season.id }}</td>
-            <td>{{ season.first_week_date.strftime('%d/%m/%Y') }}</td>
-            <td>{{ season.last_week_date.strftime('%d/%m/%Y') }}</td>
             <td>{{ season.simple_link|safe }}</td>
+            <td>{{ season.first_week_date_str }}</td>
+            <td>{{ season.last_week_date_str }}</td>
+            <td>{{ season.num_teams }}</td>
             <td>
                 <a href="{{ season.regular_champions.simple_url }}">{{ season.regular_champions.proud_name }}</a>
             </td>
             <td>
                 {% if season.finals_finished %}
-                    <a href="{{ season.finals_champions.simple_url }}">{{ season.finals_champions.proud_name }}</a>
+                    <div class="media">
+                        <div class="align-self-center mr-2">
+                            {{ season.finals_champions.franchise.logo_html|safe }}
+                        </div>
+                        <div class="media-body">
+                            <a href="{{ season.finals_champions.simple_url }}">{{ season.finals_champions.proud_name }}</a>
+                        </div>
+                    </div>
                 {% endif %}
             </td>
         </tr>

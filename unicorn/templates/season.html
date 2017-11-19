@@ -1,111 +1,155 @@
-<p>
-    <a href="seasons_all.html">Back to All Seasons</a>
-</p>
+<h1 class="display-3 mt-5">{{ season.name }}</h1>
 
-<h1>{{ season.name }}</h1>
-
-
-<table>
-    <tr>
-        <td>ID</td>
-        <td>{{ season.id }}</td>
-    </tr>
-    <tr>
-        <td>Name</td>
-        <td>{{ season.name }}</td>
-    </tr>
-    <tr>
-        <td>First Day</td>
-        <td>{{ season.first_week_date_str }}</td>
-    </tr>
-    <tr>
-        <td>Last Day</td>
-        <td>{{ season.last_week_date_str }}</td>
-    </tr>
-    <tr>
-        <td>Champions</td>
-        <td>
-            {% if season.finals_finished %}
-                {{ season.finals_champions.simple_link|safe }}
-            {% endif %}
-        </td>
-    </tr>
-    <tr>
-        <td>Regular Season Winners</td>
-        <td>
-            {{ season.regular_champions.simple_link|safe }}
-        </td>
-    </tr>
-    <!--
-    Need division id, otherwise the link is invalid as the division has changed...
-    -->
-    <tr>
-        <td>Go Mammoth Page</td>
-        <td>
-            <a href="https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx?LeagueId=505&SeasonId={{ season.id }}" rel="noreferrer">Visit</a>
-        </td>
-    </tr>
-</table>
-
-<h3>Final Ranking</h3>
-
-<table>
-    {% for team in season.finals_teams_ranked %}
-        <tr>
-            <td>{{ team.finals_rank }}</td>
-            <td>{{ team.simple_link|safe }}</td>
-            <td>{{ team.franchise.simple_link|safe }}</td>
-        </tr>
-    {% endfor %}
-</table>
-
-<h3>Regular Season Ranking</h3>
-
-<table>
+<table class="table mt-5">
     <thead>
         <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th>P</th>
-            <th>W</th>
-            <th>FF</th>
-            <th>D</th>
-            <th>L</th>
-            <th>FA</th>
-            <th>F</th>
-            <th>A</th>
-            <th>DIFF</th>
-            <th>BPTS</th>
-            <th>PTS</th>
+            <th>ID</th>
+            <th>First Week</th>
+            <th>Last Week</th>
+            <th>Champions</th>
+            <th>Regular Season Winners</th>
         </tr>
     </thead>
-    {% for team in season.regular_teams_ranked %}
+    <tbody>
         <tr>
-            <td>{{ team.regular_rank }}</td>
-            <td>{{ team.simple_link|safe }}</td>
-            <td>{{ team.regular_played }}</td>
-            <td>{{ team.regular_won }}</td>
-            <td>{{ team.regular_forfeits_for }}</td>
-            <td>{{ team.regular_drawn }}</td>
-            <td>{{ team.regular_lost }}</td>
-            <td>{{ team.regular_forfeits_against }}</td>
-            <td>{{ team.regular_score_for }}</td>
-            <td>{{ team.regular_score_against }}</td>
-            <td>{{ team.regular_score_difference }}</td>
-            <td>{{ team.regular_bonus_points }}</td>
-            <td>{{ team.regular_points }}</td>
+            <td>{{ season.id }}</td>
+            <td>{{ season.first_week_date_str }}</td>
+            <td>{{ season.last_week_date_str }}</td>
+            <td>
+                {% if season.finals_finished %}
+                    <div class="media">
+                        <div class="align-self-center mr-3">
+                            {{ season.finals_champions.franchise.logo_html|safe }}
+                        </div>
+                        <div class="media-body">
+                            {{ season.finals_champions.simple_link|safe }}
+                        </div>
+                    </div>
+
+                {% endif %}
+            </td>
+            <td>
+                {{ season.regular_champions.simple_link|safe }}
+            </td>
         </tr>
-    {% endfor %}
+    </tbody>
+
 </table>
 
-<h3>All Games</h3>
+<!--
+    Need division id, otherwise the link is invalid as the division has changed...
+    <a href="https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx?LeagueId=505&SeasonId={{ season.id }}" rel="noreferrer">Visit</a>
+    -->
 
-<table>
+{% if season.finals_finished %}
+
+    <h3 class="mt-5 mb-3">Final Rankings</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th rowspan="2">&nbsp;</th>
+                <th rowspan="2">&nbsp;</th>
+                <th colspan="12">Regular Season</th>
+            </tr>
+            <tr>
+                <th>Rank</th>
+                <th title="Played">P</th>
+                <th title="Won">W</th>
+                <th title="Forfeits For">FF</th>
+                <th title="Drawn">D</th>
+                <th title="Lost">L</th>
+                <th title="Forfeits Against">FA</th>
+                <th title="Points Scored For">F</th>
+                <th title="Points Scored Against">A</th>
+                <th title="Points Scored Difference">DIFF</th>
+                <th title="Bonus Points">BPTS</th>
+                <th title="Points">PTS</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for team in season.finals_teams_ranked %}
+            <tr>
+                <td>{{ team.finals_rank }}</td>
+                <td>
+                    <div class="media">
+                        <div class="align-self-center mr-3">
+                            {{ team.franchise.logo_html|safe }}
+                        </div>
+                        <div class="media-body">
+                            {{ team.simple_link|safe }}
+                        </div>
+                    </div>
+                </td>
+                <td>{{ team.regular_rank }}</td>
+                <td>{{ team.regular_played }}</td>
+                <td>{{ team.regular_won }}</td>
+                <td>{{ team.regular_forfeits_for }}</td>
+                <td>{{ team.regular_drawn }}</td>
+                <td>{{ team.regular_lost }}</td>
+                <td>{{ team.regular_forfeits_against }}</td>
+                <td>{{ team.regular_score_for }}</td>
+                <td>{{ team.regular_score_against }}</td>
+                <td>{{ team.regular_score_difference }}</td>
+                <td>{{ team.regular_bonus_points }}</td>
+                <td>{{ team.regular_points }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% else %}
+
+    <h3 class="mt-5 mb-3">Regular Season Rankings</h3>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th title="Played">P</th>
+                <th title="Won">W</th>
+                <th title="Forfeits For">FF</th>
+                <th title="Drawn">D</th>
+                <th title="Lost">L</th>
+                <th title="Forfeits Against">FA</th>
+                <th title="Points Scored For">F</th>
+                <th title="Points Scored Against">A</th>
+                <th title="Points Scored Difference">DIFF</th>
+                <th title="Bonus Points">BPTS</th>
+                <th title="Points">PTS</th>
+            </tr>
+        </thead>
+        {% for team in season.regular_teams_ranked %}
+            <tr>
+                <td>{{ team.regular_rank }}</td>
+                <td>{{ team.simple_link|safe }}</td>
+                <td>{{ team.regular_played }}</td>
+                <td>{{ team.regular_won }}</td>
+                <td>{{ team.regular_forfeits_for }}</td>
+                <td>{{ team.regular_drawn }}</td>
+                <td>{{ team.regular_lost }}</td>
+                <td>{{ team.regular_forfeits_against }}</td>
+                <td>{{ team.regular_score_for }}</td>
+                <td>{{ team.regular_score_against }}</td>
+                <td>{{ team.regular_score_difference }}</td>
+                <td>{{ team.regular_bonus_points }}</td>
+                <td>{{ team.regular_points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endif %}
+
+<h3 class="mt-5 mb-3">All Games</h3>
+
+<table class="table table-hover">
     {% for game in season.games %}
         <tr>
             <td>{{ game.simple_link|safe }}</td>
-            <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
-            <td>{{ game.starts_at.strftime('%H:%M') }}</td>
+            <td>{{ game.date_str }}</td>
+            <td>{{ game.time_str }}</td>
             <td>{{ game.season_stage }}</td>
             <td style="text-align: right">{{ game.home_side.team.simple_link|safe }}</td>
             <td> - </td>

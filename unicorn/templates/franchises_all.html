@@ -1,28 +1,32 @@
-<h1>All Franchises</h1>
+<h1 class="display-3">Franchises</h1>
 
-<table>
+<table class="table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>&nbsp;</th>
             <th>Name</th>
             <th>Status</th>
             <th>Won</th>
             <th>Drawn</th>
             <th>Lost</th>
             <th>Win %</th>
-            <th>Championship Titles</th>
         </tr>
     </thead>
     {% for franchise in franchises_all %}
         <tr>
-            <td>{{ franchise.id }}</td>
-            <td>{{ franchise.simple_link|safe }}</td>
+            <td>
+                <div class="franchise-logo-left franchise-{{ franchise.id }}"></div>
+                <div class="franchise-logo-right franchise-{{ franchise.id }}"></div>
+            </td>
+            <td>
+                {{ franchise.simple_link|safe }}
+                {{ franchise.trophy_list_html|safe }}
+            </td>
             <td>{{ franchise.status }}</td>
             <td>{{ franchise.outcomes['W'] }}</td>
             <td>{{ franchise.outcomes['D'] }}</td>
             <td>{{ franchise.outcomes['L'] }}</td>
             <td>{{ '%0.2f'| format(100.0 * franchise.outcomes['W'] / (franchise.outcomes['W'] + franchise.outcomes['D'] + franchise.outcomes['L'])) }}</td>
-            <td>{{ franchise.num_titles }}</td>
         </tr>
     {% endfor %}
 </table>

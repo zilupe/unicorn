@@ -16,4 +16,5 @@ def create_franchises():
                 id=int(row['id']),
                 name=row['name'],
                 status=row['status'],
+                colors=row['colors'],
             )

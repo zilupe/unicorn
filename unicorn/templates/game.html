@@ -1,32 +1,12 @@
-<p>
-    <a href="games_all.html">Back to All Games</a>
-</p>
+<h1 class="display-4 mt-5 mb-3">{{ game.season.simple_link|safe }} / Game {{ game.id }}</h1>
 
-<h1>Game {{ game.id }}</h1>
-
-<table>
+<table class="table">
     <tr>
-        <td>Season</td>
         <td>{{ game.season.simple_link|safe }}</td>
-    </tr>
-    <tr>
-        <td>ID</td>
-        <td>{{ game.id }}</td>
-    </tr>
-    <tr>
-        <td>Date</td>
         <td>{{ game.date_str }}</td>
-    </tr>
-    <tr>
-        <td>Time</td>
         <td>{{ game.time_str }}</td>
-    </tr>
-    <tr>
         <td>{{ game.home_side.team.simple_link|safe }}</td>
-        <td>{{ game.home_side.score }}</td>
-    </tr>
-    <tr>
+        <td>{{ game.home_side.score }} - {{ game.away_side.score }}</td>
         <td>{{ game.away_side.team.simple_link|safe }}</td>
-        <td>{{ game.away_side.score }}</td>
     </tr>
 </table>

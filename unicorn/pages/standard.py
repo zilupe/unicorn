@@ -1,4 +1,5 @@
 from unicorn.app import run_in_app_context
+from unicorn.core.apps import current_app
 from unicorn.core.pages import generate_pages, write_page, generate_page, generate_page_inside_container
 from unicorn.models import Season, Team, Game, Franchise
 
@@ -44,7 +45,11 @@ def main():
             )
         )
 
-    # Other Pages
+    # Style Sheet
+    write_page('style.css', generate_page(
+        'components/style.css.jinja',
+        franchises=current_app.franchises.values(),
+    ))
 
     # Home page
     write_page('index.html', generate_page_inside_container('home.html'))

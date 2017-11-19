@@ -1,35 +1,45 @@
-<h1>{{ team.name }}</h1>
 
-<table>
+<h1 class="display-4 mt-5 mb-3">{{ team.season.simple_link|safe }} / {{ team.name }}</h1>
+
+<table class="table mt-5">
     <tr>
-        <td>Season</td>
-        <td>
-            {{ team.season.simple_link|safe }}
+        <td class="text-right">Season</td>
+        <th>
             {{ team.season.date_range_str }}
-        </td>
+        </th>
     </tr>
     <tr>
-        <td>Franchise</td>
-        <td>{{ team.franchise.simple_link|safe }}</td>
+        <td class="text-right">Franchise</td>
+        <th>
+            <div class="media">
+                <div class="align-self-center mr-3">
+                    {{ team.franchise.logo_html|safe }}
+                </div>
+                <div class="media-body">
+                    {{ team.franchise.simple_link|safe }}
+                    {{ team.franchise.trophy_list_html|safe }}
+                </div>
+            </div>
+        </th>
     </tr>
     <tr>
-        <td>Team Name</td>
-        <td>{{ team.name }}</td>
+        <td class="text-right">Team Name</td>
+        <th>{{ team.name }}</th>
     </tr>
     <tr>
-        <td>Finals Position</td>
-        <td>{{ team.finals_rank }}</td>
+        <td class="text-right">Final Rank</td>
+        <th>{{ team.finals_rank }}</th>
     </tr>
     <tr>
-        <td>Regular Season Position</td>
-        <td>{{ team.regular_rank }}</td>
+        <td class="text-right">Regular Season Rank</td>
+        <th>{{ team.regular_rank }}</th>
     </tr>
 </table>
 
 
-<h2>Regular Season Summary</h2>
+<h3 class="mt-5 mb-3">Regular Season Summary</h3>
 
-<table>
+<table class="table">
     <thead>
         <tr>
             <td>Rank</td>
@@ -78,9 +88,9 @@
     </tbody>
 </table>
 
-<h2>All Games</h2>
+<h3 class="mt-5 mb-3">All Games</h3>
 
-<table>
+<table class="table table-hover">
     <thead>
         <tr>
             <th>ID</th>

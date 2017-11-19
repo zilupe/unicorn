@@ -1,0 +1,43 @@
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'News Cycle', sans-serif !important;
+}
+p, div {
+    font-family: 'News Cycle', sans-serif !important;
+}
+
+span.icon {
+   font-family: 'EntypoRegular' !important;
+   font-weight: normal;
+   font-style: normal;
+}
+
+span.icon.trophy {
+    color: #DAA520;
+}
+
+.franchise-logo-left {
+    float: left;
+    width: 15px;
+    height: 20px;
+    margin: 0;
+    border: none;
+}
+.franchise-logo-right {
+    float: left;
+    width: 15px;
+    height: 20px;
+    margin: 0;
+    border: none;
+}
+
+
+{% for franchise in franchises %}
+
+.franchise-logo-left.franchise-{{ franchise.id }} {
+    background: {{ franchise.color1 }};
+}
+.franchise-logo-right.franchise-{{ franchise.id }} {
+    background: {{ franchise.color2 }};
+}
+
+{% endfor %}

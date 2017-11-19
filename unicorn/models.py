@@ -1,3 +1,5 @@
+import collections
+
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
@@ -13,7 +15,21 @@ class Franchise(Base):
     name = Column(String(50))
     status = Column(String(20))
 
+    colors = Column(String(255))
+
     teams = relationship('Team', back_populates='franchise')
+
+    @cached_property
+    def num_seasons(self):
+        return len(self.teams)
+
+    @cached_property
+    def finals_num_winners(self):
+        return sum(1 for t in self.teams if t.season.finals_finished and t.finals_rank == 1)
+
+    @cached_property
+    def regular_num_winners(self):
+        return sum(1 for t in self.teams if t.season.regular_finished and t.regular_rank == 1)
 
     @cached_property
     def teams_sorted(self):
@@ -28,8 +44,34 @@ class Franchise(Base):
         return outcomes
 
     @cached_property
-    def num_titles(self):
-        return sum(1 for t in self.teams if t.finals_rank == 1)
+    def color1(self):
+        if self.colors:
+            return self.colors.split(',')[0]
+        else:
+            return '#CCCCCC'
+
+    @cached_property
+    def color2(self):
+        if self.colors:
+            return self.colors.split(',')[-1]
+        else:
+            return '#EEEEEE'
+
+    @cached_property
+    def logo_html(self):
+        return (
+            '<div class="franchise-logo-left franchise-{0}"></div>'
+            '<div class="franchise-logo-right franchise-{0}"></div>'
+        ).format(self.id)
+
+    @cached_property
+    def trophy_list_html(self):
+        return '<sup>{}</sup>'.format(
+            ' '.join(
+                '<span class="icon trophy">7</span>'
+                for x in range(self.finals_num_winners)
+            )
+        )
 
 
 Franchise.default_order_by = Franchise.name.asc(),
@@ -206,6 +248,10 @@ class Game(Base):
     sides = relationship('GameSide', back_populates='game')
 
     @property
+    def simple_label(self):
+        return self.id
+
+    @property
     def is_regular(self):
         return self.season_stage == SeasonStages.regular
 
@@ -217,11 +263,11 @@ class Game(Base):
     def away_side(self):
         return self.sides[1]
 
-    @property
+    @cached_property
     def date_str(self):
         return self.starts_at.strftime('%d/%m/%Y')
 
-    @property
+    @cached_property
     def time_str(self):
         return self.starts_at.strftime('%H:%M')
 
@@ -283,6 +329,10 @@ class Season(Base):
     teams = relationship('Team', back_populates='season')
 
     @cached_property
+    def num_teams(self):
+        return len(self.teams)
+
+    @cached_property
     def first_week_date_str(self):
         return self.first_week_date.strftime('%d/%m/%Y')
 
@@ -324,6 +374,15 @@ class Season(Base):
     @cached_property
     def finals_champions(self):
         return self.finals_teams_ranked[0]
+
+    # @cached_property
+    # def games_by_week(self):
+    #     games = collections.OrderedDict()
+    #     for game in self.games:
+    #         if game.date_str not in games:
+    #             games[game.date_str] = []
+    #         games[game.date_str].append(game)
+    #     return games
 
 
 Season.default_order_by = Season.first_week_date.asc(),
