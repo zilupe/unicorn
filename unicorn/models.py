@@ -22,6 +22,10 @@ class Franchise(Base):
         return len(self.teams)
 
     @cached_property
+    def num_games(self):
+        return sum(len(t.games) for t in self.teams)
+
+    @cached_property
     def finals_num_winners(self):
         return sum(1 for t in self.teams if t.season.finals_finished and t.finals_rank == 1)
 
