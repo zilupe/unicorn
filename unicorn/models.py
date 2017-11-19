@@ -1,6 +1,4 @@
-import collections
-
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Boolean
 from sqlalchemy.orm import relationship
 
 from unicorn.core.utils import cached_property
@@ -112,13 +110,6 @@ class Team(Base):
     finals_rank = Column(Integer)
 
     games = relationship('GameSide')
-
-    @property
-    def proud_name(self):
-        if self.franchise.name:
-            if self.name != self.franchise.name:
-                return '{}*'.format(self.franchise.name)
-        return self.name
 
     @cached_property
     def regular_games(self):
@@ -243,6 +234,10 @@ class Game(Base):
 
     season_stage = Column(String(20), server_default=SeasonStages.regular)
     starts_at = Column(DateTime)
+
+    score_status = Column(Integer, default=0)
+    score_status_comments = Column(String(255))
+
     notes = Column(Text)
 
     sides = relationship('GameSide', back_populates='game')
@@ -273,10 +268,11 @@ class Game(Base):
 
     @cached_property
     def score_link(self):
-        return '<a href="{}">{} - {}</a>'.format(
+        return '<a href="{}">{} - {}{}</a>'.format(
             self.simple_url,
             self.home_side.score,
             self.away_side.score,
+            '<sup>MS</sup>' if self.score_status > 1 else '',
         )
 
 

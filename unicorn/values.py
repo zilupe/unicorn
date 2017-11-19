@@ -100,3 +100,12 @@ class GameOutcomes:
             return 0
         else:
             return cls.regular_season_points[outcome]
+
+
+class ScoreStatuses:
+    undecided = 0
+    winner_and_score_ok = 1
+    winner_ok_score_probable = 2
+    winner_ok_score_fake = 3
+    winner_probable_score_fake = 4
+    unknown = 5

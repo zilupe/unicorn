@@ -3,7 +3,11 @@ from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
 
-from unicorn.values import SeasonStages, GameOutcomes
+from unicorn.configuration import logging
+from unicorn.core.apps import current_app
+from unicorn.values import SeasonStages, GameOutcomes, ScoreStatuses
+
+log = logging.getLogger(__name__)
 
 
 def parse_gm_date(date_str):
@@ -131,12 +135,27 @@ class SeasonPage:
                     continue
                 game_id = int(ic.find('nobr')['data-fixture-id'])
 
-                if ic.find('nobr').find('div'):
-                    game_score = (
-                        ic.find('nobr').find('div').find('nobr').text.strip().split(' - ')
-                    )
+                game_score_status = ScoreStatuses.winner_and_score_ok
+                game_score_status_comments = None
+
+                if game_id in current_app.fake_scores:
+                    fs = current_app.fake_scores[game_id]
+                    game_score = (fs['home_team_score'], fs['away_team_score'])
+                    game_score_status = fs['score_status']
+                    game_score_status_comments = fs['score_status_comments']
                 else:
-                    game_score = (None, None)
+                    if ic.find('nobr').find('div'):
+                        game_score = (
+                            ic.find('nobr').find('div').find('nobr').text.strip().split(' - ')
+                        )
+                    else:
+                        log.warning((
+                            'Encountered a game with no score and no fake score provided: '
+                            'week_date={} game_time={} game_id={}'
+                        ).format(week_date, game_time, game_id))
+                        game_score = (None, None)
+                        game_score_status = ScoreStatuses.unknown
+                        game_score_status_comments = 'Unresolved'
 
                 game_venue = g.find('td', class_='FPlayingArea').text.strip()
 
@@ -154,6 +173,8 @@ class SeasonPage:
                     home_team_score=int(game_score[0]) if game_score[0] is not None else None,
                     away_team_id=self.unicorn_team_id(extract_from_link(atc.find('a'), 'TeamId')),
                     away_team_score=int(game_score[1]) if game_score[1] is not None else None,
+                    score_status=game_score_status,
+                    score_status_comments=game_score_status_comments,
                 )
 
                 game.home_team_outcome, game.away_team_outcome = GameOutcomes.from_scores(

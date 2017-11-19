@@ -43,6 +43,8 @@ def store_season_page(page):
                 season_id=season_obj.id,
                 season_stage=game.season_stage,
                 starts_at=game.starts_at,
+                score_status=game.score_status,
+                score_status_comments=game.score_status_comments,
                 sides=[
                     GameSide(
                         team_id=game.home_team_id,

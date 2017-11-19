@@ -1,12 +1,30 @@
 <h1 class="display-4 mt-5 mb-3">{{ game.season.simple_link|safe }} / Game {{ game.id }}</h1>
 
-<table class="table">
+
+<table class="table mt-5">
     <tr>
         <td>{{ game.season.simple_link|safe }}</td>
-        <td>{{ game.date_str }}</td>
-        <td>{{ game.time_str }}</td>
-        <td>{{ game.home_side.team.simple_link|safe }}</td>
-        <td>{{ game.home_side.score }} - {{ game.away_side.score }}</td>
-        <td>{{ game.away_side.team.simple_link|safe }}</td>
+        <td>{{ game.date_str }} {{ game.time_str }}</td>
+        <td>{{ game.season_stage }}</td>
+        <td class="text-right">{{ game.home_side.team.simple_link|safe }}</td>
+        <td class="text-center">{{ game.home_side.score }} - {{ game.away_side.score }}</td>
+        <td class="text-left">{{ game.away_side.team.simple_link|safe }}</td>
     </tr>
 </table>
+
+
+{% if game.score_status > 1 %}
+
+    <h3 class="my-3">Score Issues</h3>
+
+    <p>
+        The score of this game may be inaccurate because it was not registered
+        on Go Mammoth website and has been reconstructed based on memories,
+        WhatsApp chat, and email logs:
+    </p>
+
+    <blockquote class="blockquote">
+        <p class="px-5 font-weight-light">{{ game.score_status_comments }}</p>
+    </blockquote>
+
+{% endif %}

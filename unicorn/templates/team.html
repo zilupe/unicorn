@@ -113,9 +113,6 @@
             <td>{{ g.game.season_stage }}</td>
             <td>
                 {{ g.opponent.team.simple_link|safe }}
-                {% if g.game.season_stage == 'regular' %}
-                    <sup>({{ g.opponent.team.regular_rank }})</sup>
-                {% endif %}
             </td>
             <td>{{ g.game.score_link|safe }}</td>
             <td>{{ g.outcome }}</td>
