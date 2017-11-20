@@ -151,24 +151,24 @@
 
             {% if other.total_played > 0 %}
 
-                <th class="text-center">{{ other.total_won_sum }}</th>
-                <th class="text-center">{{ other.total_drawn_sum }}</th>
-                <th class="text-center">{{ other.total_lost_sum }}</th>
+                <td class="text-center">{{ other.total_won_sum }}</td>
+                <td class="text-center">{{ other.total_drawn_sum }}</td>
+                <td class="text-center">{{ other.total_lost_sum }}</td>
 
-                <th class="text-right">{{ '%0.1f'| format(other.total_win_percentage) }}</th>
+                <td class="text-right">{{ '%0.1f'| format(other.total_win_percentage) }}</td>
 
-                <th class="text-right">{{ '%0.1f'| format(other.total_score_for_avg) }}</th>
-                <th class="text-right">{{ '%0.1f'| format(other.total_score_against_avg) }}</th>
-                <th class="text-right">{{ '%+0.1f'| format(other.total_score_difference_avg) }}</th>
+                <td class="text-right">{{ '%0.1f'| format(other.total_score_for_avg) }}</td>
+                <td class="text-right">{{ '%0.1f'| format(other.total_score_against_avg) }}</td>
+                <td class="text-right">{{ '%+0.1f'| format(other.total_score_difference_avg) }}</td>
 
-                <th>{{ other.games[0].date_link|safe }}</th>
-                <th>{{ other.games[-1].date_link|safe }}</th>
+                <td>{{ other.games[0].date_link|safe }}</td>
+                <td>{{ other.games[-1].date_link|safe }}</td>
 
-                <th><a href="{{ franchise.simple_url }}#h2h_vs_{{ other.franchise.id }}">{{ other.streak }}</a></th>
+                <td><a href="{{ franchise.simple_url }}#h2h_vs_{{ other.franchise.id }}">{{ other.streak }}</a></td>
 
             {% else %}
 
-                <th colspan="10">&nbsp;</th>
+                <td colspan="10">&nbsp;</td>
 
             {% endif %}
         </tr>
