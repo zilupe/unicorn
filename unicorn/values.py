@@ -32,12 +32,14 @@ class SeasonStages:
         'Grand Final': final1st,
 
         '3rd/4th playoff': final3rd,
-        '3rd Place Final': final3rd,
         '3rd Place Playoff': final3rd,
+        '3rd Place Final': final3rd,
+        'Third Place Final': final3rd,
 
-        '5th Place Final': final5th,
+        'Fifth Place Playoff': final5th,
         '5th Place Playoff': final5th,
         '5th/6th playoff': final5th,
+        '5th Place Final': final5th,
 
         '7th Place Final': final7th,
         '7th/8th playoff': final7th,
