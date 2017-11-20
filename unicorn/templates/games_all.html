@@ -1,13 +1,15 @@
-<h1>All Games</h1>
+<h1 class="display-3 mt-5 mb-3">All Games</h1>
 
-<table>
+<table class="table table-hover table-striped">
     <thead>
         <tr>
+            <th>Season</th>
+            <th>Stage</th>
             <th>ID</th>
             <th>Date</th>
             <th>Time</th>
-            <th>Home</th>
-            <th>Away</th>
+            <th class="text-right">Home</th>
+            <th class="text-left">Away</th>
             <th>Score</th>
         </tr>
     </thead>
@@ -15,11 +17,13 @@
 
     {% for game in games_all %}
         <tr>
+            <td>{{ game.season.simple_link|safe }}</td>
+            <td>{{ game.season_stage }}</td>
             <td>{{ game.id }}</td>
-            <td>{{ game.starts_at.strftime('%d/%m/%Y') }}</td>
-            <td>{{ game.starts_at.strftime('%H:%M') }}</td>
-            <td style="text-align: right">{{ game.home_side.team.simple_link|safe }}</td>
-            <td style="text-align: left">{{ game.away_side.team.simple_link }}</td>
+            <td>{{ game.date_str }}</td>
+            <td>{{ game.time_str }}</td>
+            <td class="text-right">{{ game.home_side.team.simple_link|safe }}</td>
+            <td class="text-left">{{ game.away_side.team.simple_link|safe }}</td>
             <td>{{ game.score_link|safe }}</td>
         </tr>
     {% endfor %}

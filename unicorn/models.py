@@ -88,7 +88,7 @@ class Franchise(Base):
         return stats
 
 
-Franchise.default_order_by = Franchise.name.asc(),
+Franchise.default_order_by = [Franchise.name.asc(),]
 
 
 class Team(Base):
@@ -237,7 +237,7 @@ class Team(Base):
         return '-'.join(str(r) for r in self.total_record)
 
 
-Team.default_order_by = Team.name.asc(),
+Team.default_order_by = [Team.name.asc(),]
 
 
 class Game(Base):
@@ -290,6 +290,9 @@ class Game(Base):
             self.away_side.score,
             '<sup>MS</sup>' if self.score_status > 1 else '',
         )
+
+
+Game.default_order_by = [Game.starts_at.asc(),]
 
 
 class GameSide(Base):
@@ -416,7 +419,7 @@ class Season(Base):
     #     return games
 
 
-Season.default_order_by = Season.first_week_date.asc(),
+Season.default_order_by = [Season.first_week_date.asc(),]
 
 
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')
