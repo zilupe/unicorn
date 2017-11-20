@@ -39,6 +39,7 @@ class Franchise(Base):
 
     @cached_property
     def outcomes(self):
+        # TODO Deprecated
         outcomes = {GameOutcomes.won: 0, GameOutcomes.lost: 0, GameOutcomes.drawn: 0, GameOutcomes.missing: 0}
         for t in self.teams:
             for g in t.games:
@@ -74,6 +75,17 @@ class Franchise(Base):
                 for x in range(self.finals_num_winners)
             )
         )
+
+    @cached_property
+    def h2h_stats(self):
+        from unicorn.stats import FranchiseHead2HeadStats
+
+        stats = []
+        for franchise in Franchise.get_all():
+            if franchise is self:
+                continue
+            stats.append(FranchiseHead2HeadStats(us=self, them=franchise))
+        return stats
 
 
 Franchise.default_order_by = Franchise.name.asc(),
@@ -327,6 +339,13 @@ class GameSide(Base):
             self.score,
             self.opponent.score,
             '<sup>MS</sup>' if self.game.score_status > 1 else '',
+        )
+
+    @cached_property
+    def date_link(self):
+        return '<a href="{}">{}</a>'.format(
+            self.game.simple_url,
+            self.game.date_str,
         )
 
 

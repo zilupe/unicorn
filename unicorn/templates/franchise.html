@@ -108,3 +108,120 @@
         {% endfor %}
     </tbody>
 </table>
+
+<h3 class="mt-5 mb-3">Head to Head Summary</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Franchise</th>
+
+            <th>Played</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+
+            <th class="text-right">Win %</th>
+
+            <th class="text-right">For</th>
+            <th class="text-right">Against</th>
+            <th class="text-right">+/-</th>
+
+            <th>First Game</th>
+            <th>Last Game</th>
+            <th>Streak</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for other in franchise.h2h_stats %}
+        <tr>
+            <td>
+                <div class="media">
+                    <div class="align-self-center mr-3">
+                        {{ other.franchise.logo_html|safe }}
+                    </div>
+                    <div class="media-body">
+                        {{ other.franchise.simple_link|safe }}
+                        {{ other.franchise.trophy_list_html|safe }}
+                    </div>
+                </div>
+            </td>
+
+            <th>{{ other.total_played }}</th>
+
+            {% if other.total_played > 0 %}
+
+                <th class="text-center">{{ other.total_won_sum }}</th>
+                <th class="text-center">{{ other.total_drawn_sum }}</th>
+                <th class="text-center">{{ other.total_lost_sum }}</th>
+
+                <th class="text-right">{{ '%0.1f'| format(other.total_win_percentage) }}</th>
+
+                <th class="text-right">{{ '%0.1f'| format(other.total_score_for_avg) }}</th>
+                <th class="text-right">{{ '%0.1f'| format(other.total_score_against_avg) }}</th>
+                <th class="text-right">{{ '%+0.1f'| format(other.total_score_difference_avg) }}</th>
+
+                <th>{{ other.games[0].date_link|safe }}</th>
+                <th>{{ other.games[-1].date_link|safe }}</th>
+
+                <th><a href="{{ franchise.simple_url }}#h2h_vs_{{ other.franchise.id }}">{{ other.streak }}</a></th>
+
+            {% else %}
+
+                <th colspan="10">&nbsp;</th>
+
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% for other in franchise.h2h_stats %}
+
+    {% if other.total_played > 0 %}
+
+        <h4 class="mt-4 mb-2" id="h2h_vs_{{ other.franchise.id }}">
+            <div class="media">
+                <div class="align-self-center mr-3">
+                    {{ other.franchise.logo_html|safe }}
+                </div>
+                <div class="media-body">
+                    {{ other.franchise.simple_link|safe }}
+                    {{ other.franchise.trophy_list_html|safe }}
+                    Head to Head
+                </div>
+            </div>
+        </h4>
+
+        <table class="table table-hover h2h-stats">
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Season</th>
+                    <th>Stage</th>
+                    <th>Score</th>
+                    <th>Outcome</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for gs in other.games_reversed %}
+                    <tr>
+                        <td>{{ gs.game.date_str }} {{ gs.game.time_str }}</td>
+                        <td>{{ gs.game.season.simple_link|safe }}</td>
+                        <td>{{ gs.game.season_stage }}</td>
+                        <td>{{ gs.score_link|safe }}</td>
+                        <td>{{ gs.outcome }}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% endif %}
+
+{% endfor %}

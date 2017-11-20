@@ -101,6 +101,27 @@ class GameOutcomes:
         else:
             return cls.regular_season_points[outcome]
 
+    @classmethod
+    def was_won(cls, outcome):
+        return outcome in (cls.won, cls.forfeit_for)
+
+    @classmethod
+    def was_drawn(cls, outcome):
+        return outcome in (cls.drawn,)
+
+    @classmethod
+    def was_lost(cls, outcome):
+        return outcome in (cls.lost, cls.forfeit_against)
+
+    @classmethod
+    def normalize(cls, outcome):
+        if cls.was_won(outcome):
+            return GameOutcomes.won
+        elif cls.was_lost(outcome):
+            return GameOutcomes.lost
+        else:
+            return outcome
+
 
 class ScoreStatuses:
     undecided = 0
