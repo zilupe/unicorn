@@ -1,18 +1,14 @@
 <h1 class="display-3 mt-5 mb-3">Franchises</h1>
 
-<table class="table">
+<table class="table data-table-simple">
     <thead>
         <tr>
-            <th>&nbsp;</th>
+            <th data-orderable="false">&nbsp;</th>
             <th>Name</th>
             <th>Status</th>
             <th>Seasons</th>
             <th>Championship Titles</th>
             <th>Games Played</th>
-            <th>Games Won</th>
-            <th>Games Drawn</th>
-            <th>Games Lost</th>
-            <th>Win %</th>
         </tr>
     </thead>
     {% for franchise in franchises_all %}
@@ -29,10 +25,9 @@
             <td class="text-center">{{ franchise.num_seasons }}</td>
             <td class="text-center">{{ franchise.finals_num_winners }}</td>
             <td class="text-center">{{ franchise.num_games }}</td>
-            <td class="text-center">{{ franchise.outcomes['W'] }}</td>
-            <td class="text-center">{{ franchise.outcomes['D'] }}</td>
-            <td class="text-center">{{ franchise.outcomes['L'] }}</td>
-            <td class="text-right">{{ '%0.2f'| format(100.0 * franchise.outcomes['W'] / (franchise.outcomes['W'] + franchise.outcomes['D'] + franchise.outcomes['L'])) }}</td>
         </tr>
     {% endfor %}
 </table>
+
+
+<h3></h3>

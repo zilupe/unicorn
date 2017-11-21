@@ -61,75 +61,90 @@
     </tbody>
 </table>
 
-<h3 class="mt-5 mb-3">All Seasons</h3>
+<h2 class="mt-5 mb-3">Regular Seasons</h2>
 
-<table class="table table-hover table-bordered table-sm">
+<table class="table data-table-simple">
     <thead class="thead-light">
         <tr>
-            <th rowspan="2">Season</th>
-            <th rowspan="2">Team</th>
-            <th colspan="7">Regular Season</th>
-            <th colspan="6">Finals</th>
-            <th colspan="5">Totals</th>
-        </tr>
-        <tr>
-            <th>Record</th>
-            <th>Points</th>
-            <th>Win %</th>
-            <th>For</th>
-            <th>Against</th>
-            <th>+/-</th>
-            <th>Rank</th>
+            <th data-orderable="false">Season</th>
+            <th data-orderable="false">Team Name</th>
 
-            <th>Record</th>
-            <th>Win %</th>
-            <th>For</th>
-            <th>Against</th>
-            <th>+/-</th>
-            <th>Rank</th>
+            <th class="text-center">Record</th>
 
-            <th>Record</th>
-            <th>Win %</th>
-            <th>For</th>
-            <th>Against</th>
-            <th>+/-</th>
+            <th class="text-right">Win %</th>
+
+            <th class="text-right">For</th>
+            <th class="text-right">Against</th>
+            <th class="text-right">+/-</th>
+
+            <th class="text-center">Points</th>
+            <th class="text-center">Rank</th>
         </tr>
     </thead>
     <tbody>
+
         {% for team in franchise.teams_sorted %}
             <tr>
                 <td>{{ team.season.simple_link|safe }}</td>
                 <td>{{ team.simple_link|safe }}</td>
 
-                <td>{{ team.regular_record_str }}</td>
-                <td>{{ '%.2f'| format(team.regular_points_avg) }}</td>
+                <td class="text-center">{{ team.regular_record_str }}</td>
+
                 <td style="text-align: right">{{ '%.1f'| format(team.regular_win_percentage) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.regular_score_for_avg) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.regular_score_against_avg) }}</td>
-                <td style="text-align: right">{{ '%+.1f'| format(team.regular_score_difference_avg) }}</td>
-                <td>{{ team.regular_rank }}</td>
 
+                <td class="text-right">{{ '%.1f'| format(team.regular_score_for_avg) }}</td>
+                <td class="text-right">{{ '%.1f'| format(team.regular_score_against_avg) }}</td>
+                <td class="text-right">{{ '%+.1f'| format(team.regular_score_difference_avg) }}</td>
 
-                <td>{{ team.finals_record_str }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.finals_win_percentage) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.finals_score_for_avg) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.finals_score_against_avg) }}</td>
-                <td style="text-align: right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
-                <td>{{ team.finals_rank }}</td>
-
-                <td>{{ team.total_record_str }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.total_win_percentage) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.total_score_for_avg) }}</td>
-                <td style="text-align: right">{{ '%.1f'| format(team.total_score_against_avg) }}</td>
-                <td style="text-align: right">{{ '%+.1f'| format(team.total_score_difference_avg) }}</td>
+                <td class="text-center">{{ team.regular_points }}</td>
+                <td class="text-center">{{ team.regular_rank }}</td>
             </tr>
         {% endfor %}
+
     </tbody>
 </table>
 
-<h3 class="mt-5 mb-3">Head to Head Summary</h3>
 
-<table class="table table-hover">
+<h2 class="mt-5 mb-3">Play-Offs</h2>
+
+<table class="table data-table-simple">
+    <thead class="thead-light">
+        <tr>
+            <th data-orderable="false">Season</th>
+            <th data-orderable="false">Team Name</th>
+
+            <th class="text-center">Record</th>
+
+            <th class="text-right">For</th>
+            <th class="text-right">Against</th>
+            <th class="text-right">+/-</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for team in franchise.teams_sorted %}
+            <tr>
+                <td>{{ team.season.simple_link|safe }}</td>
+                <td>{{ team.simple_link|safe }}</td>
+
+                <td class="text-center">{{ team.finals_record_str }}</td>
+
+                <td class="text-right">{{ '%.1f'| format(team.finals_score_for_avg) }}</td>
+                <td class="text-right">{{ '%.1f'| format(team.finals_score_against_avg) }}</td>
+                <td class="text-right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
+
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+
+<h2 class="mt-5 mb-3">Head to Head Records</h2>
+
+<h3 class="mt-5 mb-3">Summary</h3>
+
+<table class="table table-hover data-table-simple">
     <thead>
         <tr>
             <th>Franchise</th>
@@ -186,7 +201,16 @@
 
             {% else %}
 
-                <td colspan="10">&nbsp;</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
 
             {% endif %}
         </tr>
@@ -199,7 +223,8 @@
 
     {% if other.total_played > 0 %}
 
-        <h4 class="mt-4 mb-2" id="h2h_vs_{{ other.franchise.id }}">
+        <h4 class="mt-5 mb-3" id="h2h_vs_{{ other.franchise.id }}">
+
             <div class="media">
                 <div class="align-self-center mr-3">
                     {{ other.franchise.logo_html|safe }}

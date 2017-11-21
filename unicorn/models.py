@@ -415,6 +415,10 @@ class Season(Base):
     def finals_champions(self):
         return self.finals_teams_ranked[0]
 
+    @cached_property
+    def date_range_link(self):
+        return '<a href="{}">{}</a>'.format(self.simple_url, self.date_range_str)
+
     # @cached_property
     # def games_by_week(self):
     #     games = collections.OrderedDict()

@@ -16,6 +16,10 @@
     <link rel="stylesheet" media="screen" href="style.css" type="text/css" >
     <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/entypo" type="text/css"/>
 
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+
+
 </head>
 <body>
 
@@ -47,5 +51,34 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
         integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('table.data-table-simple').DataTable({
+        'paging': false,
+        'searching': false,
+        'info': false,
+        'columnDefs': [
+            {
+                'targets': 'no-sort',
+                'orderable': false
+            }
+        ]
+    });
+    $('table.data-table-paginated').DataTable({
+        'searching': false,
+        'columnDefs': [
+            {
+                'targets': 'no-sort',
+                'orderable': false
+            }
+        ]
+    });
+} );
+</script>
+
 </body>
 </html>
