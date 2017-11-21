@@ -10,6 +10,24 @@
 </div>
 
 
+{% if alert_story is not none %}
+
+    <div class="alert alert-danger">
+        {{ alert_story|safe }}
+    </div>
+
+{% endif %}
+
+
+{% if history_story is not none %}
+
+    <h3 class="my-3">Brief History</h3>
+
+    {{ history_story|safe }}
+
+{% endif %}
+
+
 <h3 class="mt-5 mb-3">Summary</h3>
 
 <table class="table">

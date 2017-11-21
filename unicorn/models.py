@@ -1,3 +1,5 @@
+import re
+
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Boolean
 from sqlalchemy.orm import relationship
 
@@ -361,6 +363,10 @@ class Season(Base):
     last_week_date = Column(Date)
 
     teams = relationship('Team', back_populates='season')
+
+    @cached_property
+    def short_name(self):
+        return re.sub('[^a-zA-Z0-9]', '', self.name)
 
     @cached_property
     def num_teams(self):

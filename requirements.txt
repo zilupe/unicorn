@@ -1,5 +1,6 @@
 beautifulsoup4
 Jinja2
+markdown2
 mysql-connector-python  # manually installed
 pytest
 sqlalchemy

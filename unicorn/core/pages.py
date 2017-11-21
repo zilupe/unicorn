@@ -3,6 +3,7 @@ import os.path
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from unicorn import unicorn_root_dir
+from unicorn.core import markup
 
 env = Environment(
     loader=PackageLoader('unicorn', 'templates'),
@@ -13,6 +14,8 @@ env = Environment(
 unicorn_build_dir = os.path.join(unicorn_root_dir, 'build')
 
 identity_func = lambda x: x
+
+stories_dir = os.path.join(unicorn_root_dir, 'unicorn/data')
 
 
 class _AttrDict(dict):
@@ -66,6 +69,18 @@ def generate_pages(
             template_context[item_name] = item
         else:
             template_context.update(item)
+
+        # Check if a custom story exists for the item
+        for story_type in ('alert', 'history'):
+            story_text = None
+            story_filename = os.path.join(
+                stories_dir,
+                '{}_story/{}_{}.md'.format(story_type, item_name, item.id),
+            )
+            if os.path.isfile(story_filename):
+                with open(story_filename) as f:
+                    story_text = markup.process(f.read())
+            template_context['{}_story'.format(story_type)] = story_text
 
         if callable(page_key):
             output_key = page_key(item)
