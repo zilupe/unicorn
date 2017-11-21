@@ -6,8 +6,10 @@ from unicorn.core.apps import current_app
 
 
 def generate_franchise_link(match):
-    franchise_id = int(match.group(1))
-    return current_app.franchises[franchise_id].simple_link
+    d = match.groupdict()
+    franchise_id = int(d['id'])
+    attr = d.get('attr') or 'simple_link'
+    return getattr(current_app.franchises[franchise_id], attr)
 
 
 def generate_team_link(match):
@@ -21,7 +23,7 @@ def generate_team_link(match):
 
 
 link_patterns = [
-    (re.compile(r'\[F:(\d+)\]'), generate_franchise_link),
+    (re.compile(r'\[F:(?P<id>\d+)(\|(?P<attr>[a-zA-Z0-9_]+))?\]'), generate_franchise_link),
     (re.compile(r'\[T:(\d+\.\d+)\]'), generate_team_link),
 ]
 
