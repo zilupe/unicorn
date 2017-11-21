@@ -1,5 +1,5 @@
 from unicorn.core.utils import cached_property
-from unicorn.values import GameOutcomes
+from unicorn.values import GameOutcomes, SeasonStages
 
 
 class InvalidMetricName(Exception):
@@ -8,6 +8,7 @@ class InvalidMetricName(Exception):
 
 class FranchiseHead2HeadStats:
     metrics = {
+        'played': lambda gs: 1,
         'won': lambda gs: 1 if GameOutcomes.was_won(gs.outcome) else 0,
         'drawn': lambda gs: 1 if GameOutcomes.was_drawn(gs.outcome) else 0,
         'lost': lambda gs: 1 if GameOutcomes.was_lost(gs.outcome) else 0,
@@ -34,16 +35,28 @@ class FranchiseHead2HeadStats:
         return all
 
     @property
-    def games_reversed(self):
-        return reversed(self.games)
+    def total_games(self):
+        return self.games
 
     @property
-    def total_played(self):
-        return len(self.games)
+    def regular_games(self):
+        return [gs for gs in self.games if SeasonStages.is_regular(gs.game.season_stage)]
+
+    @property
+    def finals_games(self):
+        return [gs for gs in self.games if SeasonStages.is_finals(gs.game.season_stage)]
 
     @property
     def total_win_percentage(self):
-        return 100.0 * self.total_won_sum / self.total_played
+        return 100.0 * self.total_won_sum / self.total_played_sum
+
+    @property
+    def regular_win_percentage(self):
+        return 100.0 * self.regular_won_sum / self.regular_played_sum
+
+    @property
+    def finals_win_percentage(self):
+        return 100.0 * self.finals_won_sum / self.finals_played_sum
 
     def __getattr__(self, item):
         # prefixes = ('total', 'regular', 'finals')
@@ -59,11 +72,8 @@ class FranchiseHead2HeadStats:
 
         metric_name, suffix = rest.rsplit('_', 1)
 
-        if prefix != 'total':
-            # Others not supported yet
-            raise InvalidMetricName(item)
+        games = getattr(self, '{}_games'.format(prefix))
 
-        games = self.games
         metric_sum = sum(self.metrics[metric_name](gs) for gs in games)
 
         num_games = len(games)
@@ -74,6 +84,10 @@ class FranchiseHead2HeadStats:
             return 1.0 * metric_sum / num_games
         else:
             raise InvalidMetricName(item)
+
+    @property
+    def games_reversed(self):
+        return reversed(self.games)
 
     @property
     def streak(self):

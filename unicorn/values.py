@@ -49,6 +49,14 @@ class SeasonStages:
     def decode_gm_season_stage(cls, stage):
         return cls.gm_season_stages.get(stage, None)
 
+    @classmethod
+    def is_regular(cls, stage):
+        return stage == cls.regular
+
+    @classmethod
+    def is_finals(cls, stage):
+        return stage != cls.regular
+
 
 class GameOutcomes:
     won = 'W'
