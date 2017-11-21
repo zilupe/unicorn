@@ -19,11 +19,22 @@
 </head>
 <body>
 
+{% include "components/navbar.html" %}
+
 <div class="container">
-    {% include "components/navbar.html" %}
 
     {{ main_content|safe }}
+
 </div>
+
+<footer class="footer">
+
+    <div class="container">
+        <p class="text-center font-light-weight">This page was generated on {{ generation_time }}</p>
+    </div>
+
+
+</footer>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->

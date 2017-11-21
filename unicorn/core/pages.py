@@ -1,3 +1,4 @@
+import datetime as dt
 import os.path
 
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -92,6 +93,7 @@ def generate_pages(
 
 def generate_page(template, **context_extras):
     template_obj = env.get_template(template)
+    context_extras['generation_time'] = dt.datetime.utcnow().strftime('%Y-%m-%d %H:%M')
     return template_obj.render(**context_extras)
 
 
