@@ -1,13 +1,17 @@
 import re
 
 import collections
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Boolean
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
+from unicorn.configuration import logging
 from unicorn.core.apps import current_app
 from unicorn.core.utils import cached_property
 from unicorn.db.base import Base
 from unicorn.values import SeasonStages, GameOutcomes
+
+
+log = logging.getLogger(__name__)
 
 
 class Franchise(Base):
@@ -113,9 +117,12 @@ class Franchise(Base):
         data = []
         for s, t in self.teams_by_all_seasons.items():
             if t is None:
-                data.append(max(0, s.num_teams + 1 - ceiling))
+                data.append(0)
+            elif t.finals_rank:
+                data.append(ceiling - t.finals_rank + 1)
             else:
-                data.append(max(0, t.season.num_teams + 1 - (t.finals_rank if t.finals_rank else ceiling)))
+                log.warning('Team {} is missing finals_rank in season {}'.format(t, s))
+                data.append(0)
         return ', '.join(str(d) for d in data)
 
 

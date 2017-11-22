@@ -11,6 +11,7 @@ metadata = MetaData()
 
 class _Base:
     default_order_by = None
+    id = None
 
     @classmethod
     def get_all(cls, order_by=None):
@@ -54,6 +55,9 @@ class _Base:
             return self.name
         else:
             return '{} {}'.format(self.type_name, self.id)
+
+    def __repr__(self):
+        return '<{} id={} {!r}>'.format(self.__class__.__name__, self.id, self.simple_label)
 
 
 Base = declarative_base(metadata=metadata, cls=_Base)
