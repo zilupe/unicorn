@@ -10,56 +10,110 @@
 </div>
 
 
-{% if alert_story is not none %}
+<ul class="nav nav-tabs mt-5" id="franchiseTab" role="tablist">
 
-    <div class="alert alert-danger">
-        {{ alert_story|safe }}
+    <li class="nav-item">
+        <a class="nav-link active" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary"
+           aria-selected="true">Summary</a>
+    </li>
+
+    {% if history_story is not none %}
+        <li class="nav-item">
+            <a class="nav-link" id="brief-history-tab" data-toggle="tab" href="#brief-history" role="tab" aria-controls="brief-history"
+               aria-selected="false">Brief History</a>
+        </li>
+    {% endif %}
+
+    {% if alert_story is not none %}
+
+        <li class="nav-item">
+            <a class="nav-link" id="franchise-alert-tab" data-toggle="tab" href="#franchise-alert" role="tab" aria-controls="franchise-alert"
+               aria-selected="false">Remarks</a>
+        </li>
+
+    {% endif %}
+
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-regular-season-tab" data-toggle="tab" href="#franchise-regular-season" role="tab" aria-controls="franchise-regular-season"
+           aria-selected="false">Regular Season</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" id="head-to-head-tab" data-toggle="tab" href="#head-to-head" role="tab" aria-controls="head-to-head"
+           aria-selected="false">Head to Head Records</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="franchiseTabContent">
+
+    <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+
+        <h3 class="mt-5 mb-3">Summary</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="5">Seasons</th>
+                    <th colspan="3">Games</th>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <th>Championship<br>Titles</th>
+                    <th>Regular Season<br>Winners</th>
+                    <th>First<br>Season</th>
+                    <th>Most Recent<br>Season</th>
+                    <th>Won</th>
+                    <th>Drawn</th>
+                    <th>Lost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ franchise.num_seasons }}</td>
+                    <td>{{ franchise.finals_num_winners }}</td>
+                    <td>{{ franchise.regular_num_winners }}</td>
+                    <td>{{ franchise.teams[0].season.simple_link|safe }}</td>
+                    <td>{{ franchise.teams[-1].season.simple_link|safe }}</td>
+                    <td>{{ franchise.outcomes['W'] }}</td>
+                    <td>{{ franchise.outcomes['D'] }}</td>
+                    <td>{{ franchise.outcomes['L'] }}</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 
-{% endif %}
+    {% if history_story is not none %}
+        <div class="tab-pane fade" id="brief-history" role="tabpanel" aria-labelledby="brief-history-tab">
+
+            <h3 class="mt-5 mb-3">Brief History</h3>
+
+            <div class="py-3">
+
+                {{ history_story|safe }}
+
+            </div>
 
 
-{% if history_story is not none %}
+        </div>
+    {% endif %}
 
-    <h3 class="my-3">Brief History</h3>
+    {% if alert_story is not none %}
 
-    {{ history_story|safe }}
+        <div class="tab-pane fade" id="franchise-alert" role="tabpanel" aria-labelledby="franchise-alert-tab">
 
-{% endif %}
+            <h3 class="mt-5 mb-3">Remarks</h3>
+
+            <div class="alert alert-danger">
+                {{ alert_story|safe }}
+            </div>
+
+        </div>
+
+    {% endif %}
 
 
-<h3 class="mt-5 mb-3">Summary</h3>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th colspan="5">Seasons</th>
-            <th colspan="3">Games</th>
-        </tr>
-        <tr>
-            <th>Total</th>
-            <th>Championship<br>Titles</th>
-            <th>Regular Season<br>Winners</th>
-            <th>First<br>Season</th>
-            <th>Most Recent<br>Season</th>
-            <th>Won</th>
-            <th>Drawn</th>
-            <th>Lost</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{ franchise.num_seasons }}</td>
-            <td>{{ franchise.finals_num_winners }}</td>
-            <td>{{ franchise.regular_num_winners }}</td>
-            <td>{{ franchise.teams[0].season.simple_link|safe }}</td>
-            <td>{{ franchise.teams[-1].season.simple_link|safe }}</td>
-            <td>{{ franchise.outcomes['W'] }}</td>
-            <td>{{ franchise.outcomes['D'] }}</td>
-            <td>{{ franchise.outcomes['L'] }}</td>
-        </tr>
-    </tbody>
-</table>
+</div>
 
 <h2 class="mt-5 mb-3">Regular Seasons</h2>
 
