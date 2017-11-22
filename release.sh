@@ -3,9 +3,10 @@
 s3_bucket="angelstats"
 
 set -e
-set -x
 
 rm -fR ./build/*
+
+set -x
 
 python -m unicorn.recreate_db
 python -m unicorn.v2.go
