@@ -15,7 +15,7 @@ class _Base:
     @classmethod
     def get_all(cls, order_by=None):
         q = Session.query(cls)
-        if order_by:
+        if order_by is not None:
             q = q.order_by(*order_by)
         elif cls.default_order_by is not None:
             q = q.order_by(*cls.default_order_by)

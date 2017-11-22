@@ -358,11 +358,16 @@ class Season(Base):
     __tablename__ = 'seasons'
 
     id = Column(Integer, primary_key=True)
+    number = Column(String(2), nullable=True)
     name = Column(String(50))
     first_week_date = Column(Date)
     last_week_date = Column(Date)
 
     teams = relationship('Team', back_populates='season')
+
+    @property
+    def simple_label(self):
+        return '{} - {}'.format(self.number, self.name).replace(' ', '&nbsp;')
 
     @cached_property
     def short_name(self):
