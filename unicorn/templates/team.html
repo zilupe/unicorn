@@ -108,8 +108,8 @@
     {% for g in team.games %}
         <tr>
             <td>{{ g.game.id }}</td>
-            <td>{{ g.game.starts_at.strftime('%d/%m/%Y') }}</td>
-            <td>{{ g.game.starts_at.strftime('%H:%M') }}</td>
+            <td>{{ g.game.date_str }}</td>
+            <td>{{ g.game.time_str }}</td>
             <td>{{ g.game.season_stage }}</td>
             <td>
                 {{ g.opponent.team.simple_link|safe }}

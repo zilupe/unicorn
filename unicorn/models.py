@@ -278,7 +278,7 @@ class Game(Base):
 
     @cached_property
     def date_str(self):
-        return self.starts_at.strftime('%d/%m/%Y')
+        return self.starts_at.strftime('%Y-%m-%d')
 
     @cached_property
     def time_str(self):
@@ -379,11 +379,11 @@ class Season(Base):
 
     @cached_property
     def first_week_date_str(self):
-        return self.first_week_date.strftime('%d/%m/%Y')
+        return self.first_week_date.strftime('%Y-%m-%d')
 
     @cached_property
     def last_week_date_str(self):
-        return self.last_week_date.strftime('%d/%m/%Y')
+        return self.last_week_date.strftime('%Y-%m-%d')
 
     @property
     def date_range_str(self):
