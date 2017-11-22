@@ -1,0 +1,33 @@
+
+<h3 class="mt-5 mb-3">Summary</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th colspan="5">Seasons</th>
+            <th colspan="3">Games</th>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <th>Championship<br>Titles</th>
+            <th>Regular Season<br>Winners</th>
+            <th>First<br>Season</th>
+            <th>Most Recent<br>Season</th>
+            <th>Won</th>
+            <th>Drawn</th>
+            <th>Lost</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ franchise.num_seasons }}</td>
+            <td>{{ franchise.finals_num_winners }}</td>
+            <td>{{ franchise.regular_num_winners }}</td>
+            <td>{{ franchise.teams[0].season.simple_link|safe }}</td>
+            <td>{{ franchise.teams[-1].season.simple_link|safe }}</td>
+            <td>{{ franchise.outcomes['W'] }}</td>
+            <td>{{ franchise.outcomes['D'] }}</td>
+            <td>{{ franchise.outcomes['L'] }}</td>
+        </tr>
+    </tbody>
+</table>

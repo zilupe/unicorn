@@ -13,443 +13,76 @@
 <ul class="nav nav-tabs mt-5" id="franchiseTab" role="tablist">
 
     <li class="nav-item">
-        <a class="nav-link active" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="summary"
+        <a class="nav-link active" id="franchise-summary-tab" data-toggle="tab" href="#franchise-summary" role="tab" aria-controls="franchise-summary"
            aria-selected="true">Summary</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-regular-seasons-tab" data-toggle="tab" href="#franchise-regular-seasons" role="tab" aria-controls="franchise-regular-seasons"
+           aria-selected="false">Regular Seasons</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-playoffs-tab" data-toggle="tab" href="#franchise-playoffs" role="tab" aria-controls="franchise-playoffs"
+           aria-selected="false">Play-Offs</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-head-to-head-tab" data-toggle="tab" href="#franchise-head-to-head" role="tab" aria-controls="franchise-head-to-head"
+           aria-selected="false">Head to Head</a>
     </li>
 
     {% if history_story is not none %}
         <li class="nav-item">
-            <a class="nav-link" id="brief-history-tab" data-toggle="tab" href="#brief-history" role="tab" aria-controls="brief-history"
+            <a class="nav-link" id="franchise-brief-history-tab" data-toggle="tab" href="#franchise-brief-history" role="tab" aria-controls="franchise-brief-history"
                aria-selected="false">Brief History</a>
         </li>
     {% endif %}
 
     {% if alert_story is not none %}
-
         <li class="nav-item">
             <a class="nav-link" id="franchise-alert-tab" data-toggle="tab" href="#franchise-alert" role="tab" aria-controls="franchise-alert"
-               aria-selected="false">Remarks</a>
+               aria-selected="false"><span class="badge badge-pill badge-danger">Remarks</span></a>
         </li>
-
     {% endif %}
-
-    <li class="nav-item">
-        <a class="nav-link" id="franchise-regular-season-tab" data-toggle="tab" href="#franchise-regular-season" role="tab" aria-controls="franchise-regular-season"
-           aria-selected="false">Regular Season</a>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link" id="head-to-head-tab" data-toggle="tab" href="#head-to-head" role="tab" aria-controls="head-to-head"
-           aria-selected="false">Head to Head Records</a>
-    </li>
 </ul>
 
 <div class="tab-content" id="franchiseTabContent">
 
-    <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+    <div class="tab-pane fade show active" id="franchise-summary" role="tabpanel" aria-labelledby="franchise-summary-tab">
+        {% include "components/franchise_summary.html" %}
+    </div>
 
-        <h3 class="mt-5 mb-3">Summary</h3>
+    <div class="tab-pane fade" id="franchise-regular-seasons" role="tabpanel" aria-labelledby="franchise-regular-seasons-tab">
+        {% include "components/franchise_regular_seasons.html" %}
+    </div>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th colspan="5">Seasons</th>
-                    <th colspan="3">Games</th>
-                </tr>
-                <tr>
-                    <th>Total</th>
-                    <th>Championship<br>Titles</th>
-                    <th>Regular Season<br>Winners</th>
-                    <th>First<br>Season</th>
-                    <th>Most Recent<br>Season</th>
-                    <th>Won</th>
-                    <th>Drawn</th>
-                    <th>Lost</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ franchise.num_seasons }}</td>
-                    <td>{{ franchise.finals_num_winners }}</td>
-                    <td>{{ franchise.regular_num_winners }}</td>
-                    <td>{{ franchise.teams[0].season.simple_link|safe }}</td>
-                    <td>{{ franchise.teams[-1].season.simple_link|safe }}</td>
-                    <td>{{ franchise.outcomes['W'] }}</td>
-                    <td>{{ franchise.outcomes['D'] }}</td>
-                    <td>{{ franchise.outcomes['L'] }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="tab-pane fade" id="franchise-playoffs" role="tabpanel" aria-labelledby="franchise-playoffs-tab">
+        {% include "components/franchise_playoffs.html" %}
+    </div>
 
+    <div class="tab-pane fade" id="franchise-head-to-head" role="tabpanel" aria-labelledby="franchise-head-to-head-tab">
+        {% include "components/franchise_head_to_head.html" %}
     </div>
 
     {% if history_story is not none %}
-        <div class="tab-pane fade" id="brief-history" role="tabpanel" aria-labelledby="brief-history-tab">
-
+        <div class="tab-pane fade" id="franchise-brief-history" role="tabpanel" aria-labelledby="franchise-brief-history-tab">
             <h3 class="mt-5 mb-3">Brief History</h3>
 
             <div class="py-3">
-
                 {{ history_story|safe }}
-
             </div>
-
-
         </div>
     {% endif %}
 
     {% if alert_story is not none %}
-
         <div class="tab-pane fade" id="franchise-alert" role="tabpanel" aria-labelledby="franchise-alert-tab">
-
             <h3 class="mt-5 mb-3">Remarks</h3>
 
-            <div class="alert alert-danger">
+            <div class="py-3">
                 {{ alert_story|safe }}
             </div>
-
         </div>
-
     {% endif %}
-
 
 </div>
-
-<h2 class="mt-5 mb-3">Regular Seasons</h2>
-
-<table class="table data-table-simple">
-    <thead class="thead-light">
-        <tr>
-            <th data-orderable="false">Season</th>
-            <th data-orderable="false">Team Name</th>
-
-            <th class="text-center">Record</th>
-
-            <th class="text-right">Win %</th>
-
-            <th class="text-right">For</th>
-            <th class="text-right">Against</th>
-            <th class="text-right">+/-</th>
-
-            <th class="text-center">Points</th>
-            <th class="text-center">Rank</th>
-        </tr>
-    </thead>
-    <tbody>
-
-        {% for team in franchise.teams_sorted %}
-            <tr>
-                <td>{{ team.season.simple_link|safe }}</td>
-                <td>{{ team.simple_link|safe }}</td>
-
-                <td class="text-center">{{ team.regular_record_str }}</td>
-
-                <td style="text-align: right">{{ '%.1f'| format(team.regular_win_percentage) }}</td>
-
-                <td class="text-right">{{ '%.1f'| format(team.regular_score_for_avg) }}</td>
-                <td class="text-right">{{ '%.1f'| format(team.regular_score_against_avg) }}</td>
-                <td class="text-right">{{ '%+.1f'| format(team.regular_score_difference_avg) }}</td>
-
-                <td class="text-center">{{ team.regular_points }}</td>
-                <td class="text-center">{{ team.regular_rank }}</td>
-            </tr>
-        {% endfor %}
-
-    </tbody>
-</table>
-
-
-<h2 class="mt-5 mb-3">Play-Offs</h2>
-
-<table class="table data-table-simple">
-    <thead class="thead-light">
-        <tr>
-            <th data-orderable="false">Season</th>
-            <th data-orderable="false">Team Name</th>
-
-            <th class="text-center">Record</th>
-
-            <th class="text-right">For</th>
-            <th class="text-right">Against</th>
-            <th class="text-right">+/-</th>
-
-        </tr>
-    </thead>
-    <tbody>
-
-        {% for team in franchise.teams_sorted %}
-            <tr>
-                <td>{{ team.season.simple_link|safe }}</td>
-                <td>{{ team.simple_link|safe }}</td>
-
-                <td class="text-center">{{ team.finals_record_str }}</td>
-
-                <td class="text-right">{{ '%.1f'| format(team.finals_score_for_avg) }}</td>
-                <td class="text-right">{{ '%.1f'| format(team.finals_score_against_avg) }}</td>
-                <td class="text-right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
-
-            </tr>
-        {% endfor %}
-
-    </tbody>
-</table>
-
-<h2 class="mt-5 mb-3">Head to Head Records</h2>
-
-<h3 class="mt-5 mb-3">Overall</h3>
-
-<table class="table table-hover data-table-simple">
-    <thead>
-        <tr>
-            <th>Franchise</th>
-
-            <th class="text-center">Played</th>
-            <th class="text-center">Won</th>
-            <th class="text-center">Drawn</th>
-            <th class="text-center">Lost</th>
-
-            <th class="text-right">Win %</th>
-
-            <th class="text-right">For</th>
-            <th class="text-right">Against</th>
-            <th class="text-right">+/-</th>
-
-            <th>First Game</th>
-            <th>Last Game</th>
-            <th class="text-center">Streak</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for other in franchise.h2h_stats %}
-        <tr>
-            <td>
-                <div class="media">
-                    <div class="align-self-center mr-3">
-                        {{ other.franchise.logo_html|safe }}
-                    </div>
-                    <div class="media-body">
-                        {{ other.franchise.simple_link|safe }}
-                        {{ other.franchise.trophy_list_html|safe }}
-                    </div>
-                </div>
-            </td>
-
-            <td class="text-center">{{ other.total_played_sum }}</td>
-
-            {% if other.total_played_sum > 0 %}
-
-                <td class="text-center">{{ other.total_won_sum }}</td>
-                <td class="text-center">{{ other.total_drawn_sum }}</td>
-                <td class="text-center">{{ other.total_lost_sum }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.total_win_percentage) }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.total_score_for_avg) }}</td>
-                <td class="text-right">{{ '%0.1f'| format(other.total_score_against_avg) }}</td>
-                <td class="text-right">{{ '%+0.1f'| format(other.total_score_difference_avg) }}</td>
-
-                <td>{{ other.games[0].date_link|safe }}</td>
-                <td>{{ other.games[-1].date_link|safe }}</td>
-
-                <td class="text-center"><a href="{{ franchise.simple_url }}#h2h_vs_{{ other.franchise.id }}">{{ other.streak }}</a></td>
-
-            {% else %}
-
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td></td>
-
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td></td>
-                <td></td>
-
-                <td></td>
-
-            {% endif %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<h3 class="mt-5 mb-3">Regular Season</h3>
-
-<table class="table table-hover data-table-simple">
-    <thead>
-        <tr>
-            <th>Franchise</th>
-
-            <th class="text-center">Played</th>
-            <th class="text-center">Won</th>
-            <th class="text-center">Drawn</th>
-            <th class="text-center">Lost</th>
-
-            <th class="text-right">Win %</th>
-
-            <th class="text-right">For</th>
-            <th class="text-right">Against</th>
-            <th class="text-right">+/-</th>
-
-            <th>First Game</th>
-            <th>Last Game</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for other in franchise.h2h_stats %}
-
-        {% if other.regular_played_sum > 0 %}
-            <tr>
-                <td>
-                    <div class="media">
-                        <div class="align-self-center mr-3">
-                            {{ other.franchise.logo_html|safe }}
-                        </div>
-                        <div class="media-body">
-                            {{ other.franchise.simple_link|safe }}
-                            {{ other.franchise.trophy_list_html|safe }}
-                        </div>
-                    </div>
-                </td>
-
-                <td class="text-center">{{ other.regular_played_sum }}</td>
-
-
-                <td class="text-center">{{ other.regular_won_sum }}</td>
-                <td class="text-center">{{ other.regular_drawn_sum }}</td>
-                <td class="text-center">{{ other.regular_lost_sum }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.regular_win_percentage) }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.regular_score_for_avg) }}</td>
-                <td class="text-right">{{ '%0.1f'| format(other.regular_score_against_avg) }}</td>
-                <td class="text-right">{{ '%+0.1f'| format(other.regular_score_difference_avg) }}</td>
-
-                <td>{{ other.games[0].date_link|safe }}</td>
-                <td>{{ other.games[-1].date_link|safe }}</td>
-
-            </tr>
-        {% endif %}
-    {% endfor %}
-    </tbody>
-</table>
-
-
-
-<h3 class="mt-5 mb-3">Play-Offs</h3>
-
-<table class="table table-hover data-table-simple">
-    <thead>
-        <tr>
-            <th>Franchise</th>
-
-            <th class="text-center">Played</th>
-            <th class="text-center">Won</th>
-            <th class="text-center">Drawn</th>
-            <th class="text-center">Lost</th>
-
-            <th class="text-right">Win %</th>
-
-            <th class="text-right">For</th>
-            <th class="text-right">Against</th>
-            <th class="text-right">+/-</th>
-
-            <th>First Game</th>
-            <th>Last Game</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for other in franchise.h2h_stats %}
-
-        {% if other.finals_played_sum > 0 %}
-
-            <tr>
-
-                <td>
-                    <div class="media">
-                        <div class="align-self-center mr-3">
-                            {{ other.franchise.logo_html|safe }}
-                        </div>
-                        <div class="media-body">
-                            {{ other.franchise.simple_link|safe }}
-                            {{ other.franchise.trophy_list_html|safe }}
-                        </div>
-                    </div>
-                </td>
-
-                <td class="text-center">{{ other.finals_played_sum }}</td>
-
-                <td class="text-center">{{ other.finals_won_sum }}</td>
-                <td class="text-center">{{ other.finals_drawn_sum }}</td>
-                <td class="text-center">{{ other.finals_lost_sum }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.finals_win_percentage) }}</td>
-
-                <td class="text-right">{{ '%0.1f'| format(other.finals_score_for_avg) }}</td>
-                <td class="text-right">{{ '%0.1f'| format(other.finals_score_against_avg) }}</td>
-                <td class="text-right">{{ '%+0.1f'| format(other.finals_score_difference_avg) }}</td>
-
-                <td>{{ other.games[0].date_link|safe }}</td>
-                <td>{{ other.games[-1].date_link|safe }}</td>
-
-            </tr>
-
-        {% endif %}
-
-    {% endfor %}
-    </tbody>
-</table>
-
-
-{% for other in franchise.h2h_stats %}
-
-    {% if other.total_played_sum > 0 %}
-
-        <h4 class="mt-5 mb-3" id="h2h_vs_{{ other.franchise.id }}">
-
-            <div class="media">
-                <div class="align-self-center mr-3">
-                    {{ other.franchise.logo_html|safe }}
-                </div>
-                <div class="media-body">
-                    {{ other.franchise.simple_link|safe }}
-                    {{ other.franchise.trophy_list_html|safe }}
-                    Head to Head
-                </div>
-            </div>
-        </h4>
-
-        <table class="table table-hover h2h-stats">
-
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Season</th>
-                    <th>Stage</th>
-                    <th>Score</th>
-                    <th>Outcome</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                {% for gs in other.games_reversed %}
-                    <tr>
-                        <td>{{ gs.game.date_str }} {{ gs.game.time_str }}</td>
-                        <td>{{ gs.game.season.simple_link|safe }}</td>
-                        <td>{{ gs.game.season_stage }}</td>
-                        <td>{{ gs.score_link|safe }}</td>
-                        <td>{{ gs.outcome }}</td>
-                    </tr>
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    {% endif %}
-
-{% endfor %}

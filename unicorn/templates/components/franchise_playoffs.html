@@ -1,0 +1,34 @@
+<h2 class="mt-5 mb-3">Play-Offs</h2>
+
+<table class="table data-table-simple">
+    <thead class="thead-light">
+    <tr>
+        <th data-orderable="false">Season</th>
+        <th data-orderable="false">Team Name</th>
+
+        <th class="text-center">Record</th>
+
+        <th class="text-right">For</th>
+        <th class="text-right">Against</th>
+        <th class="text-right">+/-</th>
+
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for team in franchise.teams_sorted %}
+        <tr>
+            <td>{{ team.season.simple_link|safe }}</td>
+            <td>{{ team.simple_link|safe }}</td>
+
+            <td class="text-center">{{ team.finals_record_str }}</td>
+
+            <td class="text-right">{{ '%.1f'| format(team.finals_score_for_avg) }}</td>
+            <td class="text-right">{{ '%.1f'| format(team.finals_score_against_avg) }}</td>
+            <td class="text-right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
+
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
