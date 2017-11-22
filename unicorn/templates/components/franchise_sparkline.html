@@ -1,0 +1,48 @@
+<canvas class="franchise-performance-chart" id="fpc-{{ franchise.id }}" width="100" height="30"></canvas>
+
+<script type="text/javascript">
+    var ctx = document.getElementById("fpc-{{ franchise.id }}").getContext('2d');
+
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{{ franchise.sparkline_labels }}],
+            datasets: [{ data: [{{ franchise.sparkline_data }}]}]
+        },
+        options: {
+            responsive: false,
+            legend: {
+                display: false
+            },
+            elements: {
+                line: {
+                    borderColor: '{{ franchise.color1 }}',
+                    borderWidth: 1,
+                    backgroundColor: '{{ franchise.color1 }}'
+                },
+                point: {
+                    radius: 0
+                }
+            },
+            tooltips: {
+                enabled: false
+            },
+            scales: {
+                yAxes: [
+                    {
+                        display: false,
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 10
+                        }
+                    }
+                ],
+                xAxes: [
+                    {
+                        display: false
+                    }
+                ]
+            }
+        }
+    });
+</script>

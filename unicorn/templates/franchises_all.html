@@ -9,6 +9,7 @@
             <th>Seasons</th>
             <th>Championship Titles</th>
             <th>Games Played</th>
+            <th data-orderable="false">&nbsp;</th>
         </tr>
     </thead>
     {% for franchise in franchises_all %}
@@ -24,9 +25,8 @@
             <td class="text-center">{{ franchise.num_seasons }}</td>
             <td class="text-center">{{ franchise.finals_num_winners }}</td>
             <td class="text-center">{{ franchise.num_games }}</td>
+
+            <td>{% include "components/franchise_sparkline.html" %}</td>
         </tr>
     {% endfor %}
 </table>
-
-
-<h3></h3>

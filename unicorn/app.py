@@ -5,7 +5,7 @@ import os.path
 from unicorn import unicorn_root_dir
 from unicorn.configuration import logging
 from unicorn.core.apps import App
-from unicorn.models import Franchise, Team
+from unicorn.models import Franchise, Team, Season
 from unicorn.v2.season_page import AttrDict
 
 log = logging.getLogger(__name__)
@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 app_data = AttrDict({
     'franchises': None,
     'franchise_seasons': None,
+    'seasons': None,
     'manual_scores': None,
     'teams': None,
 })
@@ -31,6 +32,12 @@ class UnicornApp(App):
         if app_data.teams is None:
             app_data.teams = {t.id: t for t in Team.get_all()}
         return app_data.teams
+
+    @property
+    def seasons(self):
+        if app_data.seasons is None:
+            app_data.seasons = {t.id: t for t in Season.get_all()}
+        return app_data.seasons
 
     @property
     def franchise_seasons(self):

@@ -1,8 +1,10 @@
 import re
 
+import collections
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Boolean
 from sqlalchemy.orm import relationship
 
+from unicorn.core.apps import current_app
 from unicorn.core.utils import cached_property
 from unicorn.db.base import Base
 from unicorn.values import SeasonStages, GameOutcomes
@@ -38,6 +40,18 @@ class Franchise(Base):
     @cached_property
     def teams_sorted(self):
         return sorted(self.teams, key=lambda t: t.season.first_week_date)
+
+    @cached_property
+    def teams_by_all_seasons(self):
+        teams = collections.OrderedDict()
+
+        for season in current_app.seasons.values():
+            teams[season] = None
+
+        for team in self.teams:
+            teams[team.season] = team
+
+        return teams
 
     @cached_property
     def outcomes(self):
@@ -88,6 +102,21 @@ class Franchise(Base):
                 continue
             stats.append(FranchiseHead2HeadStats(us=self, them=franchise))
         return stats
+
+    @property
+    def sparkline_labels(self):
+        return ', '.join(str(s.number) for s in self.teams_by_all_seasons.keys())
+
+    @property
+    def sparkline_data(self):
+        ceiling = 10
+        data = []
+        for s, t in self.teams_by_all_seasons.items():
+            if t is None:
+                data.append(max(0, s.num_teams + 1 - ceiling))
+            else:
+                data.append(max(0, t.season.num_teams + 1 - (t.finals_rank if t.finals_rank else ceiling)))
+        return ', '.join(str(d) for d in data)
 
 
 Franchise.default_order_by = [Franchise.name.asc(),]
