@@ -1,0 +1,41 @@
+<h3 class="mt-5 mb-3">Regular Season Top 5</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th class="text-center">1st</th>
+            <th class="text-center">2nd</th>
+            <th class="text-center">3th</th>
+            <th class="text-center">4th</th>
+            <th class="text-center">5th</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for season in seasons_all %}
+        {% if season.regular_finished %}
+
+            <tr>
+                <td>
+                    {{ season.simple_link|safe }}<br>
+                    {{ season.last_week_date_str }}
+                </td>
+
+                {% for n in range(5) %}
+                    <td class="text-center">
+                        {% if season.regular_teams_ranked|length >= n+1 %}
+                            {{ season.regular_teams_ranked[n].simple_link|safe }}
+                            <br>
+                            <span class="season-record-str">{{ season.regular_teams_ranked[n].regular_record_str }}</span>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+
+        {% endif %}
+    {% endfor %}
+
+    </tbody>
+
+</table>
