@@ -8,9 +8,11 @@
             <th>ID</th>
             <th>Date</th>
             <th>Time</th>
-            <th class="text-right">Home</th>
-            <th class="text-left">Away</th>
-            <th>Score</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th data-orderable="false">&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -22,9 +24,11 @@
             <td>{{ game.id }}</td>
             <td>{{ game.date_str }}</td>
             <td>{{ game.time_str }}</td>
-            <td class="text-right">{{ game.home_side.team.simple_link|safe }}</td>
-            <td class="text-left">{{ game.away_side.team.simple_link|safe }}</td>
-            <td>{{ game.score_link|safe }}</td>
+            <td class="text-right">{{ game.winner_side.team.simple_link|safe }}</td>
+            <td class="text-center">{{ game.winner_side.score }}</td>
+            <td class="text-center">-</td>
+            <td class="text-center">{{ game.loser_side.score }}</td>
+            <td class="text-left">{{ game.loser_side.team.simple_link|safe }}</td>
         </tr>
     {% endfor %}
 

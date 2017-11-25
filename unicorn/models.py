@@ -329,6 +329,14 @@ class Game(Base):
             '<sup>MS</sup>' if self.score_status > 1 else '',
         )
 
+    @cached_property
+    def winner_side(self):
+        return sorted(self.sides, key=lambda gs: (0 - gs.score, gs.team.name, gs.team.id))[0]
+
+    @cached_property
+    def loser_side(self):
+        return sorted(self.sides, key=lambda gs: (0 - gs.score, gs.team.name, gs.team.id))[-1]
+
 
 Game.default_order_by = [Game.starts_at.asc(),]
 
