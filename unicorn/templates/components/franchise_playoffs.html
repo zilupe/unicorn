@@ -1,10 +1,12 @@
 <h2 class="mt-5 mb-3">Play-Offs</h2>
 
-<table class="table data-table-simple">
+<table class="table table-hover data-table-simple">
     <thead class="thead-light">
     <tr>
         <th>Season</th>
         <th>Team Name</th>
+
+        <th class="text-center">Rank</th>
 
         <th class="text-center">Record</th>
 
@@ -20,6 +22,8 @@
         <tr>
             <td>{{ team.season.simple_link|safe }}</td>
             <td>{{ team.simple_link|safe }}</td>
+
+            <td class="text-center">{{ team.finals_rank }}</td>
 
             <td class="text-center">{{ team.finals_record_str }}</td>
 
