@@ -1,4 +1,5 @@
-from unicorn.core.utils import cached_property
+from cached_property import cached_property
+
 from unicorn.values import GameOutcomes, SeasonStages
 
 

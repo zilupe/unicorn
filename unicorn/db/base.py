@@ -1,8 +1,7 @@
+from cached_property import cached_property
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-from unicorn.core.utils import cached_property
 
 session_factory = sessionmaker()
 Session = scoped_session(session_factory)

@@ -2,7 +2,6 @@ import pytest
 from sqlalchemy import create_engine
 
 from unicorn.app import create_app
-from unicorn.models import Season
 
 
 @pytest.fixture(scope='session')

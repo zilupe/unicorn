@@ -1,12 +1,13 @@
 import re
 
 import collections
+
+from cached_property import cached_property
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
-from unicorn.core.utils import cached_property
 from unicorn.db.base import Base
 from unicorn.values import SeasonStages, GameOutcomes
 
