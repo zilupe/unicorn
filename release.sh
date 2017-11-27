@@ -28,10 +28,14 @@ set -x
 
 dist_files=$dist_dir/*
 
-for f in $dist_files
-do
-    filename=$(basename $f)
-    s3_key="${date_str}/${filename}"
-    aws s3 cp "${dist_dir}/${filename}" "s3://${s3_bucket}/${s3_key}"
-    aws s3api put-object-acl --acl public-read --bucket ${s3_bucket} --key ${s3_key}
-done
+aws s3 cp "${dist_dir}/" "s3://${s3_bucket}/${date_str}/" --recursive
+
+echo "All files copied, please make them public now"
+
+#for f in $dist_files
+#do
+#    filename=$(basename $f)
+#    s3_key="${date_str}/${filename}"
+#    aws s3 cp "${dist_dir}/${filename}" "s3://${s3_bucket}/${s3_key}"
+#    aws s3api put-object-acl --acl public-read --bucket ${s3_bucket} --key ${s3_key}
+#done
