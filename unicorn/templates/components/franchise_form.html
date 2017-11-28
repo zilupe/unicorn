@@ -1,0 +1,29 @@
+<h2 class="mt-5 mb-3">Form</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" colspan="2">Last 5</th>
+            <th class="text-center" colspan="2">Last 15</th>
+            <th class="text-center" colspan="2">2017</th>
+        </tr>
+        <tr>
+            <th class="text-center">Record</th>
+            <th class="text-center">+/-</th>
+            <th class="text-center">Record</th>
+            <th class="text-center">+/-</th>
+            <th class="text-center">Record</th>
+            <th class="text-center">+/-</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="text-center">{{ franchise.last05_record[0] }}-{{ franchise.last05_record[1] }}-{{ franchise.last05_record[2] }}</td>
+            <td class="text-center">{{ '%+0.1f'| format(franchise.last05_points_difference_avg) }}</td>
+            <td class="text-center">{{ franchise.last15_record[0] }}-{{ franchise.last15_record[1] }}-{{ franchise.last15_record[2] }}</td>
+            <td class="text-center">{{ '%+0.1f'| format(franchise.last15_points_difference_avg) }}</td>
+            <td class="text-center">{{ franchise.year2017_record[0] }}-{{ franchise.year2017_record[1] }}-{{ franchise.year2017_record[2] }}</td>
+            <td class="text-center">{{ '%+0.1f'| format(franchise.year2017_points_difference_avg) }}</td>
+        </tr>
+    </tbody>
+</table>

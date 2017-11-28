@@ -17,6 +17,13 @@
            aria-selected="true">Summary</a>
     </li>
 
+    {% if franchise.status == 'active' %}
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-form-tab" data-toggle="tab" href="#franchise-form" role="tab" aria-controls="franchise-form"
+           aria-selected="false">Form</a>
+    </li>
+    {% endif %}
+
     <li class="nav-item">
         <a class="nav-link" id="franchise-regular-seasons-tab" data-toggle="tab" href="#franchise-regular-seasons" role="tab" aria-controls="franchise-regular-seasons"
            aria-selected="false">Regular Seasons</a>
@@ -52,6 +59,12 @@
     <div class="tab-pane fade show active" id="franchise-summary" role="tabpanel" aria-labelledby="franchise-summary-tab">
         {% include "components/franchise_summary.html" %}
     </div>
+
+    {% if franchise.status == 'active' %}
+    <div class="tab-pane fade" id="franchise-form" role="tabpanel" aria-labelledby="franchise-form-tab">
+        {% include "components/franchise_form.html" %}
+    </div>
+    {% endif %}
 
     <div class="tab-pane fade" id="franchise-regular-seasons" role="tabpanel" aria-labelledby="franchise-regular-seasons-tab">
         {% include "components/franchise_regular_seasons.html" %}

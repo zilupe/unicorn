@@ -7,4 +7,3 @@ sqlalchemy
 werkzeug
 
 cached-property
-SQLAlchemy-Wrapper

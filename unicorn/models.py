@@ -2,6 +2,7 @@ import re
 
 import collections
 
+import itertools
 from cached_property import cached_property
 from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
@@ -13,6 +14,22 @@ from unicorn.values import SeasonStages, GameOutcomes
 
 
 log = logging.getLogger(__name__)
+
+
+def compile_game_sides_record(game_sides):
+    return (
+        sum(1 for gs in game_sides if gs.is_won),
+        sum(1 for gs in game_sides if gs.is_drawn),
+        sum(1 for gs in game_sides if gs.is_lost),
+    )
+
+
+def compile_points_difference_avg(game_sides):
+    return (
+        (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in game_sides))
+        /
+        len(game_sides)
+    )
 
 
 class Franchise(Base):
@@ -35,12 +52,91 @@ class Franchise(Base):
         return sum(len(t.games) for t in self.teams)
 
     @cached_property
-    def finals_num_winners(self):
-        return sum(1 for t in self.teams if t.season.finals_finished and t.finals_rank == 1)
+    def regular_record(self):
+        return (
+            sum(t.regular_record[0] for t in self.teams),
+            sum(t.regular_record[1] for t in self.teams),
+            sum(t.regular_record[2] for t in self.teams),
+        )
 
     @cached_property
-    def regular_num_winners(self):
-        return sum(1 for t in self.teams if t.season.regular_finished and t.regular_rank == 1)
+    def finals_record(self):
+        return (
+            sum(t.finals_record[0] for t in self.teams),
+            sum(t.finals_record[1] for t in self.teams),
+            sum(t.finals_record[2] for t in self.teams),
+        )
+
+    @cached_property
+    def total_record(self):
+        return (
+            self.regular_record[0] + self.finals_record[0],
+            self.regular_record[1] + self.finals_record[1],
+            self.regular_record[2] + self.finals_record[2],
+        )
+
+    @property
+    def games(self):
+        for t in self.teams:
+            yield from t.games
+
+    @property
+    def games_reversed(self):
+        yield from sorted(self.games, key=lambda gs: gs.game.starts_at, reverse=True)
+
+    @cached_property
+    def last05_games(self):
+        games = list(itertools.islice(self.games_reversed, 5))
+        return games
+
+    @cached_property
+    def last05_record(self):
+        return compile_game_sides_record(self.last05_games)
+
+    @cached_property
+    def last05_points_difference_avg(self):
+        return compile_points_difference_avg(self.last05_games)
+
+    @cached_property
+    def last15_games(self):
+        games = list(itertools.islice(self.games_reversed, 15))
+        return games
+
+    @cached_property
+    def last15_record(self):
+        return compile_game_sides_record(self.last15_games)
+
+    @cached_property
+    def last15_points_difference_avg(self):
+        return compile_points_difference_avg(self.last15_games)
+
+    @cached_property
+    def year2017_games(self):
+        return [gs for gs in self.games_reversed if gs.game.starts_at.year == 2017]
+
+    @cached_property
+    def year2017_record(self):
+        return compile_game_sides_record(self.year2017_games)
+
+    @cached_property
+    def year2017_points_difference_avg(self):
+        return compile_points_difference_avg(self.year2017_games)
+
+    @cached_property
+    def finals_winners_teams(self):
+        return [t for t in self.teams if t.season.finals_finished and t.finals_rank == 1]
+
+    @cached_property
+    def num_finals_winners_teams(self):
+        return len(self.finals_winners_teams)
+
+    @cached_property
+    def regular_winners_teams(self):
+        return [t for t in self.teams if t.season.regular_finished and t.regular_rank == 1]
+
+    @cached_property
+    def num_regular_winners_teams(self):
+        return len(self.regular_winners_teams)
 
     @cached_property
     def teams_sorted(self):
@@ -57,15 +153,6 @@ class Franchise(Base):
             teams[team.season] = team
 
         return teams
-
-    @cached_property
-    def outcomes(self):
-        # TODO Deprecated
-        outcomes = {GameOutcomes.won: 0, GameOutcomes.lost: 0, GameOutcomes.drawn: 0, GameOutcomes.missing: 0}
-        for t in self.teams:
-            for g in t.games:
-                outcomes[GameOutcomes.to_simple[g.outcome]] += 1
-        return outcomes
 
     @cached_property
     def color1(self):
@@ -93,7 +180,7 @@ class Franchise(Base):
         return '<sup>{}</sup>'.format(
             ' '.join(
                 '<span class="icon trophy">7</span>'
-                for x in range(self.finals_num_winners)
+                for x in range(self.num_finals_winners_teams)
             )
         )
 
@@ -239,11 +326,7 @@ class Team(Base):
 
     @cached_property
     def regular_record(self):
-        return (
-            self.regular_won + self.regular_forfeits_for,
-            self.regular_drawn,
-            self.regular_lost + self.regular_forfeits_against,
-        )
+        return compile_game_sides_record(self.regular_games)
 
     @cached_property
     def regular_record_str(self):
@@ -251,11 +334,7 @@ class Team(Base):
 
     @cached_property
     def finals_record(self):
-        return (
-            sum(1 for gs in self.finals_games if gs.is_won),
-            sum(1 for gs in self.finals_games if gs.is_drawn),  # Finals should not have draws, should they?
-            sum(1 for gs in self.finals_games if gs.is_lost),
-        )
+        return compile_game_sides_record(self.finals_games)
 
     @cached_property
     def finals_record_str(self):
@@ -468,15 +547,6 @@ class Season(Base):
     @cached_property
     def date_range_link(self):
         return '<a href="{}">{}</a>'.format(self.simple_url, self.date_range_str)
-
-    # @cached_property
-    # def games_by_week(self):
-    #     games = collections.OrderedDict()
-    #     for game in self.games:
-    #         if game.date_str not in games:
-    #             games[game.date_str] = []
-    #         games[game.date_str].append(game)
-    #     return games
 
 
 Season.default_order_by = [Season.first_week_date.asc(),]

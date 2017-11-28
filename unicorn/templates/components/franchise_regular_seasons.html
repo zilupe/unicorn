@@ -10,8 +10,6 @@
 
         <th class="text-center">Record</th>
 
-        <th class="text-right">Win %</th>
-
         <th class="text-right">For</th>
         <th class="text-right">Against</th>
         <th class="text-right">+/-</th>
@@ -29,8 +27,6 @@
             <td class="text-center">{{ team.regular_rank }}</td>
 
             <td class="text-center">{{ team.regular_record_str }}</td>
-
-            <td style="text-align: right">{{ '%.1f'| format(team.regular_win_percentage) }}</td>
 
             <td class="text-right">{{ '%.1f'| format(team.regular_score_for_avg) }}</td>
             <td class="text-right">{{ '%.1f'| format(team.regular_score_against_avg) }}</td>
