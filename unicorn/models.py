@@ -213,6 +213,86 @@ class Franchise(Base):
                 data.append(0)
         return ', '.join(str(d) for d in data)
 
+    @cached_property
+    def game_achievements(self):
+        achievements = {
+            'longest_winning_streak': 0,
+            'longest_losing_streak': 0,
+            'num_50plus_scored_games': 0,
+            'num_50plus_conceded_games': 0,
+            'num_20minus_scored_games': 0,
+            'num_20minus_conceded_games': 0,
+        }
+        longest_winning_streak = []
+        longest_losing_streak = []
+        current_streak = []
+
+        def complete_current_streak():
+            if not current_streak:
+                return
+
+            if current_streak[-1].is_won:
+                if len(current_streak) > len(longest_winning_streak):
+                    longest_winning_streak[:] = list(current_streak)
+            else:
+                if len(current_streak) > len(longest_losing_streak):
+                    longest_losing_streak[:] = list(current_streak)
+            achievements['longest_winning_streak'] = len(longest_winning_streak)
+            achievements['longest_losing_streak'] = len(longest_losing_streak)
+            current_streak[:] = []
+
+        for gs in self.games:
+            if gs.score >= 50:
+                achievements['num_50plus_scored_games'] += 1
+            elif gs.score <= 20 and gs.outcome != GameOutcomes.forfeit_against:
+                achievements['num_20minus_scored_games'] += 1
+
+            if gs.opponent.score >= 50:
+                achievements['num_50plus_conceded_games'] += 1
+            elif gs.opponent.score <= 20 and gs.outcome != GameOutcomes.forfeit_for:
+                achievements['num_20minus_conceded_games'] += 1
+
+            if not current_streak:
+                if gs.is_won or gs.is_lost:
+                    current_streak.append(gs)
+                else:
+                    # Ignore draws
+                    pass
+            else:
+                if (gs.is_won and current_streak[-1].is_won) or (gs.is_lost and current_streak[-1].is_lost):
+                    current_streak.append(gs)
+                else:
+                    complete_current_streak()
+                    current_streak.append(gs)
+
+        complete_current_streak()
+
+        return achievements
+
+    @property
+    def longest_winning_streak(self):
+        return self.game_achievements['longest_winning_streak']
+
+    @property
+    def longest_losing_streak(self):
+        return self.game_achievements['longest_losing_streak']
+
+    @property
+    def num_50plus_scored_games(self):
+        return self.game_achievements['num_50plus_scored_games']
+
+    @property
+    def num_50plus_conceded_games(self):
+        return self.game_achievements['num_50plus_conceded_games']
+
+    @property
+    def num_20minus_scored_games(self):
+        return self.game_achievements['num_20minus_scored_games']
+
+    @property
+    def num_20minus_conceded_games(self):
+        return self.game_achievements['num_20minus_conceded_games']
+
 
 Franchise.default_order_by = [Franchise.name.asc(),]
 

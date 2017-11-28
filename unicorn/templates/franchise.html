@@ -39,6 +39,11 @@
            aria-selected="false">Head to Head</a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" id="franchise-achievements-tab" data-toggle="tab" href="#franchise-achievements" role="tab" aria-controls="franchise-achievements"
+           aria-selected="false">Achievements</a>
+    </li>
+
     {% if history_story is not none %}
         <li class="nav-item">
             <a class="nav-link" id="franchise-brief-history-tab" data-toggle="tab" href="#franchise-brief-history" role="tab" aria-controls="franchise-brief-history"
@@ -76,6 +81,10 @@
 
     <div class="tab-pane fade" id="franchise-head-to-head" role="tabpanel" aria-labelledby="franchise-head-to-head-tab">
         {% include "components/franchise_head_to_head.html" %}
+    </div>
+
+    <div class="tab-pane fade" id="franchise-achievements" role="tabpanel" aria-labelledby="franchise-achievements-tab">
+        {% include "components/franchise_achievements.html" %}
     </div>
 
     {% if history_story is not none %}

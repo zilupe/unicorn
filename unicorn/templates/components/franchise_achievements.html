@@ -1,0 +1,49 @@
+<h2 class="mt-5 mb-3">Achievements</h2>
+
+<div class="row">
+    <div class="col">
+
+        <table class="table table-striped">
+            <tr>
+                <th>&nbsp;</th>
+                <th>Games</th>
+            </tr>
+            <tr>
+                <th class="text-right">Longest Winning Streak</th>
+                <td>{{ franchise.longest_winning_streak }}</td>
+            </tr>
+            <tr>
+                <th class="text-right">&ge; 50 points scored</th>
+                <td>{{ franchise.num_50plus_scored_games }}</td>
+            </tr>
+            <tr>
+                <th class="text-right">&le; 20 points conceded</th>
+                <td>{{ franchise.num_20minus_conceded_games }}</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="col">
+
+        <table class="table table-striped">
+            <tr>
+                <th>&nbsp;</th>
+                <th>Games</th>
+            </tr>
+            <tr>
+                <th class="text-right">Longest Losing Streak</th>
+                <td>{{ franchise.longest_losing_streak }}</td>
+            </tr>
+            <tr>
+                <th class="text-right">&ge; 50 points conceded</th>
+                <td>{{ franchise.num_50plus_conceded_games }}</td>
+            </tr>
+            <tr>
+                <th class="text-right">&le; 20 points scored</th>
+                <td>{{ franchise.num_20minus_scored_games }}</td>
+            </tr>
+        </table>
+
+    </div>
+</div>
