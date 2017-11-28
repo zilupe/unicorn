@@ -13,6 +13,7 @@
             <th data-orderable="false">&nbsp;</th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
+            <th>+/-</th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +30,7 @@
             <td class="text-center">-</td>
             <td class="text-center">{{ game.loser_side.score }}</td>
             <td class="text-left">{{ game.loser_side.team.simple_link|safe }}</td>
+            <td>{{ game.plus_minus }}</td>
         </tr>
     {% endfor %}
 

@@ -512,6 +512,10 @@ class Game(Base):
     def loser_side(self):
         return sorted(self.sides, key=lambda gs: (0 - gs.score, gs.team.name, gs.team.id))[-1]
 
+    @property
+    def plus_minus(self):
+        return self.winner_side.score - self.loser_side.score
+
 
 Game.default_order_by = [Game.starts_at.asc(),]
 
