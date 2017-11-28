@@ -70,3 +70,6 @@ def test_winner_side_and_loser_side(db):
     assert f1.num_20minus_scored_games == 2
     assert f1.num_50plus_scored_games == 0
     assert f1.num_50plus_conceded_games == 0
+
+    assert f1.largest_wins[0].plus_minus == 10
+    assert f1.largest_defeats[0].plus_minus == -10

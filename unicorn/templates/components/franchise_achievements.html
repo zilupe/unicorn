@@ -47,3 +47,112 @@
 
     </div>
 </div>
+
+<h3 class="mt-5 mb-3">Points Differentials</h3>
+
+<div class="row">
+
+    <div class="col">
+        <h5 class="my-2">Largest Wins</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.largest_wins %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="col">
+        <h5 class="my-2">Largest Defeats</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.largest_defeats %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+<h3 class="mt-5 mb-3">Offense</h3>
+
+<div class="row">
+
+    <div class="col">
+        <h5 class="my-2">Best Games</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.best_offensive_games %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="col">
+        <h5 class="my-2">Worst Games</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.worst_offensive_games %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+
+<h3 class="mt-5 mb-3">Defense</h3>
+
+<div class="row">
+
+    <div class="col">
+        <h5 class="my-2">Best Games</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.best_defensive_games %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="col">
+        <h5 class="my-2">Worst Games</h5>
+
+        <table class="table table-striped">
+            {% for gs in franchise.worst_defensive_games %}
+                <tr>
+                    <td>{{ gs.game.date_str }}</td>
+                    <td>{{ gs.game.season_stage }}</td>
+                    <td>{{ gs.score_link|safe }}</td>
+                    <td>vs {{ gs.opponent.team.simple_link|safe }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>

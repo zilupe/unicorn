@@ -213,7 +213,7 @@ class Franchise(Base):
                 data.append(0)
         return ', '.join(str(d) for d in data)
 
-    @cached_property
+    @property
     def game_achievements(self):
         achievements = {
             'longest_winning_streak': 0,
@@ -222,6 +222,12 @@ class Franchise(Base):
             'num_50plus_conceded_games': 0,
             'num_20minus_scored_games': 0,
             'num_20minus_conceded_games': 0,
+            'largest_wins': [],
+            'largest_defeats': [],
+            'best_offensive_games': [],
+            'worst_offensive_games': [],
+            'best_defensive_games': [],
+            'worst_defensive_games': [],
         }
         longest_winning_streak = []
         longest_losing_streak = []
@@ -242,15 +248,19 @@ class Franchise(Base):
             current_streak[:] = []
 
         for gs in self.games:
+            # Offensive and Defensive achievements
+
             if gs.score >= 50:
                 achievements['num_50plus_scored_games'] += 1
-            elif gs.score <= 20 and gs.outcome != GameOutcomes.forfeit_against:
+            elif gs.score <= 20 and gs.outcome not in (GameOutcomes.forfeit_against, GameOutcomes.forfeit_for):
                 achievements['num_20minus_scored_games'] += 1
 
             if gs.opponent.score >= 50:
                 achievements['num_50plus_conceded_games'] += 1
-            elif gs.opponent.score <= 20 and gs.outcome != GameOutcomes.forfeit_for:
+            elif gs.opponent.score <= 20 and gs.outcome not in (GameOutcomes.forfeit_against, GameOutcomes.forfeit_for):
                 achievements['num_20minus_conceded_games'] += 1
+
+            # Streaks
 
             if not current_streak:
                 if gs.is_won or gs.is_lost:
@@ -267,31 +277,36 @@ class Franchise(Base):
 
         complete_current_streak()
 
+        by_points_difference = sorted(
+            (gs for gs in self.games if gs.was_played),
+            key=lambda gs: gs.plus_minus
+        )
+        n = min(5, len(by_points_difference))
+        achievements['largest_wins'] = list(gs for gs in reversed(by_points_difference[-n:]) if gs.is_won)
+        achievements['largest_defeats'] = list(gs for gs in by_points_difference[:n] if gs.is_lost)
+
+        by_points_scored = sorted(
+            (gs for gs in self.games if gs.was_played),
+            key=lambda gs: gs.score,
+        )
+        n = min(5, len(by_points_scored))
+        achievements['best_offensive_games'] = list(reversed(by_points_scored[-n:]))
+        achievements['worst_offensive_games'] = by_points_scored[:n]
+
+        by_points_conceded = sorted(
+            (gs for gs in self.games if gs.was_played),
+            key=lambda gs: gs.opponent.score,
+        )
+        achievements['best_defensive_games'] = by_points_conceded[:n]
+        achievements['worst_defensive_games'] = list(reversed(by_points_conceded[-n:]))
+
         return achievements
 
-    @property
-    def longest_winning_streak(self):
-        return self.game_achievements['longest_winning_streak']
-
-    @property
-    def longest_losing_streak(self):
-        return self.game_achievements['longest_losing_streak']
-
-    @property
-    def num_50plus_scored_games(self):
-        return self.game_achievements['num_50plus_scored_games']
-
-    @property
-    def num_50plus_conceded_games(self):
-        return self.game_achievements['num_50plus_conceded_games']
-
-    @property
-    def num_20minus_scored_games(self):
-        return self.game_achievements['num_20minus_scored_games']
-
-    @property
-    def num_20minus_conceded_games(self):
-        return self.game_achievements['num_20minus_conceded_games']
+    def __getattr__(self, item):
+        if not item.startswith('_'):
+            return self.game_achievements[item]
+        else:
+            return super().__getattribute__(item)
 
 
 Franchise.default_order_by = [Franchise.name.asc(),]
@@ -521,6 +536,14 @@ class GameSide(Base):
         return self.score is not None and self.outcome in GameOutcomes.decided
 
     @property
+    def was_played(self):
+        return (
+            self.score is not None
+            and
+            self.outcome not in (GameOutcomes.missing, GameOutcomes.forfeit_for, GameOutcomes.forfeit_against)
+        )
+
+    @property
     def is_won(self):
         return self.is_decided and self.outcome in (GameOutcomes.won, GameOutcomes.forfeit_for)
 
@@ -556,6 +579,13 @@ class GameSide(Base):
             self.game.simple_url,
             self.game.date_str,
         )
+
+    @property
+    def plus_minus(self):
+        if self.score is not None:
+            return self.score - self.opponent.score
+        else:
+            return None
 
 
 class Season(Base):
