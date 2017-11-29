@@ -19,19 +19,20 @@
     <li>Other games played as part of play-off weeks have worth coefficient of 0.04</li>
     <li>Everyone starts at 1000</li>
     <li>After every game one team gains X points, the other loses exactly the same amount.</li>
+    <li><strong>There are bugs in the current calculation/presentation, just look at Halo Hoops best win.</strong></li>
 </ul>
 
-<table class="table table-border data-table-simple">
+<table class="table table-border data-table-simple mt-5">
     <thead>
         <tr>
             <th class="text-center">Rank</th>
             <th>&nbsp;</th>
             <th>Franchise</th>
-            <th class="text-center">Current Ranking</th>
-            <th class="text-center">Best Ranking</th>
-            <th class="text-center">Biggest Win</th>
-            <th class="text-center">Worst Ranking</th>
-            <th class="text-center">Biggest Defeat</th>
+            <th class="text-center">Current Rating</th>
+            <th class="text-center">Best Rating</th>
+            <th class="text-center" data-orderable="false">Best Win</th>
+            <th class="text-center">Worst Rating</th>
+            <th class="text-center" data-orderable="false">Worst Defeat</th>
         </tr>
 
     </thead>
@@ -49,31 +50,43 @@
                 {% endif %}
             </td>
             <td class="table-primary text-center align-middle">
-                <strong>{{ pr.current.int_value }}</strong>
+                <strong style="font-size: x-large;">{{ pr.current.int_value }}</strong>
             </td>
             <td class="table-success text-center align-middle">
-                {{ pr.best_ever.int_value }}
-                {% if pr.best_ever.game %}
+                {{ pr.best_rating.int_value }}
+                {% if pr.best_rating.game %}
                     <br>
                     <small>
-                        <a href="{{ pr.best_ever.game.simple_url }}">{{ pr.best_ever.game.pretty_date_str }}</a>
+                        <a href="{{ pr.best_rating.game.simple_url }}">{{ pr.best_rating.game.pretty_date_str }}</a>
                     </small>
                 {% endif %}
             </td>
             <td class="table-success text-center align-middle">
-                
-            </td>
-            <td class="table-danger text-center align-middle">
-                {{ pr.worst_ever.int_value }}
-                {% if pr.worst_ever.game %}
+                {% if pr.best_game %}
+                    {{ pr.best_game.change_int_value }}
                     <br>
                     <small>
-                        <a href="{{ pr.worst_ever.game.simple_url }}">{{ pr.worst_ever.game.pretty_date_str }}</a>
+                        {{ pr.best_game.game.winner_side.score_link|safe }} vs {{ pr.best_game.game.loser_side.team.simple_link|safe }}
                     </small>
                 {% endif %}
             </td>
             <td class="table-danger text-center align-middle">
-
+                {{ pr.worst_rating.int_value }}
+                {% if pr.worst_rating.game %}
+                    <br>
+                    <small>
+                        <a href="{{ pr.worst_rating.game.simple_url }}">{{ pr.worst_rating.game.pretty_date_str }}</a>
+                    </small>
+                {% endif %}
+            </td>
+            <td class="table-danger text-center align-middle">
+                {% if pr.worst_game %}
+                    {{ pr.worst_game.change_int_value }}
+                    <br>
+                    <small>
+                        {{ pr.worst_game.game.loser_side.score_link|safe }} vs {{ pr.worst_game.game.winner_side.team.simple_link|safe }}
+                    </small>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

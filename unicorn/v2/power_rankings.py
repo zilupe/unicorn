@@ -1,14 +1,13 @@
-import operator
-
 from unicorn.app import run_in_app_context
 from unicorn.core.apps import current_app
 from unicorn.values import SeasonStages
 
 
-class PowerRankingValue:
-    def __init__(self, value, game=None):
+class RatingValue:
+    def __init__(self, value, game=None, change=0):
         self.value = value
         self.game = game
+        self.change = change
 
     def __lt__(self, other):
         return self.value < other.value
@@ -17,13 +16,19 @@ class PowerRankingValue:
     def int_value(self):
         return int(self.value)
 
+    @property
+    def change_int_value(self):
+        return int(self.change)
 
-class FranchisePowerRanking:
-    def __init__(self, franchise, current, best_ever, worst_ever):
+
+class FranchiseRating:
+    def __init__(self, *, franchise, current, best_rating, worst_rating, best_game, worst_game):
         self.franchise = franchise
         self.current = current
-        self.best_ever = best_ever
-        self.worst_ever = worst_ever
+        self.best_rating = best_rating
+        self.worst_rating = worst_rating
+        self.best_game = best_game
+        self.worst_game = worst_game
 
     @property
     def sort_key(self):
@@ -34,7 +39,7 @@ class FranchisePowerRanking:
 
 
 class PowerRankings:
-    initial_ranking = 1000.0
+    initial_rating = 1000.0
 
     game_value = {
         SeasonStages.final1st: 0.08,
@@ -55,10 +60,13 @@ class PowerRankings:
 
         self.franchises = list(franchises)
         self.games = list(games)
-        self.current = {f.id: PowerRankingValue(value=self.initial_ranking) for f in self.franchises}
+        self.current = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
 
-        self.best_ever = {f.id: PowerRankingValue(value=self.initial_ranking) for f in self.franchises}
-        self.worst_ever = {f.id: PowerRankingValue(self.initial_ranking) for f in self.franchises}
+        self.best_rating = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
+        self.worst_rating = {f.id: RatingValue(self.initial_rating) for f in self.franchises}
+
+        self.best_game = {f.id: None for f in self.franchises}
+        self.worst_game = {f.id: None for f in self.franchises}
 
     @staticmethod
     def _get_all_franchises():
@@ -70,7 +78,11 @@ class PowerRankings:
             yield from season.games
 
     def update_current(self, franchise_id, change, game=None):
-        self.current[franchise_id] = PowerRankingValue(value=self.current[franchise_id].value + change, game=game)
+        self.current[franchise_id] = RatingValue(
+            value=self.current[franchise_id].value + change,
+            game=game,
+            change=change,
+        )
 
     def advance(self):
         for g in self.games:
@@ -98,12 +110,18 @@ class PowerRankings:
 
             assert game_value >= 0
 
-            # Register best/worst ever
+            # Register best/worst ever ratings
             for franchise_id in (favourite_franchise_id, underdog_franchise_id):
-                if self.current[franchise_id] > self.best_ever[franchise_id]:
-                    self.best_ever[franchise_id] = self.current[franchise_id]
-                elif self.current[franchise_id] < self.worst_ever[franchise_id]:
-                    self.worst_ever[franchise_id] = self.current[franchise_id]
+                if self.current[franchise_id] > self.best_rating[franchise_id]:
+                    self.best_rating[franchise_id] = self.current[franchise_id]
+                elif self.current[franchise_id] < self.worst_rating[franchise_id]:
+                    self.worst_rating[franchise_id] = self.current[franchise_id]
+
+                if self.best_game[franchise_id] is None or self.current[franchise_id].change > self.best_game[franchise_id].change:
+                    # TODO Should not register ones where the team still loses
+                    self.best_game[franchise_id] = self.current[franchise_id]
+                elif self.worst_game[franchise_id] is None or self.current[franchise_id].change < self.worst_game[franchise_id].change:
+                    self.worst_game[franchise_id] = self.current[franchise_id]
 
             yield g, self.current
 
@@ -115,11 +133,13 @@ class PowerRankings:
         franchises = {f.id: f for f in self.franchises}
         all = []
         for franchise_id, ranking in self.current.items():
-            all.append(FranchisePowerRanking(
+            all.append(FranchiseRating(
                 franchise=franchises[franchise_id],
                 current=ranking,
-                best_ever=self.best_ever[franchise_id],
-                worst_ever=self.worst_ever[franchise_id],
+                best_rating=self.best_rating[franchise_id],
+                worst_rating=self.worst_rating[franchise_id],
+                best_game=self.best_game[franchise_id],
+                worst_game=self.worst_game[franchise_id],
             ))
 
         for i, pr in enumerate(sorted(all, key=lambda pr: pr.sort_key, reverse=True)):
