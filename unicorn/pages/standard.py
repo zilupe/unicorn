@@ -54,6 +54,15 @@ def main():
     # Home page
     write_page('index.html', generate_page_inside_container('home.html'))
 
+    # Power Rankings
+    write_page(
+        'power_rankings.html',
+        generate_page_inside_container(
+            'power_rankings.html',
+            power_rankings=current_app.power_rankings,
+        )
+    )
+
 
 if __name__ == '__main__':
     main()

@@ -2,6 +2,8 @@ import csv
 import functools
 import os.path
 
+from cached_property import cached_property
+
 from unicorn import unicorn_root_dir
 from unicorn.configuration import logging
 from unicorn.core.apps import App
@@ -78,6 +80,13 @@ class UnicornApp(App):
                 return self.franchises[fs['franchise_id']], fs['team_name']
         log.warning('Did not find franchise for season_id={} gm_team_id={}'.format(season_id, gm_team_id))
         return None, None
+
+    @cached_property
+    def power_rankings(self):
+        from unicorn.v2.power_rankings import PowerRankings
+        power_rankings = PowerRankings()
+        power_rankings.calculate()
+        return power_rankings
 
 
 def create_app(**kwargs):

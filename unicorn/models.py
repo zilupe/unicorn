@@ -492,6 +492,10 @@ class Game(Base):
         return self.starts_at.strftime('%Y-%m-%d')
 
     @cached_property
+    def pretty_date_str(self):
+        return self.starts_at.strftime('%d %b %Y')
+
+    @cached_property
     def time_str(self):
         return self.starts_at.strftime('%H:%M')
 
