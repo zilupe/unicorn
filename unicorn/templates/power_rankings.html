@@ -1,26 +1,27 @@
 <h2 class="mt-5 mb-3">Power Rankings</h2>
 
-<p>Power rankings formula is still a work in progress. Current formula:</p>
+<p>Power rankings are based on <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system</a>
+with following tweaks:</p>
 
 <ul>
-    <li>Old wins/losses are never forgotten</li>
-    <li>Points difference does not matter</li>
-    <li>Wins due to forfeits are as valuable as normal wins
-        (this is so that not showing up doesn't save your ranking)
-    </li>
-    <li>The stronger team you beat the more points you get</li>
-    <li>The weaker team you lose to the more points you lose</li>
-    <li>Drawing with a weaker team makes you lose points</li>
-    <li>Drawing with a stronger team makes you win points</li>
-    <li>Regular season games have worth coefficient of 0.05</li>
-    <li>Semi-finals have worth coefficient of 0.07</li>
-    <li>Finals have worth coefficient of 0.08</li>
-    <li>3rd place game has worth coefficient of 0.06</li>
-    <li>Other games played as part of play-off weeks have worth coefficient of 0.04</li>
-    <li>Everyone starts at 1000</li>
-    <li>After every game one team gains X points, the other loses exactly the same amount.</li>
-    <li><strong>There are bugs in the current calculation/presentation, just look at Halo Hoops best win.</strong></li>
+    <li><code>k = 32</code> for regular season games and for 3rd place game.</li>
+    <li><code>k = 34</code> for semi-finals.</li>
+    <li><code>k = 36</code> for the grand final.</li>
+    <li><code>k = 24</code> for all other play-off games</li>
+    <li>If favourite wins an underdog team who has played less than 10 games (recent joiner of the league)
+    then <code>k</code> is decreased by <code>8</code>. This means that a strong team cannot steal many
+    easy points from a new team.</li>
 </ul>
+
+<p>The basic principle of Elo rating system is that when an underdog
+beats a favourite they gain more points than when the favourite beats the underdog.
+Also, when they draw, the underdog gains points whereas the favourite loses.
+<code>k</code> marks the significance of the game on the new rating.</p>
+
+<p>P.S. I might still tweak the <code>k</code> values when I plot these on a diagram an notice someone stealing
+easy points or losing many points perhaps undeservedly. It is subjective. The ratings do not tell which team
+is the strongest this week, they are more of a trend indicator. If for example a team adds a new player that
+changes the dynamics, the rating will be adjusted only after the team has played with all other teams.</p>
 
 <table class="table table-border data-table-simple mt-5">
     <thead>
@@ -62,12 +63,14 @@
                 {% endif %}
             </td>
             <td class="table-success text-center align-middle">
-                {% if pr.best_game %}
-                    {{ pr.best_game.change_int_value }}
-                    <br>
-                    <small>
-                        {{ pr.best_game.game.winner_side.score_link|safe }} vs {{ pr.best_game.game.loser_side.team.simple_link|safe }}
-                    </small>
+                {% if pr.best_game.change_int_value > 0 %}
+                    {% if pr.best_game %}
+                        {{ pr.best_game.change_int_value }}
+                        <br>
+                        <small>
+                            {{ pr.best_game.game.winner_side.score_link|safe }} vs {{ pr.best_game.game.loser_side.team.simple_link|safe }}
+                        </small>
+                    {% endif %}
                 {% endif %}
             </td>
             <td class="table-danger text-center align-middle">

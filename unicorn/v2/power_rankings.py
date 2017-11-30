@@ -1,5 +1,6 @@
 from unicorn.app import run_in_app_context
 from unicorn.core.apps import current_app
+from unicorn.v2 import elo
 from unicorn.values import SeasonStages
 
 
@@ -41,15 +42,14 @@ class FranchiseRating:
 class PowerRankings:
     initial_rating = 1000.0
 
-    game_value = {
-        SeasonStages.final1st: 0.08,
-        SeasonStages.semifinal1: 0.07,
-        SeasonStages.semifinal2: 0.07,
-        SeasonStages.final3rd: 0.06,
-        SeasonStages.regular: 0.05,
+    game_k_values = {
+        SeasonStages.final1st: 36,
+        SeasonStages.semifinal1: 34,
+        SeasonStages.semifinal2: 34,
+        SeasonStages.final3rd: 32,
+        SeasonStages.regular: 32,
+        'other': 24,
     }
-
-    game_value_others = 0.04  # no one seems to care about other games
 
     def __init__(self, franchises=None, games=None):
         if franchises is None:
@@ -60,6 +60,9 @@ class PowerRankings:
 
         self.franchises = list(franchises)
         self.games = list(games)
+
+        self.num_games = {f.id: 0 for f in self.franchises}
+
         self.current = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
 
         self.best_rating = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
@@ -86,29 +89,75 @@ class PowerRankings:
 
     def advance(self):
         for g in self.games:
-            game_value_ratio = self.game_value.get(g.season_stage, self.game_value_others)
+            k = self.game_k_values.get(
+                g.season_stage,
+                self.game_k_values['other'],
+            )
 
             underdog_side, favourite_side = sorted(g.sides, key=lambda gs: self.current[gs.team.franchise_id])
             underdog_franchise_id = underdog_side.team.franchise_id
             favourite_franchise_id = favourite_side.team.franchise_id
 
+            underdog_old_elo = self.current[underdog_franchise_id].value
+            favourite_old_elo = self.current[favourite_franchise_id].value
+
+            underdog_exp = elo.expected(underdog_old_elo, favourite_old_elo)
+            favourite_exp = elo.expected(favourite_old_elo, underdog_old_elo)
+
             if g.winner_side is favourite_side and favourite_side.is_won:
-                game_value = game_value_ratio * self.current[underdog_franchise_id].value
-                self.update_current(favourite_franchise_id, +game_value, g)
-                self.update_current(underdog_franchise_id, -game_value, g)
+
+                if self.num_games[underdog_franchise_id] < 10:
+                    # Decrease value of games when the underdog has recently joined the league
+                    # and a good team is potentially stealing easy rating points.
+                    k -= 8
+
+                favourite_new_elo = elo.elo(
+                    old=favourite_old_elo,
+                    exp=favourite_exp,
+                    score=1.0,
+                    k=k,
+                )
+                underdog_new_elo = elo.elo(
+                    old=underdog_old_elo,
+                    exp=underdog_exp,
+                    score=0.0,
+                    k=k
+                )
+                self.update_current(favourite_franchise_id, favourite_new_elo - favourite_old_elo, g)
+                self.update_current(underdog_franchise_id, underdog_new_elo - underdog_old_elo, g)
+
             elif g.winner_side is underdog_side and underdog_side.is_won:
-                game_value = game_value_ratio * self.current[favourite_franchise_id].value
-                self.update_current(favourite_franchise_id, -game_value, g)
-                self.update_current(underdog_franchise_id, +game_value, g)
+                favourite_new_elo = elo.elo(
+                    old=favourite_old_elo,
+                    exp=favourite_exp,
+                    score=0.0,
+                    k=k,
+                )
+                underdog_new_elo = elo.elo(
+                    old=underdog_old_elo,
+                    exp=underdog_exp,
+                    score=1.0,
+                    k=k,
+                )
+                self.update_current(favourite_franchise_id, favourite_new_elo - favourite_old_elo, g)
+                self.update_current(underdog_franchise_id, underdog_new_elo - underdog_old_elo, g)
+
             else:
                 assert g.winner_side.is_drawn
-                game_value = game_value_ratio * (
-                    self.current[favourite_franchise_id].value - self.current[underdog_franchise_id].value
+                favourite_new_elo = elo.elo(
+                    old=favourite_old_elo,
+                    exp=favourite_exp,
+                    score=0.5,
+                    k=k,
                 )
-                self.update_current(favourite_franchise_id, -game_value, g)
-                self.update_current(underdog_franchise_id, +game_value, g)
-
-            assert game_value >= 0
+                underdog_new_elo = elo.elo(
+                    old=underdog_old_elo,
+                    exp=underdog_exp,
+                    score=0.5,
+                    k=k,
+                )
+                self.update_current(favourite_franchise_id, favourite_new_elo - favourite_old_elo, g)
+                self.update_current(underdog_franchise_id, underdog_new_elo - underdog_old_elo, g)
 
             # Register best/worst ever ratings
             for franchise_id in (favourite_franchise_id, underdog_franchise_id):
@@ -122,6 +171,8 @@ class PowerRankings:
                     self.best_game[franchise_id] = self.current[franchise_id]
                 elif self.worst_game[franchise_id] is None or self.current[franchise_id].change < self.worst_game[franchise_id].change:
                     self.worst_game[franchise_id] = self.current[franchise_id]
+
+                self.num_games[franchise_id] += 1
 
             yield g, self.current
 
