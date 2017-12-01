@@ -1,7 +1,11 @@
+import os.path
+
 from unicorn.app import run_in_app_context
 from unicorn.core.apps import current_app
-from unicorn.core.pages import generate_pages, write_page, generate_page, generate_page_inside_container
+from unicorn.core.pages import generate_pages, write_page, generate_page, generate_page_inside_container, \
+    unicorn_build_dir
 from unicorn.models import Season, Team, Game, Franchise
+from unicorn.v2.power_rankings import PowerRankings
 
 
 @run_in_app_context
@@ -55,6 +59,23 @@ def main():
     write_page('index.html', generate_page_inside_container('home.html'))
 
     # Power Rankings
+
+    # CSV file for Excel investigations
+    columns = ['Time']
+    columns.extend(f.name for f in current_app.franchises.values())
+
+    import csv
+    with open(os.path.join(unicorn_build_dir, 'rankings.csv'), 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(columns)
+
+        pr = PowerRankings()
+        for game, current in pr.advance():
+            row = [game.starts_at.strftime('%Y-%m-%d %H:%M:%S')]
+            row.extend(current[f_id].int_value for f_id in current_app.franchises.keys())
+            writer.writerow(row)
+
+    # Actual HTML page
     write_page(
         'power_rankings.html',
         generate_page_inside_container(
