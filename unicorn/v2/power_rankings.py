@@ -63,6 +63,8 @@ class PowerRankings:
 
         self.num_games = {f.id: 0 for f in self.franchises}
 
+        # TODO Set to None until the franchise actually starts playing.
+        # TODO Easy to detect with num_games
         self.current = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
 
         self.best_rating = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
@@ -70,6 +72,8 @@ class PowerRankings:
 
         self.best_game = {f.id: None for f in self.franchises}
         self.worst_game = {f.id: None for f in self.franchises}
+
+        self.change_log = {f.id: [] for f in self.franchises}
 
     @staticmethod
     def _get_all_franchises():
@@ -173,6 +177,8 @@ class PowerRankings:
                     self.worst_game[franchise_id] = self.current[franchise_id]
 
                 self.num_games[franchise_id] += 1
+
+                self.change_log[franchise_id].append((g, self.current[franchise_id].int_value))
 
             yield g, self.current
 

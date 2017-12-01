@@ -64,16 +64,37 @@ def main():
     columns = ['Time']
     columns.extend(f.name for f in current_app.franchises.values())
 
-    import csv
-    with open(os.path.join(unicorn_build_dir, 'rankings.csv'), 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(columns)
+    # import csv
+    # with open(os.path.join(unicorn_build_dir, 'power_rankings.csv'), 'w') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(columns)
+    #
+    #     pr = PowerRankings()
+    #     for game, current in pr.advance():
+    #         row = [game.starts_at.strftime('%Y-%m-%d %H:%M:%S')]
+    #         row.extend(current[f_id].int_value for f_id in current_app.franchises.keys())
+    #         writer.writerow(row)
 
-        pr = PowerRankings()
-        for game, current in pr.advance():
-            row = [game.starts_at.strftime('%Y-%m-%d %H:%M:%S')]
-            row.extend(current[f_id].int_value for f_id in current_app.franchises.keys())
-            writer.writerow(row)
+    # JSON file for charts on site
+    power_rankings_for_json = []
+    for f_id, f in current_app.franchises.items():
+        power_rankings_for_json.append({
+            'label': f.name,
+            'data': [{'x': game.starts_at.strftime('%Y-%m-%d'), 'y': rating} for game, rating in current_app.power_rankings.change_log[f_id]],
+            'type': 'line',
+            'pointRadius': 1,
+            'fill': False,
+            'lineTension': 0,
+            'borderWidth': 1,
+            'borderColor': f.color2,
+            'backgroundColor': f.color2,
+            'pointBorderColor': f.color1,
+        })
+    import json
+    with open(os.path.join(unicorn_build_dir, 'power_rankings.js'), 'w') as f:
+        f.write('power_rankings = ')
+        f.write(json.dumps(power_rankings_for_json, sort_keys=True, indent=4))
+        f.write(';\n')
 
     # Actual HTML page
     write_page(

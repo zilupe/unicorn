@@ -1,3 +1,5 @@
+<script type="text/javascript" src="power_rankings.js"></script>
+
 <h2 class="mt-5 mb-3">Power Rankings</h2>
 
 <p>Power rankings are based on <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system</a>
@@ -17,6 +19,46 @@ with following tweaks:</p>
 beats a favourite they gain more points than when the favourite beats the underdog.
 Also, when they draw, the underdog gains points whereas the favourite loses.
 <code>k</code> marks the significance of the game on the new rating.</p>
+
+<canvas id="power-rankings-chart"></canvas>
+
+<script>
+var ctx = document.getElementById("power-rankings-chart").getContext("2d");
+ctx.canvas.width = 1000;
+ctx.canvas.height = 300;
+var cfg = {
+    type: 'bar',
+    data: {
+        datasets: power_rankings
+    },
+    options: {
+        legend: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                type: 'time',
+                distribution: 'series',
+                ticks: {
+                    source: 'labels'
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 600,
+                    suggestedMax: 1300
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Rating'
+                }
+            }]
+        }
+    }
+};
+var chart = new Chart(ctx, cfg);
+</script>
+
 
 <table class="table table-border data-table-simple mt-5">
     <thead>
