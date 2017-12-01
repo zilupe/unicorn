@@ -43,12 +43,12 @@ class PowerRankings:
     initial_rating = 1000.0
 
     game_k_values = {
-        SeasonStages.final1st: 36,
-        SeasonStages.semifinal1: 34,
-        SeasonStages.semifinal2: 34,
-        SeasonStages.final3rd: 32,
+        SeasonStages.final1st: 40,
+        SeasonStages.semifinal1: 36,
+        SeasonStages.semifinal2: 36,
+        SeasonStages.final3rd: 34,
         SeasonStages.regular: 32,
-        'other': 24,
+        'other': 28,
     }
 
     def __init__(self, franchises=None, games=None):
@@ -104,13 +104,13 @@ class PowerRankings:
             underdog_exp = elo.expected(underdog_old_elo, favourite_old_elo)
             favourite_exp = elo.expected(favourite_old_elo, underdog_old_elo)
 
+            underdog_is_recent_joiner = self.num_games[underdog_franchise_id] < 10
+            favourite_is_recent_joiner = self.num_games[favourite_franchise_id] < 10
+            if underdog_is_recent_joiner != favourite_is_recent_joiner:
+                # If exactly one of the teams is a recent joiner, make the game more influential.
+                k += 8
+
             if g.winner_side is favourite_side and favourite_side.is_won:
-
-                if self.num_games[underdog_franchise_id] < 10:
-                    # Decrease value of games when the underdog has recently joined the league
-                    # and a good team is potentially stealing easy rating points.
-                    k -= 8
-
                 favourite_new_elo = elo.elo(
                     old=favourite_old_elo,
                     exp=favourite_exp,
