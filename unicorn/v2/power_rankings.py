@@ -30,6 +30,12 @@ class RatingValue:
             return self._sort_value
         return self.value
 
+    def __str__(self):
+        return str(self.value)
+
+    def __repr__(self):
+        return '<{} {}>'.format(self.__class__.__name__, self.value)
+
 
 class FranchiseRating:
     def __init__(self, *, franchise, current, best_rating, worst_rating, best_game, worst_game, weeks_on_top):
@@ -70,48 +76,13 @@ class PowerRankings:
 
         self.franchises = list(franchises)
         self.games = list(games)
-
         self.num_games = {f.id: 0 for f in self.franchises}
-
-        # TODO Set to None until the franchise actually starts playing.
-        # TODO Easy to detect with num_games
         self.current = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
-
-        # Set later joiners fair initial rating
-
-        # Pentonville Pacers left with 976, so 24 points redistributable
-        self.current[5].value = 1008  # Ocelots
-        self.current[6].value = 1008  # Rockets
-        self.current[7].value = 1008  # Islington Devils
-
-        # Islington Devils left with 919, so 81 points distributable
-        self.current[8].value = 1041  # Shoreditch Shooters
-        self.current[9].value = 1040  # N1 Jam
-
-        # N1 Jam left with 951
-        # Shoreditch Shooters left with 993
-        # which leaves 49 + 7 = 56 to distribute among 3 franchises
-        self.current[10].value = 1018  # Lost Angels
-        self.current[11].value = 1019  # Burritos
-        self.current[12].value = 1019  # Old OS Ocelots
-
-        # Supernova left with 1162, so must remove 162 from Markit
-        self.current[13].value = 838  # Markit
-
-        # Old OS Ocelots left with 916 so 84 points to RELOADED
-        self.current[14].value = 1084  # RELOADED
-
-        self.current[15].value = 1000  # Alley-Oops
-        self.current[16].value = 1000  # Halo Hoops
-
         self.best_rating = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
         self.worst_rating = {f.id: RatingValue(self.initial_rating) for f in self.franchises}
-
         self.best_game = {f.id: None for f in self.franchises}
         self.worst_game = {f.id: None for f in self.franchises}
-
         self.change_log = {f.id: [] for f in self.franchises}
-
         self.weekly_leaders = collections.OrderedDict()
 
     @staticmethod
@@ -130,12 +101,43 @@ class PowerRankings:
             change=change,
         )
 
+    def on_season_change(self, last_season, next_season):
+        # Reset current score for teams which have become inactive
+        # Calculate rating for new joining teams
+        joining_first_time = []
+        leaving_last_time = []
+        for f in self.franchises:
+            if f.is_long_term_active_on(last_season.first_week_date) and not f.is_long_term_active_on(next_season.first_week_date):
+                leaving_last_time.append(f)
+
+            if not f.is_long_term_active_on(last_season.first_week_date) and f.is_long_term_active_on(next_season.first_week_date):
+                joining_first_time.append(f)
+
+        if leaving_last_time or joining_first_time:
+            remaining = [
+                f for f in self.franchises
+                if
+                f not in leaving_last_time
+                and f not in joining_first_time
+                and f.is_long_term_active_on(next_season.first_week_date)
+            ]
+
+            delta_leaving = sum(self.current[f.id].value - self.initial_rating for f in leaving_last_time)
+            delta = delta_leaving / (len(remaining) + len(joining_first_time))
+
+            for f in joining_first_time:
+                self.current[f.id].value += delta
+            for f in remaining:
+                self.current[f.id].value += delta
+
+        for f in leaving_last_time:
+            self.update_current(f.id, change=-self.current[f.id].value)
+
     def advance(self):
-        for g in self.games:
-            if g.date_str > '2015-08-27':
-                # Forget Supernova after that date
-                # TODO clean this up differently
-                self.current[1]._sort_value = 0
+        for i, g in enumerate(self.games):
+            if i > 0:
+                if self.games[i - 1].season != g.season:
+                    self.on_season_change(last_season=self.games[i - 1].season, next_season=g.season)
 
             k = self.game_k_values.get(
                 g.season_stage,
@@ -154,7 +156,8 @@ class PowerRankings:
 
             underdog_is_recent_joiner = self.num_games[underdog_franchise_id] < 10
             favourite_is_recent_joiner = self.num_games[favourite_franchise_id] < 10
-            if underdog_is_recent_joiner != favourite_is_recent_joiner:
+
+            if underdog_is_recent_joiner or favourite_is_recent_joiner:
                 # If exactly one of the teams is a recent joiner, make the game more influential.
                 k += 8
 
@@ -254,7 +257,8 @@ class PowerRankings:
 def main():
     rankings = PowerRankings()
     for i, (game, current) in enumerate(rankings.advance()):
-        print(i, current)
+        # print(i, current)
+        pass
 
 
 if __name__ == '__main__':

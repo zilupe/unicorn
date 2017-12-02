@@ -1,3 +1,4 @@
+import datetime as dt
 import re
 
 import collections
@@ -42,6 +43,22 @@ class Franchise(Base):
     colors = Column(String(255))
 
     teams = relationship('Team', back_populates='franchise')
+
+    def is_active_on(self, date):
+        d1 = dt.timedelta(days=1)
+        return any(s.first_week_date - d1 < date < s.last_week_date + d1 for s in self.seasons)
+
+    def is_long_term_active_on(self, date):
+        d1 = dt.timedelta(days=1)
+        return (
+            any(date > s.first_week_date - d1 for s in self.seasons)
+            and
+            any(date < s.last_week_date + d1 for s in self.seasons)
+        )
+
+    @cached_property
+    def seasons(self):
+        return list(sorted((t.season for t in self.teams), key=lambda s: s.first_week_date))
 
     @cached_property
     def num_seasons(self):

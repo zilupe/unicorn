@@ -6,17 +6,21 @@
 with following tweaks:</p>
 
 <ul>
-    <li><code>k = 40</code> for the grand final.</li>
+    <li><code>k = 42</code> for the grand final.</li>
     <li><code>k = 36</code> for semi-finals.</li>
     <li><code>k = 34</code> for 3rd place game.</li>
     <li><code>k = 32</code> for regular season games.</li>
     <li><code>k = 28</code> for other play-off games.</li>
-    <li>If exactly one franchise of the two has played less than 10 games then <code>k</code> is increased
+    <li>If at least one franchise of the two has played less than 10 games then <code>k</code> is increased
     by <code>8</code>.</li>
+    <li>When a franchise leaves the league, its offset from the initial rating (<code>1000</code>) is
+    evenly distributed among the remaining franchises and the joining ones. This is to ensure that the
+    league average remains <code>1000</code>.</li>
 </ul>
 
 <p>The basic principle of Elo rating system is that when an underdog
-beats a favourite they gain more points than when the favourite beats the underdog.
+beats a favourite they gain more points than what the favourite would gain
+if they had beaten the underdog.
 Also, when they draw, the underdog gains points whereas the favourite loses.
 <code>k</code> marks the significance of the game on the new rating.</p>
 
