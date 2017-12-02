@@ -23,6 +23,7 @@ set +x
 
 mv ./build/*.html ${dist_dir}/
 mv ./build/*.css ${dist_dir}/
+mv ./build/*.js ${dist_dir}/
 
 set -x
 
