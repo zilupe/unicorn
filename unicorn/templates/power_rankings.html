@@ -71,6 +71,7 @@ var chart = new Chart(ctx, cfg);
             <th class="text-center" data-orderable="false">Best Win</th>
             <th class="text-center">Worst Rating</th>
             <th class="text-center" data-orderable="false">Worst Defeat</th>
+            <th class="text-center">Weeks on Top</th>
         </tr>
 
     </thead>
@@ -127,6 +128,9 @@ var chart = new Chart(ctx, cfg);
                         {{ pr.worst_game.game.loser_side.score_link|safe }} vs {{ pr.worst_game.game.winner_side.team.simple_link|safe }}
                     </small>
                 {% endif %}
+            </td>
+            <td class="table-success text-center align-middle">
+                {{ pr.weeks_on_top }}
             </td>
         </tr>
     {% endfor %}

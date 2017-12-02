@@ -1,3 +1,5 @@
+import collections
+
 from unicorn.app import run_in_app_context
 from unicorn.core.apps import current_app
 from unicorn.v2 import elo
@@ -5,10 +7,11 @@ from unicorn.values import SeasonStages
 
 
 class RatingValue:
-    def __init__(self, value, game=None, change=0):
+    def __init__(self, value, game=None, change=0, sort_value=None):
         self.value = value
         self.game = game
         self.change = change
+        self._sort_value = sort_value
 
     def __lt__(self, other):
         return self.value < other.value
@@ -21,15 +24,22 @@ class RatingValue:
     def change_int_value(self):
         return int(self.change)
 
+    @property
+    def sort_value(self):
+        if self._sort_value is not None:
+            return self._sort_value
+        return self.value
+
 
 class FranchiseRating:
-    def __init__(self, *, franchise, current, best_rating, worst_rating, best_game, worst_game):
+    def __init__(self, *, franchise, current, best_rating, worst_rating, best_game, worst_game, weeks_on_top):
         self.franchise = franchise
         self.current = current
         self.best_rating = best_rating
         self.worst_rating = worst_rating
         self.best_game = best_game
         self.worst_game = worst_game
+        self.weeks_on_top = weeks_on_top
 
     @property
     def sort_key(self):
@@ -43,7 +53,7 @@ class PowerRankings:
     initial_rating = 1000.0
 
     game_k_values = {
-        SeasonStages.final1st: 40,
+        SeasonStages.final1st: 42,
         SeasonStages.semifinal1: 36,
         SeasonStages.semifinal2: 36,
         SeasonStages.final3rd: 34,
@@ -67,6 +77,33 @@ class PowerRankings:
         # TODO Easy to detect with num_games
         self.current = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
 
+        # Set later joiners fair initial rating
+
+        # Pentonville Pacers left with 976, so 24 points redistributable
+        self.current[5].value = 1008  # Ocelots
+        self.current[6].value = 1008  # Rockets
+        self.current[7].value = 1008  # Islington Devils
+
+        # Islington Devils left with 919, so 81 points distributable
+        self.current[8].value = 1041  # Shoreditch Shooters
+        self.current[9].value = 1040  # N1 Jam
+
+        # N1 Jam left with 951
+        # Shoreditch Shooters left with 993
+        # which leaves 49 + 7 = 56 to distribute among 3 franchises
+        self.current[10].value = 1018  # Lost Angels
+        self.current[11].value = 1019  # Burritos
+        self.current[12].value = 1019  # Old OS Ocelots
+
+        # Supernova left with 1162, so must remove 162 from Markit
+        self.current[13].value = 838  # Markit
+
+        # Old OS Ocelots left with 916 so 84 points to RELOADED
+        self.current[14].value = 1084  # RELOADED
+
+        self.current[15].value = 1000  # Alley-Oops
+        self.current[16].value = 1000  # Halo Hoops
+
         self.best_rating = {f.id: RatingValue(value=self.initial_rating) for f in self.franchises}
         self.worst_rating = {f.id: RatingValue(self.initial_rating) for f in self.franchises}
 
@@ -74,6 +111,8 @@ class PowerRankings:
         self.worst_game = {f.id: None for f in self.franchises}
 
         self.change_log = {f.id: [] for f in self.franchises}
+
+        self.weekly_leaders = collections.OrderedDict()
 
     @staticmethod
     def _get_all_franchises():
@@ -93,6 +132,11 @@ class PowerRankings:
 
     def advance(self):
         for g in self.games:
+            if g.date_str > '2015-08-27':
+                # Forget Supernova after that date
+                # TODO clean this up differently
+                self.current[1]._sort_value = 0
+
             k = self.game_k_values.get(
                 g.season_stage,
                 self.game_k_values['other'],
@@ -180,6 +224,9 @@ class PowerRankings:
 
                 self.change_log[franchise_id].append((g, self.current[franchise_id].int_value))
 
+            # Register weekly leader
+            self.weekly_leaders[g.date_str] = sorted(self.franchises, key=lambda f: self.current[f.id].sort_value, reverse=True)[0].id
+
             yield g, self.current
 
     def calculate(self):
@@ -197,6 +244,7 @@ class PowerRankings:
                 worst_rating=self.worst_rating[franchise_id],
                 best_game=self.best_game[franchise_id],
                 worst_game=self.worst_game[franchise_id],
+                weeks_on_top=sum(1 for leader in self.weekly_leaders.values() if leader == franchise_id),
             ))
 
         for i, pr in enumerate(sorted(all, key=lambda pr: pr.sort_key, reverse=True)):

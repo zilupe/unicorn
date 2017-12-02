@@ -85,7 +85,7 @@ def main():
             'pointRadius': 1,
             'fill': False,
             'lineTension': 0,
-            'borderWidth': 1,
+            'borderWidth': 2,
             'borderColor': f.color2,
             'backgroundColor': f.color2,
             'pointBorderColor': f.color1,
