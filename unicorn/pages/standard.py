@@ -5,7 +5,7 @@ from unicorn.core.apps import current_app
 from unicorn.core.pages import generate_pages, write_page, generate_page, generate_page_inside_container, \
     unicorn_build_dir
 from unicorn.models import Season, Team, Game, Franchise
-from unicorn.v2.power_rankings import PowerRankings
+from unicorn.v2.team_ratings import TeamRatings
 
 
 @run_in_app_context
@@ -58,29 +58,29 @@ def main():
     # Home page
     write_page('index.html', generate_page_inside_container('home.html'))
 
-    # Power Rankings
+    # Team Ratings
 
     # CSV file for Excel investigations
     columns = ['Time']
     columns.extend(f.name for f in current_app.franchises.values())
 
     # import csv
-    # with open(os.path.join(unicorn_build_dir, 'power_rankings.csv'), 'w') as f:
+    # with open(os.path.join(unicorn_build_dir, 'team_ratings.csv'), 'w') as f:
     #     writer = csv.writer(f)
     #     writer.writerow(columns)
     #
-    #     pr = PowerRankings()
+    #     pr = TeamRatings()
     #     for game, current in pr.advance():
     #         row = [game.starts_at.strftime('%Y-%m-%d %H:%M:%S')]
     #         row.extend(current[f_id].int_value for f_id in current_app.franchises.keys())
     #         writer.writerow(row)
 
     # JSON file for charts on site
-    power_rankings_for_json = []
+    team_ratings_for_json = []
     for f_id, f in current_app.franchises.items():
-        power_rankings_for_json.append({
+        team_ratings_for_json.append({
             'label': f.name,
-            'data': [{'x': game.starts_at.strftime('%Y-%m-%d'), 'y': rating} for game, rating in current_app.power_rankings.change_log[f_id]],
+            'data': [{'x': game.starts_at.strftime('%Y-%m-%d'), 'y': rating} for game, rating in current_app.team_ratings.change_log[f_id]],
             'type': 'line',
             'pointRadius': 1,
             'fill': False,
@@ -91,17 +91,17 @@ def main():
             'pointBorderColor': f.color1,
         })
     import json
-    with open(os.path.join(unicorn_build_dir, 'power_rankings.js'), 'w') as f:
-        f.write('power_rankings = ')
-        f.write(json.dumps(power_rankings_for_json, sort_keys=True, indent=4))
+    with open(os.path.join(unicorn_build_dir, 'team_ratings.js'), 'w') as f:
+        f.write('team_ratings = ')
+        f.write(json.dumps(team_ratings_for_json, sort_keys=True, indent=4))
         f.write(';\n')
 
     # Actual HTML page
     write_page(
-        'power_rankings.html',
+        'team_ratings.html',
         generate_page_inside_container(
-            'power_rankings.html',
-            power_rankings=current_app.power_rankings,
+            'team_ratings.html',
+            team_ratings=current_app.team_ratings,
         )
     )
 

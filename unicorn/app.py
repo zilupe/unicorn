@@ -82,11 +82,11 @@ class UnicornApp(App):
         return None, None
 
     @cached_property
-    def power_rankings(self):
-        from unicorn.v2.power_rankings import PowerRankings
-        power_rankings = PowerRankings()
-        power_rankings.calculate()
-        return power_rankings
+    def team_ratings(self):
+        from unicorn.v2.team_ratings import TeamRatings
+        team_ratings = TeamRatings()
+        team_ratings.calculate()
+        return team_ratings
 
 
 def create_app(**kwargs):

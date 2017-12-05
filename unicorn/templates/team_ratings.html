@@ -1,8 +1,8 @@
-<script type="text/javascript" src="power_rankings.js"></script>
+<script type="text/javascript" src="team_ratings.js"></script>
 
-<h2 class="mt-5 mb-3">Power Rankings</h2>
+<h2 class="mt-5 mb-3">Team Ratings</h2>
 
-<p>Power rankings are based on <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system</a>
+<p>Team ratings are based on <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system</a>
 with following tweaks:</p>
 
 <ul>
@@ -24,16 +24,16 @@ if they had beaten the underdog.
 Also, when they draw, the underdog gains points whereas the favourite loses.
 <code>k</code> marks the significance of the game on the new rating.</p>
 
-<canvas id="power-rankings-chart"></canvas>
+<canvas id="team-ratings-chart"></canvas>
 
 <script>
-var ctx = document.getElementById("power-rankings-chart").getContext("2d");
+var ctx = document.getElementById("team-ratings-chart").getContext("2d");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 300;
 var cfg = {
     type: 'bar',
     data: {
-        datasets: power_rankings
+        datasets: team_ratings
     },
     options: {
         legend: {
@@ -80,7 +80,7 @@ var chart = new Chart(ctx, cfg);
 
     </thead>
     <tbody>
-    {% for rank, pr in power_rankings %}
+    {% for rank, pr in team_ratings %}
         <tr>
             <th class="text-center align-middle">{{ rank }}</th>
             <td class="align-middle text-center">

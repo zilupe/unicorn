@@ -55,7 +55,7 @@ class FranchiseRating:
         )
 
 
-class PowerRankings:
+class TeamRatings:
     initial_rating = 1000.0
 
     game_k_values = {
@@ -239,10 +239,10 @@ class PowerRankings:
     def __iter__(self):
         franchises = {f.id: f for f in self.franchises}
         all = []
-        for franchise_id, ranking in self.current.items():
+        for franchise_id, rating in self.current.items():
             all.append(FranchiseRating(
                 franchise=franchises[franchise_id],
-                current=ranking,
+                current=rating,
                 best_rating=self.best_rating[franchise_id],
                 worst_rating=self.worst_rating[franchise_id],
                 best_game=self.best_game[franchise_id],
@@ -255,8 +255,8 @@ class PowerRankings:
 
 
 def main():
-    rankings = PowerRankings()
-    for i, (game, current) in enumerate(rankings.advance()):
+    ratings = TeamRatings()
+    for i, (game, current) in enumerate(ratings.advance()):
         # print(i, current)
         pass
 
