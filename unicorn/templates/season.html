@@ -8,6 +8,7 @@
             <th>Last Week</th>
             <th>Champions</th>
             <th>Regular Season Winners</th>
+            <th>GO Mammoth Page</th>
         </tr>
     </thead>
     <tbody>
@@ -31,15 +32,13 @@
             <td>
                 {{ season.regular_champions.simple_link|safe }}
             </td>
+            <td>
+                <a class="btn btn-primary" href="{{ season.gm_url }}" rel="noreferrer" role="link">Visit</a>
+            </td>
         </tr>
     </tbody>
 
 </table>
-
-<!--
-    Need division id, otherwise the link is invalid as the division has changed...
-    <a href="https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx?LeagueId=505&SeasonId={{ season.id }}" rel="noreferrer">Visit</a>
-    -->
 
 {% if season.finals_finished %}
 

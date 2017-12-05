@@ -11,6 +11,8 @@ def store_season_page(page):
         name=page.season_name,
         first_week_date=page.game_days[0].date,
         last_week_date=page.game_days[-1].date,
+        gm_league_id=page.league_id,
+        gm_division_id=page.division_id,
     )
 
     for team in page.teams.values():

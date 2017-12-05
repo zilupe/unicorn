@@ -66,6 +66,8 @@ class SeasonPage:
         self.game_days = None
         self.season_id = None
         self.season_name = None
+        self.division_id = None
+        self.league_id = None
         self.teams = None
 
     def unicorn_team_id(self, gm_team_id):
@@ -83,7 +85,10 @@ class SeasonPage:
         self.season_name = self.soup.find('head').find('title').text.strip().split(' - ')[4]
 
         if self.season_id is None:
-            self.season_id = int(extract_from_link(self.soup.find('h3').find('a'), 'SeasonId'))
+            fixtures_link = self.soup.find('h3').find('a')
+            self.season_id = int(extract_from_link(fixtures_link, 'SeasonId'))
+            self.division_id = int(extract_from_link(fixtures_link, 'DivisionId'))
+            self.league_id = int(extract_from_link(fixtures_link, 'LeagueId'))
 
         self.teams = {}
         for i, st_tr in enumerate(self.soup.find('table', class_='STTable').find_all('tr', class_='STRow')):

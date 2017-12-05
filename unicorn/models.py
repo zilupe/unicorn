@@ -622,7 +622,19 @@ class Season(Base):
     first_week_date = Column(Date)
     last_week_date = Column(Date)
 
+    gm_league_id = Column(Integer, nullable=True)
+    gm_division_id = Column(Integer, nullable=True)
+
     teams = relationship('Team', back_populates='season')
+
+    @property
+    def gm_url(self):
+        return ((
+            'https://gomammoth.spawtz.com/External/Fixtures/Standings.aspx'
+            '?LeagueId={league_id}'
+            '&SeasonId={season_id}'
+            '&DivisionId={division_id}'
+        ).format(season_id=self.id, league_id=self.gm_league_id, division_id=self.gm_division_id))
 
     @property
     def simple_label(self):
