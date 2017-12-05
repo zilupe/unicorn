@@ -137,9 +137,13 @@ class SeasonPage:
 
                 game_score_status = ScoreStatuses.winner_and_score_ok
                 game_score_status_comments = None
+                game_home_team_id = None
+                game_away_team_id = None
 
                 if game_id in current_app.manual_scores:
                     fs = current_app.manual_scores[game_id]
+                    game_home_team_id = fs['home_team_id']
+                    game_away_team_id = fs['away_team_id']
                     game_score = (fs['home_team_score'], fs['away_team_score'])
                     game_score_status = fs['score_status']
                     game_score_status_comments = fs['score_status_comments']
@@ -169,9 +173,9 @@ class SeasonPage:
                     ),
                     season_stage=season_stage,
                     venue=game_venue,
-                    home_team_id=self.unicorn_team_id(extract_from_link(htc.find('a'), 'TeamId')),
+                    home_team_id=self.unicorn_team_id(game_home_team_id or extract_from_link(htc.find('a'), 'TeamId')),
                     home_team_score=int(game_score[0]) if game_score[0] is not None else None,
-                    away_team_id=self.unicorn_team_id(extract_from_link(atc.find('a'), 'TeamId')),
+                    away_team_id=self.unicorn_team_id(game_away_team_id or extract_from_link(atc.find('a'), 'TeamId')),
                     away_team_score=int(game_score[1]) if game_score[1] is not None else None,
                     score_status=game_score_status,
                     score_status_comments=game_score_status_comments,

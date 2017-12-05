@@ -67,7 +67,9 @@ class UnicornApp(App):
                     game_id = int(row['game_id'])
                     self.manual_scores[game_id] = {
                         'game_id': game_id,
+                        'home_team_id': int(row['home_team_id'] or 0),
                         'home_team_score': int(row['home_team_score']),
+                        'away_team_id': int(row['away_team_id'] or 0),
                         'away_team_score': int(row['away_team_score']),
                         'score_status': int(row['score_status']),
                         'score_status_comments': row['score_status_comments'],
