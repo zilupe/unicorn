@@ -5,7 +5,6 @@ from unicorn.core.apps import current_app
 from unicorn.core.pages import (generate_page, generate_page_inside_container,
                                 generate_pages, unicorn_build_dir, write_page)
 from unicorn.models import Franchise, Game, Season, Team
-from unicorn.v2.team_ratings import TeamRatings
 
 
 @run_in_app_context
