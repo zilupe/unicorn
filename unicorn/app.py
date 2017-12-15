@@ -1,4 +1,5 @@
 import csv
+import datetime as dt
 import functools
 import os.path
 
@@ -7,7 +8,7 @@ from cached_property import cached_property
 from unicorn import unicorn_root_dir
 from unicorn.configuration import logging
 from unicorn.core.apps import App
-from unicorn.models import Franchise, Team, Season
+from unicorn.models import Franchise, Season, Team
 from unicorn.v2.season_page import AttrDict
 
 log = logging.getLogger(__name__)
@@ -38,8 +39,16 @@ class UnicornApp(App):
     @property
     def seasons(self):
         if app_data.seasons is None:
-            app_data.seasons = {t.id: t for t in Season.get_all()}
+            app_data.seasons = {s.id: s for s in Season.get_all()}
         return app_data.seasons
+
+    @property
+    def current_season(self):
+        return sorted((s for s in Season.get_all()), key=lambda s: s.first_week_date, reverse=True)[0]
+
+    @property
+    def generation_time_str(self):
+        return dt.datetime.utcnow().isoformat()
 
     @property
     def franchise_seasons(self):

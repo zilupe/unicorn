@@ -1,18 +1,17 @@
+import collections
 import datetime as dt
+import itertools
 import re
 
-import collections
-
-import itertools
 from cached_property import cached_property
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import (Column, Date, DateTime, ForeignKey, Integer, String,
+                        Text)
 from sqlalchemy.orm import relationship
 
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
 from unicorn.db.base import Base
-from unicorn.values import SeasonStages, GameOutcomes
-
+from unicorn.values import GameOutcomes, SeasonStages
 
 log = logging.getLogger(__name__)
 
@@ -700,4 +699,3 @@ Season.default_order_by = [Season.first_week_date.asc(),]
 
 
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')
-

@@ -1,6 +1,6 @@
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
-from unicorn.models import Season, Team, Game, GameSide
+from unicorn.models import Game, GameSide, Season, Team
 
 log = logging.getLogger(__name__)
 

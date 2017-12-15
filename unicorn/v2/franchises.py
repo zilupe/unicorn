@@ -5,7 +5,6 @@ from unicorn import unicorn_root_dir
 from unicorn.configuration import logging
 from unicorn.models import Franchise
 
-
 log = logging.getLogger(__name__)
 
 

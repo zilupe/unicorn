@@ -1,6 +1,5 @@
 import logging.config
 
-
 LOGGING = {
     'version': 1,
     'formatters': {

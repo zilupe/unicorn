@@ -7,3 +7,5 @@ sqlalchemy
 werkzeug
 
 cached-property
+flake8
+isort

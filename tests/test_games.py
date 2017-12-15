@@ -1,6 +1,6 @@
 import datetime as dt
 
-from unicorn.models import Game, Team, Season, GameSide, Franchise
+from unicorn.models import Franchise, Game, GameSide, Season, Team
 from unicorn.values import GameOutcomes, SeasonStages
 
 

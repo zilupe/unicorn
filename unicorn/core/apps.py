@@ -46,7 +46,7 @@ An instance of app can also be used as a context manager in which case a context
 
 """
 
-from werkzeug.local import LocalStack, LocalProxy
+from werkzeug.local import LocalProxy, LocalStack
 
 _app_context_stack = LocalStack()
 

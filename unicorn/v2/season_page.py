@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
-from unicorn.values import SeasonStages, GameOutcomes, ScoreStatuses
+from unicorn.values import GameOutcomes, ScoreStatuses, SeasonStages
 
 log = logging.getLogger(__name__)
 

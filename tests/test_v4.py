@@ -1,4 +1,4 @@
-from unicorn.models import Season, Team, Game, GameSide
+from unicorn.models import Game, GameSide, Season, Team
 
 
 def test_models(db):

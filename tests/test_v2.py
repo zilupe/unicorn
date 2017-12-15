@@ -2,9 +2,9 @@ import datetime as dt
 import os.path
 
 from unicorn import unicorn_root_dir
-from unicorn.models import Season, Game
+from unicorn.models import Game, Season
 from unicorn.v2 import process_season_page
-from unicorn.values import SeasonStages, GameOutcomes
+from unicorn.values import GameOutcomes, SeasonStages
 
 
 def test_processes_autumn_2014_season_page(app_context, db):
