@@ -51,7 +51,6 @@ class Team(AttrDict):
 
 class SeasonParse:
     def __init__(self):
-        soup = None
         self.game_days = None
         self.season_id = None
         self.season_name = None
@@ -64,9 +63,6 @@ class SeasonParse:
         Build unicorn team id which consists of GM SeasonId concatenated with GM TeamId
         """
         return '{:0>4}.{}'.format(int(self.season_id), int(gm_team_id))
-
-    def parse_fixtures_page(self, input_str):
-        raise NotImplementedError()
 
     def parse_standings_page(self, input_str):
         # Do not extract team names because we are assigning them manually --
@@ -225,5 +221,66 @@ class SeasonParse:
             self.game_days.append(GameDay(
                 date=week_date,
                 week_number=week_number,
+                games=week_games,
+            ))
+
+    def parse_fixtures_page(self, input_str):
+        assert self.teams, 'Teams should be already loaded before parsing fixtures page'
+
+        soup = BeautifulSoup(input_str, 'html.parser')
+
+        for ft in soup.find_all('table', class_='FTable'):
+            week_date = parse_gm_date(ft.find('tr', class_='FHeader').find('td').text.strip())
+            week_games = []
+
+            for fr in ft.find_all('tr', class_='FRow'):
+                game_time_cell = fr.find('td', class_='FDate')
+                if not game_time_cell:
+                    continue
+                game_time_str = game_time_cell.text.strip()
+                game_time = parse_gm_time(game_time_str).replace(
+                    year=week_date.year, month=week_date.month, day=week_date.day
+                )
+
+                game_id_cell = fr.find('td', class_='FScore')
+                if not game_id_cell:
+                    continue
+                game_id = int(game_id_cell.find('nobr')['data-fixture-id'])
+
+                game_venue = fr.find('td', class_='FPlayingArea').text.strip()
+
+                htc = fr.find('td', class_='FHomeTeam')
+                atc = fr.find('td', class_='FAwayTeam')
+
+                if not htc or not atc:
+                    continue
+
+                if not htc.find('a') or not atc.find('a'):
+                    continue
+
+                game_home_team_id = None
+                game_away_team_id = None
+
+                game = Game(
+                    id=game_id,
+                    starts_at=game_time,
+                    season_stage=SeasonStages.regular,
+                    venue=game_venue,
+                    home_team_id=self.unicorn_team_id(game_home_team_id or extract_from_link(htc.find('a'), 'TeamId')),
+                    home_team_score=None,
+                    home_team_outcome=None,
+                    home_team_points=None,
+                    away_team_id=self.unicorn_team_id(game_away_team_id or extract_from_link(atc.find('a'), 'TeamId')),
+                    away_team_score=None,
+                    away_team_outcome=None,
+                    away_team_points=None,
+                    score_status=None,
+                    score_status_comments=None,
+                )
+
+                week_games.append(game)
+
+            self.game_days.append(GameDay(
+                date=week_date,
                 games=week_games,
             ))

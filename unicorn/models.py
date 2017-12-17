@@ -102,7 +102,7 @@ class Franchise(Base):
 
     @cached_property
     def last05_games(self):
-        games = list(itertools.islice(self.games_reversed, 5))
+        games = list(itertools.islice((gs for gs in self.games_reversed if gs.is_decided), 5))
         return games
 
     @cached_property
@@ -115,7 +115,7 @@ class Franchise(Base):
 
     @cached_property
     def last15_games(self):
-        games = list(itertools.islice(self.games_reversed, 15))
+        games = list(itertools.islice((gs for gs in self.games_reversed if gs.is_decided), 15))
         return games
 
     @cached_property
