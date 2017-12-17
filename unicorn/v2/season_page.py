@@ -49,20 +49,9 @@ class Team(AttrDict):
     pass
 
 
-class SeasonPage:
-    @classmethod
-    def from_html_file(cls, filename):
-        with open(filename) as f:
-            return cls.from_input_str(f.read())
-
-    @classmethod
-    def from_input_str(cls, input_str):
-        page = cls()
-        page.parse(input_str)
-        return page
-
+class SeasonParse:
     def __init__(self):
-        self.soup = None
+        soup = None
         self.game_days = None
         self.season_id = None
         self.season_name = None
@@ -76,22 +65,25 @@ class SeasonPage:
         """
         return '{:0>4}.{}'.format(int(self.season_id), int(gm_team_id))
 
-    def parse(self, input_str):
+    def parse_fixtures_page(self, input_str):
+        raise NotImplementedError()
+
+    def parse_standings_page(self, input_str):
         # Do not extract team names because we are assigning them manually --
         # GoMammoth shows the latest team name in all seasons.
 
-        self.soup = BeautifulSoup(input_str, 'html.parser')
+        soup = BeautifulSoup(input_str, 'html.parser')
 
-        self.season_name = self.soup.find('head').find('title').text.strip().split(' - ')[4]
+        self.season_name = soup.find('head').find('title').text.strip().split(' - ')[4]
 
         if self.season_id is None:
-            fixtures_link = self.soup.find('h3').find('a')
+            fixtures_link = soup.find('h3').find('a')
             self.season_id = int(extract_from_link(fixtures_link, 'SeasonId'))
             self.division_id = int(extract_from_link(fixtures_link, 'DivisionId'))
             self.league_id = int(extract_from_link(fixtures_link, 'LeagueId'))
 
         self.teams = {}
-        for i, st_tr in enumerate(self.soup.find('table', class_='STTable').find_all('tr', class_='STRow')):
+        for i, st_tr in enumerate(soup.find('table', class_='STTable').find_all('tr', class_='STRow')):
             gm_team_id = int(extract_from_link(st_tr.find('td', class_='STTeamCell').find('a'), 'TeamId'))
             team_id = self.unicorn_team_id(gm_team_id)
             tds = st_tr.find_all('td')
@@ -117,7 +109,7 @@ class SeasonPage:
         self.game_days = []
         season_stage = SeasonStages.regular
 
-        for week_number, t in enumerate(self.soup.find_all('table', class_='FTable')):
+        for week_number, t in enumerate(soup.find_all('table', class_='FTable')):
             week_date = parse_gm_date(t.find('tr', class_='FHeader').find('td').text.strip())
             week_games = []
             for g in t.find_all('tr', class_='FRow'):

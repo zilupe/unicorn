@@ -5,7 +5,7 @@ from unicorn.app import run_in_app_context
 from unicorn.configuration import logging
 from unicorn.db.base import Session
 from unicorn.models import Season
-from unicorn.v2 import process_season_page
+from unicorn.v2 import process_season
 from unicorn.v2.franchises import create_franchises
 
 input_dir = os.path.join(unicorn_root_dir, 'input')
@@ -26,12 +26,15 @@ def main():
     create_franchises()
 
     for filename in get_season_page_filenames():
-        log.info('Parsing {}'.format(filename))
-        process_season_page(filename)
+        process_season(
+            standings_file=filename
+        )
 
     # Current season
-    log.info('Parsing current season')
-    process_season_page(os.path.join(input_dir, 'current-season/2017-LateAutumn.htm'))
+    process_season(
+        standings_file=os.path.join(input_dir, 'current-season/standings.htm'),
+        fixtures_file=os.path.join(input_dir, 'current-season/fixtures.htm'),
+    )
 
     # Assign season numbers
     for i, season in enumerate(Season.get_all(order_by=[Season.first_week_date.asc()])):

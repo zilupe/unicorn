@@ -1,7 +1,16 @@
-from unicorn.v2.season_page import SeasonPage
+from unicorn.v2.season_page import SeasonParse
 from unicorn.v2.storage import store_season_page
 
 
-def process_season_page(input_file):
-    store_season_page(SeasonPage.from_html_file(input_file))
+def process_season(standings_file, fixtures_file=None):
+    season_parse = SeasonParse()
+
+    with open(standings_file) as f:
+        season_parse.parse_standings_page(f.read())
+
+    if fixtures_file:
+        with open(fixtures_file) as f:
+            season_parse.parse_fixtures_page(f.read())
+
+    store_season_page(season_parse)
 

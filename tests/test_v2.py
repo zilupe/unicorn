@@ -3,7 +3,7 @@ import os.path
 
 from unicorn import unicorn_root_dir
 from unicorn.models import Game, Season
-from unicorn.v2 import process_season_page
+from unicorn.v2 import process_season
 from unicorn.values import GameOutcomes, SeasonStages
 
 
@@ -11,7 +11,7 @@ def test_processes_autumn_2014_season_page(app_context, db):
     input_file = os.path.join(unicorn_root_dir, 'input/season-pages/2014-Autumn.htm')
     assert os.path.isfile(input_file)
 
-    process_season_page(input_file)
+    process_season(input_file)
 
     season = Season.get_by_id(55)
     assert season.id == 55
