@@ -30,7 +30,9 @@
                 {% endif %}
             </td>
             <td>
-                {{ season.regular_champions.simple_link|safe }}
+                {% if season.regular_finished %}
+                    {{ season.regular_champions.simple_link|safe }}
+                {% endif %}
             </td>
             <td>
                 <a class="btn btn-primary" href="{{ season.gm_url }}" rel="noreferrer" role="link">Visit</a>

@@ -671,8 +671,7 @@ class Season(Base):
 
     @cached_property
     def regular_finished(self):
-        # TODO Implement this
-        return True
+        return self.last_week_date < dt.datetime.utcnow().date()
 
     @cached_property
     def regular_teams_ranked(self):
