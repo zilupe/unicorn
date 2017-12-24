@@ -150,11 +150,13 @@
             <td>{{ game.date_str }}</td>
             <td>{{ game.time_str }}</td>
             <td>{{ game.season_stage }}</td>
-            <td style="text-align: right">{{ game.home_side.team.simple_link|safe }}</td>
+            <td class="text-right">{{ game.home_side.team.simple_link|safe }}</td>
             <td> - </td>
-            <td style="text-align: left">{{ game.away_side.team.simple_link|safe }}</td>
-            <td>
-                {{ game.score_link|safe }}
+            <td class="text-left">{{ game.away_side.team.simple_link|safe }}</td>
+            <td class="text-center">
+                {% if game.completed %}
+                    {{ game.score_link|safe }}
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

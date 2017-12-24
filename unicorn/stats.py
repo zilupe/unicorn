@@ -15,7 +15,7 @@ class FranchiseHead2HeadStats:
         'lost': lambda gs: 1 if GameOutcomes.was_lost(gs.outcome) else 0,
         'score_for': lambda gs: gs.score,
         'score_against': lambda gs: gs.opponent.score,
-        'score_difference': lambda gs: gs.score - gs.opponent.score,
+        'score_difference': lambda gs: gs.score - gs.opponent.score if gs.score is not None and gs.opponent.score is not None else None,
     }
 
     def __init__(self, us, them):
@@ -75,9 +75,10 @@ class FranchiseHead2HeadStats:
 
         games = getattr(self, '{}_games'.format(prefix))
 
-        metric_sum = sum(self.metrics[metric_name](gs) for gs in games)
-
-        num_games = len(games)
+        all_items = [self.metrics[metric_name](gs) for gs in games]
+        valid_items = [m for m in all_items if m is not None]
+        metric_sum = sum(valid_items)
+        num_games = len(valid_items)
 
         if suffix == 'sum':
             return metric_sum

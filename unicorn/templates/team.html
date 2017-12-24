@@ -26,14 +26,16 @@
         <td class="text-right">Team Name</td>
         <th>{{ team.name }}</th>
     </tr>
-    <tr>
-        <td class="text-right">Final Rank</td>
-        <th>{{ team.finals_rank }}</th>
-    </tr>
-    <tr>
-        <td class="text-right">Regular Season Rank</td>
-        <th>{{ team.regular_rank }}</th>
-    </tr>
+    {% if team.season.finals_finished %}
+        <tr>
+            <td class="text-right">Final Rank</td>
+            <th>{{ team.finals_rank }}</th>
+        </tr>
+        <tr>
+            <td class="text-right">Regular Season Rank</td>
+            <th>{{ team.regular_rank }}</th>
+        </tr>
+    {% endif %}
 </table>
 
 
@@ -114,13 +116,21 @@
             <td>
                 {{ g.opponent.team.simple_link|safe }}
             </td>
-            <td>{{ g.score_link|safe }}</td>
-            <td>{{ g.outcome }}</td>
-            <td>
-                {% if g.game.season_stage == 'regular' %}
-                    {{ g.points }}
-                {% endif %}
-            </td>
+            {% if g.game.completed %}
+                <td>
+                    {{ g.score_link|safe }}
+                </td>
+                <td>{{ g.outcome }}</td>
+                <td>
+                    {% if g.game.season_stage == 'regular' %}
+                        {{ g.points }}
+                    {% endif %}
+                </td>
+            {% else %}
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            {% endif %}
         </tr>
     {% endfor %}
 

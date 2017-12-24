@@ -266,6 +266,10 @@ class Franchise(Base):
         for gs in self.games:
             # Offensive and Defensive achievements
 
+            if gs.score is None or gs.opponent.score is None:
+                # Exclude games with no score.
+                continue
+
             if gs.score >= 50:
                 achievements['num_50plus_scored_games'] += 1
             elif gs.score <= 20 and gs.outcome not in (GameOutcomes.forfeit_against, GameOutcomes.forfeit_for):
@@ -486,6 +490,12 @@ class Game(Base):
     notes = Column(Text)
 
     sides = relationship('GameSide', back_populates='game')
+
+    @property
+    def completed(self):
+        if self.starts_at > dt.datetime.utcnow():
+            return False
+        return self.home_side.score is not None and self.away_side.score is not None
 
     @property
     def simple_label(self):

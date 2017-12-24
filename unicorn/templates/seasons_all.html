@@ -8,7 +8,6 @@
             <th>Last Week</th>
             <th>Teams</th>
             <th>Champions</th>
-            <th>Record</th>
         </tr>
     </thead>
     <tbody>
@@ -27,13 +26,9 @@
                         </div>
                         <div class="media-body">
                             {{ season.finals_champions.simple_link|safe }}
+                            <span class="season-record-str">{{ season.finals_champions.total_record_str }}</span>
                         </div>
                     </div>
-                {% endif %}
-            </td>
-            <td>
-                {% if season.finals_finished %}
-                    {{ season.finals_champions.total_record_str }}
                 {% endif %}
             </td>
         </tr>

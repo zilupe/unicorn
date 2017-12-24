@@ -19,6 +19,7 @@
     <tbody>
 
     {% for game in games_all %}
+        {% if game.completed %}
         <tr>
             <td>{{ game.season.simple_link|safe }}</td>
             <td>{{ game.season_stage }}</td>
@@ -32,6 +33,7 @@
             <td class="text-left">{{ game.loser_side.team.simple_link|safe }}</td>
             <td>{{ game.plus_minus }}</td>
         </tr>
+        {% endif %}
     {% endfor %}
 
     </tbody>

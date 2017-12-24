@@ -135,6 +135,9 @@ class TeamRatings:
 
     def advance(self):
         for i, g in enumerate(self.games):
+            if not g.completed:
+                continue
+
             if i > 0:
                 if self.games[i - 1].season != g.season:
                     self.on_season_change(last_season=self.games[i - 1].season, next_season=g.season)
