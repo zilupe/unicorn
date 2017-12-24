@@ -213,13 +213,15 @@ class Franchise(Base):
 
     @property
     def sparkline_labels(self):
-        return ', '.join(str(s.number) for s in self.teams_by_all_seasons.keys())
+        return ', '.join(str(s.number) for s in self.teams_by_all_seasons.keys() if s.finals_finished)
 
     @property
     def sparkline_data(self):
         ceiling = 10
         data = []
         for s, t in self.teams_by_all_seasons.items():
+            if not s.finals_finished:
+                continue
             if t is None:
                 data.append(0)
             elif t.finals_rank:

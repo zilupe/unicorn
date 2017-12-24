@@ -103,7 +103,7 @@ def generate_page_inside_container(template, **context_extras):
     container_template = env.get_template('components/container.html')
     return container_template.render(
         app=current_app,
-        main_content=template_obj.render(**context_extras)
+        main_content=template_obj.render(app=current_app, **context_extras)
     )
 
 
