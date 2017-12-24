@@ -73,7 +73,7 @@ def generate_pages(
             template_context.update(item)
 
         # Check if a custom story exists for the item
-        for story_type in ('alert', 'history'):
+        for story_type in ('alert', 'history', 'report'):
             story_text = None
             story_filename = os.path.join(
                 stories_dir,

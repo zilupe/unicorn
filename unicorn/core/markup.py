@@ -15,11 +15,15 @@ def generate_franchise_link(match):
 def generate_team_link(match):
     team_id = match.group(1)
     team = current_app.teams[team_id]
-    return '<a href="{}">{}<sup>{}</sup></a>'.format(
+    return '<a href="{}">{}</a>'.format(
         team.simple_url,
         team.name,
-        team.season.short_name,
     )
+    # return '<a href="{}">{}<sup>{}</sup></a>'.format(
+    #     team.simple_url,
+    #     team.name,
+    #     team.season.short_name,
+    # )
 
 
 link_patterns = [

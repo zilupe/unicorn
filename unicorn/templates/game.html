@@ -29,3 +29,10 @@
     </blockquote>
 
 {% endif %}
+
+{% if report_story %}
+    <h3 class="mt-5 mb-3">Report</h3>
+    <div class="py-3">
+        {{ report_story|safe }}
+    </div>
+{% endif %}
