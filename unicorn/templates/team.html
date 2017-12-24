@@ -62,14 +62,14 @@
         <tr>
             <td>{{ team.regular_rank }}</td>
             <td>{{ team.regular_played }}</td>
-            <td>{{ team.regular_won }}</td>
-            <td>{{ team.regular_forfeits_for }}</td>
-            <td>{{ team.regular_drawn }}</td>
-            <td>{{ team.regular_lost }}</td>
-            <td>{{ team.regular_forfeits_against }}</td>
-            <td>{{ team.regular_score_for }}</td>
-            <td>{{ team.regular_score_against }}</td>
-            <td>{{ team.regular_score_difference }}</td>
+            <td>{{ team.true_regular_won }}</td>
+            <td>{{ team.true_regular_forfeits_for }}</td>
+            <td>{{ team.true_regular_drawn }}</td>
+            <td>{{ team.true_regular_lost }}</td>
+            <td>{{ team.true_regular_forfeits_against }}</td>
+            <td>{{ team.true_regular_score_for }}</td>
+            <td>{{ team.true_regular_score_against }}</td>
+            <td>{{ team.true_regular_score_difference }}</td>
             <td>{{ team.regular_bonus_points }}</td>
             <td>{{ team.regular_points }}</td>
         </tr>
@@ -81,9 +81,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td>{{ '%0.2f'| format(team.regular_score_for / team.regular_played) }}</td>
-            <td>{{ '%0.2f'| format(team.regular_score_against / team.regular_played) }}</td>
-            <td>{{ '%+0.2f'| format(team.regular_score_difference / team.regular_played) }}</td>
+            <td>{{ '%0.2f'| format(team.true_regular_score_for / team.true_regular_scored) }}</td>
+            <td>{{ '%0.2f'| format(team.true_regular_score_against / team.true_regular_scored) }}</td>
+            <td>{{ '%+0.2f'| format(team.true_regular_score_difference / team.true_regular_scored) }}</td>
             <td></td>
             <td></td>
         </tr>

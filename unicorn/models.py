@@ -469,6 +469,42 @@ class Team(Base):
     def total_record_str(self):
         return '-'.join(str(r) for r in self.total_record)
 
+    @cached_property
+    def true_regular_forfeits_for(self):
+        return sum(1 for g in self.games if g.outcome == GameOutcomes.forfeit_for)
+
+    @cached_property
+    def true_regular_forfeits_against(self):
+        return sum(1 for g in self.games if g.outcome == GameOutcomes.forfeit_against)
+
+    @cached_property
+    def true_regular_won(self):
+        return sum(1 for g in self.games if g.outcome == GameOutcomes.won)
+
+    @cached_property
+    def true_regular_drawn(self):
+        return sum(1 for g in self.games if g.outcome == GameOutcomes.drawn)
+
+    @cached_property
+    def true_regular_lost(self):
+        return sum(1 for g in self.games if g.outcome == GameOutcomes.lost)
+
+    @cached_property
+    def true_regular_score_for(self):
+        return sum(g.score for g in self.games if g.game.completed and g.outcome not in (GameOutcomes.forfeit_for, GameOutcomes.forfeit_against))
+
+    @cached_property
+    def true_regular_score_against(self):
+        return sum(g.opponent.score for g in self.games if g.game.completed and g.outcome not in (GameOutcomes.forfeit_for, GameOutcomes.forfeit_against))
+
+    @cached_property
+    def true_regular_score_difference(self):
+        return self.true_regular_score_for - self.true_regular_score_against
+
+    @cached_property
+    def true_regular_scored(self):
+        return sum(1 for g in self.games if g.game.completed and g.outcome not in (GameOutcomes.forfeit_for, GameOutcomes.forfeit_against))
+
 
 Team.default_order_by = [Team.name.asc(),]
 
