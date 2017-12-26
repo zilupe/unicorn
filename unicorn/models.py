@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
-from unicorn.db.base import Base, as base_metadata
+from unicorn.db.base import Base, metadata as base_metadata
 from unicorn.values import GameOutcomes, SeasonStages
 
 log = logging.getLogger(__name__)
