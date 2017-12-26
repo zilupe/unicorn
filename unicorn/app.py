@@ -97,7 +97,7 @@ class App(RuntimeContext):
 
     @property
     def generation_time_str(self):
-        return dt.datetime.utcnow().isoformat()
+        return dt.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
     @property
     def franchise_seasons(self):
