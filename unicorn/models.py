@@ -10,10 +10,13 @@ from sqlalchemy.orm import relationship
 
 from unicorn.configuration import logging
 from unicorn.core.apps import current_app
-from unicorn.db.base import Base
+from unicorn.db.base import Base, as base_metadata
 from unicorn.values import GameOutcomes, SeasonStages
 
 log = logging.getLogger(__name__)
+
+
+metadata = base_metadata
 
 
 def compile_game_sides_record(game_sides):
