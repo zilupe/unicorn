@@ -43,6 +43,9 @@ class RuntimeContext:
             raise RuntimeError('Trying to set context variable {!r} outside of runtime context'.format(name))
         self._stack[-1][name] = value
 
+    def has_own(self, name):
+        return name in self._allowed_vars and self._stack and name in self._stack[-1]
+
     def __contains__(self, name):
         return any(name in ctx for ctx in reversed(self._stack))
 

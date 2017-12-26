@@ -27,6 +27,7 @@ class App(RuntimeContext):
     _allowed_vars = (
         'dry_run',
         'db_name',
+        'db_session',
     )
 
     @property
@@ -56,6 +57,18 @@ class App(RuntimeContext):
     @cached_property
     def db_engine(self):
         return create_engine(self.get_db_url())
+
+    @property
+    def db_session(self):
+        # Each RuntimeContext that uses db_session, has its own instance
+        # which is removed on exiting the context.
+        if not self.has_own('db_session'):
+            from sqlalchemy.orm import scoped_session, sessionmaker
+            session_factory = sessionmaker()
+            session = scoped_session(session_factory)
+            session.configure(bind=self.db_engine)
+            self.set('db_session', session)
+        return self.get('db_session')
 
     @property
     def franchises(self):
@@ -141,13 +154,7 @@ class App(RuntimeContext):
 app = App()
 
 
-@app.context_entered
-def context_entered(context):
-    from unicorn.db.base import Session
-    # TODO Ideally move Session creation to app context scope and destroy it on context exit!
-    Session.configure(bind=context.db_engine)
-
-
 @app.context_exited
 def context_exited(context):
-    pass
+    if context.has_own('db_session'):
+        context.db_session.remove()

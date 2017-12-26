@@ -33,8 +33,7 @@ def db(app):
     try:
         yield app.db_engine
     finally:
-        from unicorn.db.base import Session
-        Session.remove()
+        app.db_session.remove()
         setup_engine.execute('DROP DATABASE {}'.format(app.db_name))
 
 

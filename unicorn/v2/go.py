@@ -3,7 +3,6 @@ import os.path
 from unicorn import unicorn_root_dir
 from unicorn.app import app
 from unicorn.configuration import logging
-from unicorn.db.base import Session
 from unicorn.models import Season
 from unicorn.v2 import process_season
 from unicorn.v2.franchises import create_franchises
@@ -38,7 +37,7 @@ def main():
     # Assign season numbers
     for i, season in enumerate(Season.get_all(order_by=[Season.first_week_date.asc()])):
         season.number = '{:02}'.format(i + 1)
-        Session.commit()
+        app.db_session.commit()
 
 
 if __name__ == '__main__':

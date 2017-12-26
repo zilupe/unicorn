@@ -1,10 +1,10 @@
 from cached_property import cached_property
 from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
 
-session_factory = sessionmaker()
-Session = scoped_session(session_factory)
+from unicorn.app import app
+
+
 metadata = MetaData()
 
 
@@ -14,7 +14,7 @@ class _Base:
 
     @classmethod
     def get_all(cls, order_by=None):
-        q = Session.query(cls)
+        q = app.db_session.query(cls)
         if order_by is not None:
             q = q.order_by(*order_by)
         elif cls.default_order_by is not None:
@@ -23,17 +23,17 @@ class _Base:
 
     @classmethod
     def get_by_id(cls, id):
-        return Session.query(cls).filter(cls.id == id).one()
+        return app.db_session.query(cls).filter(cls.id == id).one()
 
     @classmethod
     def get_count(cls):
-        return Session.query(cls).count()
+        return app.db_session.query(cls).count()
 
     @classmethod
     def create(cls, **kwargs):
         inst = cls(**kwargs)
-        Session.add(inst)
-        Session.commit()
+        app.db_session.add(inst)
+        app.db_session.commit()
         return inst
 
     @cached_property
