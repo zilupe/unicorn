@@ -3,7 +3,9 @@
 set -x
 set -e
 
+flake8
 pytest
+isort
 
 alembic downgrade 0001
 alembic upgrade head

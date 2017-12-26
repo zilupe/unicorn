@@ -11,4 +11,3 @@ def test_runtime_context():
             assert context.dry_run is False
         assert context.dry_run is True
     assert context.dry_run is None
-

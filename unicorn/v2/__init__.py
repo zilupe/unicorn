@@ -13,4 +13,3 @@ def process_season(standings_file, fixtures_file=None):
             season_parse.parse_fixtures_page(f.read())
 
     store_season_page(season_parse)
-

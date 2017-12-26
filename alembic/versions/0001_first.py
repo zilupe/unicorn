@@ -5,8 +5,8 @@ Revises:
 Create Date: 2017-12-26 14:14:00.435012
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import mysql
 
 revision = '0001'

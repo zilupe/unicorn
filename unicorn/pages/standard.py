@@ -1,8 +1,9 @@
 import os.path
 
 from unicorn.app import app
-from unicorn.core.pages import (generate_page, generate_page_inside_container,
-                                generate_pages, unicorn_build_dir, write_page)
+from unicorn.core.pages import (
+    generate_page, generate_page_inside_container, generate_pages, unicorn_build_dir, write_page
+)
 from unicorn.models import Franchise, Game, Season, Team
 
 

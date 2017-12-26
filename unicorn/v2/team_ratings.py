@@ -116,9 +116,9 @@ class TeamRatings:
             remaining = [
                 f for f in self.franchises
                 if
-                f not in leaving_last_time
-                and f not in joining_first_time
-                and f.is_long_term_active_on(next_season.first_week_date)
+                f not in leaving_last_time and
+                f not in joining_first_time and
+                f.is_long_term_active_on(next_season.first_week_date)
             ]
 
             delta_leaving = sum(self.current[f.id].value - self.initial_rating for f in leaving_last_time)
@@ -261,7 +261,3 @@ def main():
     for i, (game, current) in enumerate(ratings.advance()):
         # print(i, current)
         pass
-
-
-if __name__ == '__main__':
-    run_in_app_context(main)()

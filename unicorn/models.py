@@ -4,13 +4,13 @@ import itertools
 import re
 
 from cached_property import cached_property
-from sqlalchemy import (Column, Date, DateTime, ForeignKey, Integer, String,
-                        Text)
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from unicorn.app import app
 from unicorn.configuration import logging
-from unicorn.db.base import Base, metadata as base_metadata
+from unicorn.models_base import metadata as base_metadata
+from unicorn.models_base import Base
 from unicorn.values import GameOutcomes, SeasonStages
 
 log = logging.getLogger(__name__)
@@ -29,9 +29,7 @@ def compile_game_sides_record(game_sides):
 
 def compile_points_difference_avg(game_sides):
     return (
-        (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in game_sides))
-        /
-        len(game_sides)
+        (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in game_sides)) / len(game_sides)
     )
 
 
@@ -53,8 +51,7 @@ class Franchise(Base):
     def is_long_term_active_on(self, date):
         d1 = dt.timedelta(days=1)
         return (
-            any(date > s.first_week_date - d1 for s in self.seasons)
-            and
+            any(date > s.first_week_date - d1 for s in self.seasons) and
             any(date < s.last_week_date + d1 for s in self.seasons)
         )
 
@@ -334,7 +331,7 @@ class Franchise(Base):
             return super().__getattribute__(item)
 
 
-Franchise.default_order_by = [Franchise.name.asc(),]
+Franchise.default_order_by = [Franchise.name.asc(), ]
 
 
 class Team(Base):
@@ -511,7 +508,7 @@ class Team(Base):
         return sum(1 for g in self.games if g.game.completed and g.outcome not in (GameOutcomes.forfeit_for, GameOutcomes.forfeit_against))
 
 
-Team.default_order_by = [Team.name.asc(),]
+Team.default_order_by = [Team.name.asc(), ]
 
 
 class Game(Base):
@@ -588,7 +585,7 @@ class Game(Base):
         return self.winner_side.score - self.loser_side.score
 
 
-Game.default_order_by = [Game.starts_at.asc(),]
+Game.default_order_by = [Game.starts_at.asc(), ]
 
 
 class GameSide(Base):
@@ -613,8 +610,7 @@ class GameSide(Base):
     @property
     def was_played(self):
         return (
-            self.score is not None
-            and
+            self.score is not None and
             self.outcome not in (GameOutcomes.missing, GameOutcomes.forfeit_for, GameOutcomes.forfeit_against)
         )
 
@@ -745,7 +741,7 @@ class Season(Base):
         return '<a href="{}">{}</a>'.format(self.simple_url, self.date_range_str)
 
 
-Season.default_order_by = [Season.first_week_date.asc(),]
+Season.default_order_by = [Season.first_week_date.asc(), ]
 
 
 Season.games = relationship('Game', order_by=Game.starts_at, back_populates='season')

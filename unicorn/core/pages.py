@@ -7,7 +7,6 @@ from unicorn import unicorn_root_dir
 from unicorn.app import app
 from unicorn.core import markup
 
-
 env = Environment(
     loader=PackageLoader('unicorn', 'templates'),
     autoescape=select_autoescape(['html', 'xml'])
@@ -16,7 +15,7 @@ env = Environment(
 
 unicorn_build_dir = os.path.join(unicorn_root_dir, 'build')
 
-identity_func = lambda x: x
+identity_func = lambda x: x  # noqa
 
 stories_dir = os.path.join(unicorn_root_dir, 'unicorn/data')
 
@@ -36,12 +35,12 @@ def generate_dict_from_dict_of_lambdas(context, dict_of_lambdas):
 
 
 def generate_pages(
-        items, template, *,
-        item_name=None,
-        item_context_extras=None,
-        page_key=identity_func,
-        **context_extras
-    ):
+    items, template, *,
+    item_name=None,
+    item_context_extras=None,
+    page_key=identity_func,
+    **context_extras
+):
     """
     :param items:
     :param template:

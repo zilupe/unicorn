@@ -6,10 +6,9 @@ from cached_property import cached_property
 from sqlalchemy import create_engine
 
 from unicorn import unicorn_root_dir
-from unicorn.runtime_context import RuntimeContext
-from unicorn.core.utils import AttrDict
 from unicorn.configuration import logging
-
+from unicorn.core.utils import AttrDict
+from unicorn.runtime_context import RuntimeContext
 
 log = logging.getLogger(__name__)
 
