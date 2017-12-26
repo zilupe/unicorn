@@ -1,15 +1,15 @@
 import csv
 import datetime as dt
-import functools
-import os.path
+import os
 
 from cached_property import cached_property
+from sqlalchemy import create_engine
 
 from unicorn import unicorn_root_dir
+from unicorn.runtime_context import RuntimeContext
+from unicorn.core.utils import AttrDict
 from unicorn.configuration import logging
-from unicorn.core.apps import App
-from unicorn.models import Franchise, Season, Team
-from unicorn.v2.season_page import AttrDict
+
 
 log = logging.getLogger(__name__)
 
@@ -23,27 +23,64 @@ app_data = AttrDict({
 })
 
 
-class UnicornApp(App):
+class App(RuntimeContext):
+    _allowed_vars = (
+        'dry_run',
+        'db_name',
+    )
+
+    @property
+    def db_name(self):
+        if 'db_name' in self:
+            return self.get('db_name')
+        else:
+            return os.environ.get('UNICORN_DB_NAME', 'unicorn')
+
+    @db_name.setter
+    def db_name(self, value):
+        self.set('db_name', value)
+
+    def get_db_url(self, db_name=None):
+        if db_name is None:
+            db_name = self.db_name
+        return (
+            'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{name}'
+        ).format(
+            user=os.environ.get('UNICORN_DB_USER', 'root'),
+            host=os.environ.get('UNICORN_DB_HOST', 'localhost'),
+            password=os.environ.get('UNICORN_DB_PASSWORD', ''),
+            port=os.environ.get('UNICORN_DB_PORT', 3306),
+            name=db_name,
+        )
+
+    @cached_property
+    def db_engine(self):
+        return create_engine(self.get_db_url())
+
     @property
     def franchises(self):
+        from unicorn.models import Franchise
         if app_data.franchises is None:
             app_data.franchises = {f.id: f for f in Franchise.get_all()}
         return app_data.franchises
 
     @property
     def teams(self):
+        from unicorn.models import Team
         if app_data.teams is None:
             app_data.teams = {t.id: t for t in Team.get_all()}
         return app_data.teams
 
     @property
     def seasons(self):
+        from unicorn.models import Season
         if app_data.seasons is None:
             app_data.seasons = {s.id: s for s in Season.get_all()}
         return app_data.seasons
 
     @property
     def current_season(self):
+        from unicorn.models import Season
         return sorted((s for s in Season.get_all()), key=lambda s: s.first_week_date, reverse=True)[0]
 
     @property
@@ -52,6 +89,7 @@ class UnicornApp(App):
 
     @property
     def franchise_seasons(self):
+        from unicorn.models import Franchise
         if app_data.franchise_seasons is None:
             app_data.franchise_seasons = []
             with open(os.path.join(unicorn_root_dir, 'unicorn/data/franchise_seasons.csv')) as f:
@@ -100,19 +138,4 @@ class UnicornApp(App):
         return team_ratings
 
 
-def create_app(**kwargs):
-    app = UnicornApp(**kwargs)
-
-    # TODO Make this cleaner later
-    import unicorn.db.connection
-
-    return app
-
-
-def run_in_app_context(f):
-    @functools.wraps(f)
-    def wrapped(*args, **kwargs):
-        with create_app():
-            f()
-
-    return wrapped
+app = App()

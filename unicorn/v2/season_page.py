@@ -3,8 +3,9 @@ from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
 
+from unicorn.app import app
 from unicorn.configuration import logging
-from unicorn.core.apps import current_app
+from unicorn.core.utils import AttrDict
 from unicorn.values import GameOutcomes, ScoreStatuses, SeasonStages
 
 log = logging.getLogger(__name__)
@@ -24,17 +25,6 @@ def parse_gm_time(time_str):
 
 def extract_from_link(link, field):
     return parse_qs(link['href'])[field][0]
-
-
-class AttrDict(dict):
-    def __getattr__(self, item):
-        return self[item]
-
-    def __setattr__(self, item, value):
-        self[item] = value
-
-    def __repr__(self):
-        return '<{} {}>'.format(self.__class__.__name__, super().__repr__())
 
 
 class Game(AttrDict):
@@ -133,8 +123,8 @@ class SeasonParse:
                 game_home_team_id = None
                 game_away_team_id = None
 
-                if game_id in current_app.manual_scores:
-                    fs = current_app.manual_scores[game_id]
+                if game_id in app.manual_scores:
+                    fs = app.manual_scores[game_id]
                     game_home_team_id = fs['home_team_id']
                     game_away_team_id = fs['away_team_id']
                     game_score = (fs['home_team_score'], fs['away_team_score'])

@@ -1,5 +1,5 @@
+from unicorn.app import app
 from unicorn.configuration import logging
-from unicorn.core.apps import current_app
 from unicorn.models import Game, GameSide, Season, Team
 
 log = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ def store_season_page(page):
     )
 
     for team in page.teams.values():
-        franchise, team_name = current_app.get_franchise_and_team_name(season_obj.id, team.gm_id)
+        franchise, team_name = app.get_franchise_and_team_name(season_obj.id, team.gm_id)
 
         Team.create(
             id=team.id,

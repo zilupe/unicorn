@@ -1,7 +1,6 @@
 import os.path
 
 from unicorn import unicorn_root_dir
-from unicorn.app import run_in_app_context
 from unicorn.configuration import logging
 from unicorn.db.base import Session
 from unicorn.models import Season
@@ -21,7 +20,6 @@ def get_season_page_filenames():
             yield os.path.join(source_dir, filename)
 
 
-@run_in_app_context
 def main():
     create_franchises()
 

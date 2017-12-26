@@ -6,7 +6,7 @@ from alembic import context
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from unicorn.models import metadata
-from unicorn.runtime_context import app
+from unicorn.app import app
 
 config = context.config
 
@@ -14,7 +14,7 @@ target_metadata = metadata
 
 
 def run_migrations_offline():
-    context.configure(url=app.db_url, target_metadata=target_metadata, literal_binds=True)
+    context.configure(url=app.get_db_url(), target_metadata=target_metadata, literal_binds=True)
 
     with context.begin_transaction():
         context.run_migrations()

@@ -8,8 +8,8 @@ from sqlalchemy import (Column, Date, DateTime, ForeignKey, Integer, String,
                         Text)
 from sqlalchemy.orm import relationship
 
+from unicorn.app import app
 from unicorn.configuration import logging
-from unicorn.core.apps import current_app
 from unicorn.db.base import Base, metadata as base_metadata
 from unicorn.values import GameOutcomes, SeasonStages
 
@@ -165,7 +165,7 @@ class Franchise(Base):
     def teams_by_all_seasons(self):
         teams = collections.OrderedDict()
 
-        for season in current_app.seasons.values():
+        for season in app.seasons.values():
             teams[season] = None
 
         for team in self.teams:

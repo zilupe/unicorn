@@ -16,3 +16,14 @@ def init_instance_dict_safely(instance, kwargs):
             instance.__dict__[k] = v
         else:
             raise ValueError('Unexpected kwarg {!r} passed to {} initialiser'.format(k, cls.__name__))
+
+
+class AttrDict(dict):
+    def __getattr__(self, item):
+        return self[item]
+
+    def __setattr__(self, item, value):
+        self[item] = value
+
+    def __repr__(self):
+        return '<{} {}>'.format(self.__class__.__name__, super().__repr__())

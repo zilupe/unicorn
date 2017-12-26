@@ -5,7 +5,6 @@ markdown2
 mysql-connector-python  # manually installed
 pytest
 sqlalchemy
-werkzeug
 
 cached-property
 flake8
