@@ -32,12 +32,13 @@ def db(app):
 
     yield app.db_engine
 
-    setup_engine.execute((
-        'DROP DATABASE {}'
-    ).format(app.db_name))
+    app.db_engine.dispose()
+
+    setup_engine.execute('DROP DATABASE {}'.format(app.db_name))
 
 
 @pytest.fixture(scope='session')
-def two_seasons(app, db):
+def two_seasons(db):
     from unicorn.v2.go import process_season, source_dir
     process_season(os.path.join(source_dir, '2014-Autumn.htm'))
+    process_season(os.path.join(source_dir, '2015-Winter.htm'))

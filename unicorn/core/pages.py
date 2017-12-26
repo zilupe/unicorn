@@ -4,8 +4,9 @@ import os.path
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from unicorn import unicorn_root_dir
+from unicorn.app import app
 from unicorn.core import markup
-from unicorn.core.apps import current_app
+
 
 env = Environment(
     loader=PackageLoader('unicorn', 'templates'),
@@ -95,15 +96,15 @@ def generate_pages(
 def generate_page(template, **context_extras):
     template_obj = env.get_template(template)
     context_extras['generation_time'] = dt.datetime.utcnow().strftime('%Y-%m-%d %H:%M')
-    return template_obj.render(app=current_app, **context_extras)
+    return template_obj.render(app=app, **context_extras)
 
 
 def generate_page_inside_container(template, **context_extras):
     template_obj = env.get_template(template)
     container_template = env.get_template('components/container.html')
     return container_template.render(
-        app=current_app,
-        main_content=template_obj.render(app=current_app, **context_extras)
+        app=app,
+        main_content=template_obj.render(app=app, **context_extras)
     )
 
 

@@ -1,7 +1,6 @@
 import collections
 
-from unicorn.app import run_in_app_context
-from unicorn.core.apps import current_app
+from unicorn.app import app
 from unicorn.v2 import elo
 from unicorn.values import SeasonStages
 
@@ -87,11 +86,11 @@ class TeamRatings:
 
     @staticmethod
     def _get_all_franchises():
-        return list(current_app.franchises.values())
+        return list(app.franchises.values())
 
     @staticmethod
     def _get_all_games():
-        for season in current_app.seasons.values():
+        for season in app.seasons.values():
             yield from season.games
 
     def update_current(self, franchise_id, change, game=None):

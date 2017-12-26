@@ -1,6 +1,7 @@
 import os.path
 
 from unicorn import unicorn_root_dir
+from unicorn.app import app
 from unicorn.configuration import logging
 from unicorn.db.base import Session
 from unicorn.models import Season
@@ -41,4 +42,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    with app():
+        main()

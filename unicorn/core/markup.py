@@ -2,19 +2,19 @@ import re
 
 import markdown2
 
-from unicorn.core.apps import current_app
+from unicorn.app import app
 
 
 def generate_franchise_link(match):
     d = match.groupdict()
     franchise_id = int(d['id'])
     attr = d.get('attr') or 'simple_link'
-    return getattr(current_app.franchises[franchise_id], attr)
+    return getattr(app.franchises[franchise_id], attr)
 
 
 def generate_team_link(match):
     team_id = match.group(1)
-    team = current_app.teams[team_id]
+    team = app.teams[team_id]
     return '<a href="{}">{}</a>'.format(
         team.simple_url,
         team.name,

@@ -78,7 +78,7 @@ class App(RuntimeContext):
             app_data.seasons = {s.id: s for s in Season.get_all()}
         return app_data.seasons
 
-    @property
+    @cached_property
     def current_season(self):
         from unicorn.models import Season
         return sorted((s for s in Season.get_all()), key=lambda s: s.first_week_date, reverse=True)[0]
@@ -139,3 +139,10 @@ class App(RuntimeContext):
 
 
 app = App()
+
+
+@app.context_entered
+def context_entered(context):
+    from unicorn.models import metadata
+    if metadata.bind is None:
+        metadata.bind = context.db_engine

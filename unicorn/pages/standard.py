@@ -1,13 +1,11 @@
 import os.path
 
-from unicorn.app import run_in_app_context
-from unicorn.core.apps import current_app
+from unicorn.app import app
 from unicorn.core.pages import (generate_page, generate_page_inside_container,
                                 generate_pages, unicorn_build_dir, write_page)
 from unicorn.models import Franchise, Game, Season, Team
 
 
-@run_in_app_context
 def main():
     object_types = (
         ('franchise', Franchise),
@@ -51,7 +49,7 @@ def main():
     # Style Sheet
     write_page('style.css', generate_page(
         'components/style.css.jinja',
-        franchises=current_app.franchises.values(),
+        franchises=app.franchises.values(),
     ))
 
     # Home page
@@ -61,7 +59,7 @@ def main():
 
     # CSV file for Excel investigations
     columns = ['Time']
-    columns.extend(f.name for f in current_app.franchises.values())
+    columns.extend(f.name for f in app.franchises.values())
 
     # import csv
     # with open(os.path.join(unicorn_build_dir, 'team_ratings.csv'), 'w') as f:
@@ -71,15 +69,15 @@ def main():
     #     pr = TeamRatings()
     #     for game, current in pr.advance():
     #         row = [game.starts_at.strftime('%Y-%m-%d %H:%M:%S')]
-    #         row.extend(current[f_id].int_value for f_id in current_app.franchises.keys())
+    #         row.extend(current[f_id].int_value for f_id in app.franchises.keys())
     #         writer.writerow(row)
 
     # JSON file for charts on site
     team_ratings_for_json = []
-    for f_id, f in current_app.franchises.items():
+    for f_id, f in app.franchises.items():
         team_ratings_for_json.append({
             'label': f.name,
-            'data': [{'x': game.starts_at.strftime('%Y-%m-%d'), 'y': rating} for game, rating in current_app.team_ratings.change_log[f_id]],
+            'data': [{'x': game.starts_at.strftime('%Y-%m-%d'), 'y': rating} for game, rating in app.team_ratings.change_log[f_id]],
             'type': 'line',
             'pointRadius': 1,
             'fill': False,
@@ -100,10 +98,11 @@ def main():
         'team_ratings.html',
         generate_page_inside_container(
             'team_ratings.html',
-            team_ratings=current_app.team_ratings,
+            team_ratings=app.team_ratings,
         )
     )
 
 
 if __name__ == '__main__':
-    main()
+    with app():
+        main()

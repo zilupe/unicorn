@@ -6,6 +6,8 @@ Thread-safe.
 import contextlib
 import threading
 
+from hookery import HookRegistry
+
 _thread_local = threading.local()
 _thread_local.stack = []
 
@@ -17,6 +19,9 @@ class RuntimeContext:
 
     def __init__(self):
         self._stack = _thread_local.stack
+        self._hooks = HookRegistry(self)
+        self.context_entered = self._hooks.register_event('context_entered')
+        self.context_exited = self._hooks.register_event('context_exited')
 
     def __getattr__(self, name):
         if name in self._allowed_vars:
@@ -46,7 +51,9 @@ class RuntimeContext:
         def ctx_manager():
             self._stack.append(kwargs)
             try:
+                self.context_entered.trigger(context=self)
                 yield self
             finally:
                 self._stack.pop()
+                self.context_exited.trigger(context=self)
         return ctx_manager()
