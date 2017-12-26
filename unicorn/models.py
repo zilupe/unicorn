@@ -28,8 +28,9 @@ def compile_game_sides_record(game_sides):
 
 
 def compile_points_difference_avg(game_sides):
+    games = [gs for gs in game_sides if gs.was_played]
     return (
-        (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in game_sides)) / len(game_sides)
+        (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in games)) / len(games)
     )
 
 

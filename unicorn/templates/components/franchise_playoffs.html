@@ -19,6 +19,7 @@
     <tbody>
 
     {% for team in franchise.teams_sorted %}
+        {% if team.season.finals_finished %}
         <tr>
             <td>{{ team.season.simple_link|safe }}</td>
             <td>{{ team.simple_link|safe }}</td>
@@ -32,6 +33,7 @@
             <td class="text-right">{{ '%+.1f'| format(team.finals_score_difference_avg) }}</td>
 
         </tr>
+        {% endif %}
     {% endfor %}
 
     </tbody>

@@ -33,7 +33,7 @@
                         {{ other.franchise.logo_html|safe }}
                     </div>
                     <div class="media-body">
-                        {{ other.franchise.simple_link|safe }}
+                        <a href="{{ franchise.simple_url }}#h2h_vs_{{ other.franchise.id }}">{{ other.franchise.name }}</a>
                         {{ other.franchise.trophy_list_html|safe }}
                     </div>
                 </div>
@@ -223,11 +223,12 @@
                     {{ other.franchise.simple_link|safe }}
                     {{ other.franchise.trophy_list_html|safe }}
                     Head to Head
+                    <span class="season-record-str">{{ other.total_won_sum }}-{{ other.total_drawn_sum }}-{{ other.total_lost_sum }}</span>
                 </div>
             </div>
         </h4>
 
-        <table class="table table-hover h2h-stats">
+        <table class="table table-hover h2h-stats data-table-simple">
 
             <thead>
                 <tr>
@@ -246,8 +247,8 @@
                         <td>{{ gs.game.date_str }} {{ gs.game.time_str }}</td>
                         <td>{{ gs.game.season.simple_link|safe }}</td>
                         <td>{{ gs.game.season_stage }}</td>
-                        <td>{{ gs.score_link|safe }}</td>
-                        <td>{{ gs.outcome }}</td>
+                        <td>{{ gs.score_link|safe if gs.is_decided else '' }}</td>
+                        <td>{{ gs.outcome if gs.is_decided else '' }}</td>
                     </tr>
                 {% endfor %}
 
