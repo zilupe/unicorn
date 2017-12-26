@@ -30,11 +30,12 @@ def db(app):
 
     metadata.create_all()
 
-    yield app.db_engine
-
-    app.db_engine.dispose()
-
-    setup_engine.execute('DROP DATABASE {}'.format(app.db_name))
+    try:
+        yield app.db_engine
+    finally:
+        from unicorn.db.base import Session
+        Session.remove()
+        setup_engine.execute('DROP DATABASE {}'.format(app.db_name))
 
 
 @pytest.fixture(scope='session')

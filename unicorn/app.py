@@ -143,6 +143,11 @@ app = App()
 
 @app.context_entered
 def context_entered(context):
-    from unicorn.models import metadata
-    if metadata.bind is None:
-        metadata.bind = context.db_engine
+    from unicorn.db.base import Session
+    # TODO Ideally move Session creation to app context scope and destroy it on context exit!
+    Session.configure(bind=context.db_engine)
+
+
+@app.context_exited
+def context_exited(context):
+    pass
