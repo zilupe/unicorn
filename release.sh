@@ -8,9 +8,7 @@ rm -fR ./build/*
 
 set -x
 
-python -m unicorn.recreate_db
-python -m unicorn.v2.go
-python -m unicorn.pages.standard
+./build.sh
 
 date_str=`date +%Y-%m-%d-%H%M`
 
