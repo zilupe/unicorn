@@ -12,6 +12,7 @@ _thread_local = threading.local()
 _thread_local.stack = []
 
 
+# TODO Replace this with the library version!
 class RuntimeContext:
     _allowed_vars = (
         'dry_run',
