@@ -3,3 +3,5 @@ build/
 dist/
 input/
 __pycache__
+unicorn.db
+
