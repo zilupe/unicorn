@@ -34,24 +34,14 @@ class App(RuntimeContext):
         if 'db_name' in self:
             return self.get('db_name')
         else:
-            return os.environ.get('UNICORN_DB_NAME', 'unicorn')
+            return os.environ.get('UNICORN_DB_NAME', 'unicorn.db')
 
     @db_name.setter
     def db_name(self, value):
         self.set('db_name', value)
 
-    def get_db_url(self, db_name=None):
-        if db_name is None:
-            db_name = self.db_name
-        return (
-            'mysql+mysqlconnector://{user}:{password}@{host}:{port}/{name}'
-        ).format(
-            user=os.environ.get('UNICORN_DB_USER', 'root'),
-            host=os.environ.get('UNICORN_DB_HOST', 'localhost'),
-            password=os.environ.get('UNICORN_DB_PASSWORD', ''),
-            port=os.environ.get('UNICORN_DB_PORT', 3306),
-            name=db_name,
-        )
+    def get_db_url(self):
+        return 'sqlite:///{}'.format(self.db_name)
 
     @cached_property
     def db_engine(self):
