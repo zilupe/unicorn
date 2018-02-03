@@ -69,7 +69,7 @@ class Franchise(Base):
 
     @cached_property
     def num_games(self):
-        return sum(len(t.games) for t in self.teams)
+        return sum(sum(1 for gs in t.games if gs.is_decided) for t in self.teams)
 
     @cached_property
     def regular_record(self):
