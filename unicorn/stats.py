@@ -101,7 +101,7 @@ class FranchiseHead2HeadStats:
 
         for gs in reversed(self.games):
             outcome = GameOutcomes.normalize(gs.outcome)
-            if outcome == GameOutcomes.missing:
+            if outcome == GameOutcomes.missing or outcome is None:
                 continue
             if streak_outcome is None:
                 streak_outcome = outcome
