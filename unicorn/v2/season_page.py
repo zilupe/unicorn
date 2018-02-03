@@ -173,6 +173,19 @@ class SeasonParse:
 
                 week_games.append(game)
 
+                # Seasons with 8 teams, no semi-finals
+                eight_team_stages = {
+                    SeasonStages.regular: SeasonStages.regular,
+                    SeasonStages.final1st: SeasonStages.final1st,
+                    SeasonStages.semifinal1: SeasonStages.final7th,
+                    SeasonStages.semifinal2: SeasonStages.final5th,
+                    SeasonStages.semifinal5th1: SeasonStages.final3rd,  # aka "Semi Final 3"
+                }
+
+                if season_stage != SeasonStages.final1st and self.season_id in (105, 107):
+                    season_stage = eight_team_stages[season_stage]
+                    game.season_stage = season_stage
+
                 if season_stage == SeasonStages.final1st:
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.home_team_id].finals_rank = 1
