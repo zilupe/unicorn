@@ -83,7 +83,10 @@ class FranchiseHead2HeadStats:
         if suffix == 'sum':
             return metric_sum
         elif suffix == 'avg':
-            return 1.0 * metric_sum / num_games
+            if num_games > 0:
+                return 1.0 * metric_sum / num_games
+            else:
+                return 0
         else:
             raise InvalidMetricName(item)
 

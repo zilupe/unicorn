@@ -1,3 +1,4 @@
+import inspect
 import os.path
 
 from unicorn.app import app
@@ -105,5 +106,10 @@ def main():
 
 
 if __name__ == '__main__':
-    with app():
-        main()
+    try:
+        with app():
+            main()
+    except Exception:
+        for i in range(-3, 0, 1):
+            print('Locals [{}]:\n\t{}'.format(i, inspect.trace()[i][0].f_locals))
+        raise
