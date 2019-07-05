@@ -31,7 +31,10 @@ def compile_points_difference_avg(game_sides):
     games = [gs for gs in game_sides if gs.was_played]
     if games:
         return (
-            (sum(gs.score for gs in game_sides) - sum(gs.opponent.score for gs in games)) / len(games)
+            (
+                sum(gs.score for gs in game_sides if gs.score is not None) -
+                sum(gs.opponent.score for gs in games if gs.score is not None)
+            ) / len(games)
         )
     else:
         return 0
@@ -141,6 +144,18 @@ class Franchise(Base):
     @cached_property
     def year2017_points_difference_avg(self):
         return compile_points_difference_avg(self.year2017_games)
+
+    @cached_property
+    def year2019_games(self):
+        return [gs for gs in self.games_reversed if gs.game.starts_at.year == 2019]
+
+    @cached_property
+    def year2019_record(self):
+        return compile_game_sides_record(self.year2019_games)
+
+    @cached_property
+    def year2019_points_difference_avg(self):
+        return compile_points_difference_avg(self.year2019_games)
 
     @cached_property
     def finals_winners_teams(self):
