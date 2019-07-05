@@ -29,6 +29,7 @@ class SeasonStages:
         'Semi Final 4': semifinal5th2,
 
         'Final': final1st,
+        'Finals': final1st,
         'Grand Final': final1st,
 
         '3rd/4th playoff': final3rd,
@@ -43,6 +44,7 @@ class SeasonStages:
 
         '7th Place Final': final7th,
         '7th/8th playoff': final7th,
+        '7th Place Play Offs': final7th,
     }
 
     @classmethod

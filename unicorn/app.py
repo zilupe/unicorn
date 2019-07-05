@@ -122,6 +122,7 @@ class App(RuntimeContext):
                         'away_team_score': int(row['away_team_score']),
                         'score_status': int(row['score_status']),
                         'score_status_comments': row['score_status_comments'],
+                        'season_stage': row['season_stage'] or None,
                     }
         return app_data.manual_scores
 

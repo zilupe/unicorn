@@ -105,6 +105,8 @@ class SeasonParse:
                     if decoded_ss is not None:
                         season_stage = decoded_ss
 
+                game_season_stage = season_stage
+
                 tc = g.find('td', class_='FDate')
                 if not tc:
                     continue
@@ -130,6 +132,8 @@ class SeasonParse:
                     game_score = (fs['home_team_score'], fs['away_team_score'])
                     game_score_status = fs['score_status']
                     game_score_status_comments = fs['score_status_comments']
+                    if fs['season_stage']:
+                        game_season_stage = fs['season_stage']
                 else:
                     if ic.find('nobr').find('div'):
                         game_score = (
@@ -154,7 +158,7 @@ class SeasonParse:
                     starts_at=game_time.replace(
                         year=week_date.year, month=week_date.month, day=week_date.day
                     ),
-                    season_stage=season_stage,
+                    season_stage=game_season_stage,
                     venue=game_venue,
                     home_team_id=self.unicorn_team_id(game_home_team_id or extract_from_link(htc.find('a'), 'TeamId')),
                     home_team_score=int(game_score[0]) if game_score[0] is not None else None,
@@ -168,53 +172,58 @@ class SeasonParse:
                     game.home_team_score,
                     game.away_team_score,
                 )
-                game.home_team_points = GameOutcomes.get_points_for(game.home_team_outcome, season_stage)
-                game.away_team_points = GameOutcomes.get_points_for(game.away_team_outcome, season_stage)
+                game.home_team_points = GameOutcomes.get_points_for(game.home_team_outcome, game.season_stage)
+                game.away_team_points = GameOutcomes.get_points_for(game.away_team_outcome, game.season_stage)
 
                 week_games.append(game)
 
-                # Seasons with 8 teams, no semi-finals
-                eight_team_stages = {
-                    SeasonStages.regular: SeasonStages.regular,
-                    SeasonStages.final1st: SeasonStages.final1st,
-                    SeasonStages.semifinal1: SeasonStages.final7th,
-                    SeasonStages.semifinal2: SeasonStages.final5th,
-                    SeasonStages.semifinal5th1: SeasonStages.final3rd,  # aka "Semi Final 3"
+                custom_season_stages = {
+                    105: {
+                        SeasonStages.semifinal1: SeasonStages.final7th,
+                        SeasonStages.semifinal2: SeasonStages.final5th,
+                        SeasonStages.semifinal5th1: SeasonStages.final3rd,
+                    },
+                    108: {
+                        SeasonStages.semifinal2: SeasonStages.final5th,
+                        SeasonStages.semifinal5th1: SeasonStages.final3rd,
+                    },
                 }
 
-                if season_stage != SeasonStages.final1st and self.season_id in (105, 107):
-                    season_stage = eight_team_stages[season_stage]
-                    game.season_stage = season_stage
+                if self.season_id in custom_season_stages:
+                    game.season_stage = custom_season_stages[self.season_id].get(
+                        game_season_stage,
+                        game_season_stage,
+                    )
 
-                if season_stage == SeasonStages.final1st:
+                if game.season_stage == SeasonStages.final1st:
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.home_team_id].finals_rank = 1
                         self.teams[game.away_team_id].finals_rank = 2
                     elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
                         self.teams[game.home_team_id].finals_rank = 2
                         self.teams[game.away_team_id].finals_rank = 1
-                elif season_stage == SeasonStages.final3rd:
+                elif game.season_stage == SeasonStages.final3rd:
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.home_team_id].finals_rank = 3
                         self.teams[game.away_team_id].finals_rank = 4
                     elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
                         self.teams[game.home_team_id].finals_rank = 4
                         self.teams[game.away_team_id].finals_rank = 3
-                elif season_stage == SeasonStages.final5th:
+                elif game.season_stage == SeasonStages.final5th:
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.home_team_id].finals_rank = 5
                         self.teams[game.away_team_id].finals_rank = 6
                     elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
                         self.teams[game.home_team_id].finals_rank = 6
                         self.teams[game.away_team_id].finals_rank = 5
-                elif season_stage == SeasonStages.final7th:
+                elif game.season_stage == SeasonStages.final7th:
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.home_team_id].finals_rank = 7
                         self.teams[game.away_team_id].finals_rank = 8
                     elif game.home_team_outcome in (GameOutcomes.lost, GameOutcomes.forfeit_against):
                         self.teams[game.home_team_id].finals_rank = 8
                         self.teams[game.away_team_id].finals_rank = 7
-                elif season_stage == SeasonStages.semifinal5th1:
+                elif game.season_stage == SeasonStages.semifinal5th1:
                     # In a 7 team league losing 5th place semifinal means you finish last (7th)
                     if game.home_team_outcome in (GameOutcomes.won, GameOutcomes.forfeit_for):
                         self.teams[game.away_team_id].finals_rank = 7

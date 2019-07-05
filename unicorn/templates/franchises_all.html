@@ -12,7 +12,7 @@
             <th data-orderable="false">&nbsp;</th>
         </tr>
     </thead>
-    {% for franchise in franchises_all %}
+    {% for franchise in franchises_all|sort(attribute='status') %}
         <tr>
             <td>
                 {{ franchise.logo_html|safe }}

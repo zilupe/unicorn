@@ -159,7 +159,8 @@ class Franchise(Base):
 
     @cached_property
     def finals_winners_teams(self):
-        return [t for t in self.teams if t.season.finals_finished and t.finals_rank == 1]
+        teams = (t for t in self.teams if t.season.finals_finished and t.finals_rank == 1)
+        return sorted(teams, key=lambda t: t.season.first_week_date, reverse=True)
 
     @cached_property
     def num_finals_winners_teams(self):
@@ -167,7 +168,8 @@ class Franchise(Base):
 
     @cached_property
     def regular_winners_teams(self):
-        return [t for t in self.teams if t.season.regular_finished and t.regular_rank == 1]
+        teams = (t for t in self.teams if t.season.regular_finished and t.regular_rank == 1)
+        return sorted(teams, key=lambda t: t.season.first_week_date, reverse=True)
 
     @cached_property
     def num_regular_winners_teams(self):

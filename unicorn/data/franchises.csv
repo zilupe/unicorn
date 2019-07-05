@@ -3,7 +3,7 @@ id,name,status,colors
 2,Upper Street Ballers,inactive,"#8FBC8F,#8FBC8F"
 3,Camden Hells,inactive,"#FF0000,#F1F1F1"
 4,Pentonville Pacers,inactive,"#F5F5F5,#F5F5F5"
-5,Ocelots,active,"#FF1493,#FF1493"
+5,Ocelots,inactive,"#FF1493,#FF1493"
 6,Rockets,active,"#FF0000,#000000"
 7,Islington Devils,inactive,"#F5F5F5,#F5F5F5"
 8,Shoreditch Shooters,inactive,"#F5F5F5,#F5F5F5"
