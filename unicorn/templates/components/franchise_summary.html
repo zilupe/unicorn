@@ -23,8 +23,8 @@
             <td>{{ franchise.num_seasons }}</td>
             <td>{{ franchise.num_finals_winners_teams }}</td>
             <td>{{ franchise.num_regular_winners_teams }}</td>
-            <td><a href="{{ franchise.teams[0].simple_url }}">{{ franchise.teams[0].season.simple_label|safe }}</a></td>
-            <td><a href="{{ franchise.teams[-1].simple_url }}">{{ franchise.teams[-1].season.simple_label|safe }}</a></td>
+            <td><a href="{{ franchise.teams_sorted[0].simple_url }}">{{ franchise.teams_sorted[0].season.simple_label|safe }}</a></td>
+            <td><a href="{{ franchise.teams_sorted[-1].simple_url }}">{{ franchise.teams_sorted[-1].season.simple_label|safe }}</a></td>
             <td>{{ franchise.total_record[0] }}</td>
             <td>{{ franchise.total_record[1] }}</td>
             <td>{{ franchise.total_record[2] }}</td>

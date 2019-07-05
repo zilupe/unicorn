@@ -100,7 +100,7 @@ class Franchise(Base):
 
     @property
     def games(self):
-        for t in self.teams:
+        for t in self.teams_sorted:
             yield from t.games
 
     @property
