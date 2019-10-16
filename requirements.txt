@@ -1,5 +1,6 @@
 alembic
 beautifulsoup4
+hookery==1.1.2
 Jinja2
 markdown2
 mysql-connector-python  # manually installed
