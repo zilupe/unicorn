@@ -75,6 +75,7 @@ class SeasonParse:
             tds = st_tr.find_all('td')
             self.teams[team_id] = Team(
                 id=team_id,
+                name=tds[1].text.strip(),
                 gm_id=gm_team_id,
                 position=i + 1,
                 played=int(tds[2].text.strip()),
@@ -87,7 +88,7 @@ class SeasonParse:
                 score_against=int(tds[9].text.strip()),
                 score_difference=int(tds[10].text.strip()),
                 bonus_points=int(tds[11].text.strip()),
-                points=int(tds[12].find('a').text.strip()),
+                points=int(tds[12].find('a').text.strip() if tds[12].find('a') else 0),
 
                 finals_rank=None,
             )
