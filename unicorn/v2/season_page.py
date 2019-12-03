@@ -1,5 +1,5 @@
 import datetime as dt
-from typing import List
+from typing import List, Dict
 from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
@@ -35,8 +35,10 @@ class Game(AttrDict):
     venue: str
     home_team_id: int
     home_team_score: int
+    home_team_outcome: str
     away_team_id: int
     away_team_score: int
+    away_team_outcome: str
     score_status: str
     score_status_comments: str
 
@@ -73,7 +75,7 @@ class SeasonParse:
         self.season_name: str = None
         self.division_id: int = None
         self.league_id: int = None
-        self.teams: List[Team] = None
+        self.teams: Dict[str, Team] = None
 
     def unicorn_team_id(self, gm_team_id):
         """
