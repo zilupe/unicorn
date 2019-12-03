@@ -1,4 +1,5 @@
 import datetime as dt
+from typing import List
 from urllib.parse import parse_qs
 
 from bs4 import BeautifulSoup
@@ -28,25 +29,51 @@ def extract_from_link(link, field):
 
 
 class Game(AttrDict):
-    pass
+    id: int
+    starts_at: dt.datetime
+    season_stage: str
+    venue: str
+    home_team_id: int
+    home_team_score: int
+    away_team_id: int
+    away_team_score: int
+    score_status: str
+    score_status_comments: str
 
 
 class GameDay(AttrDict):
-    pass
+    date: dt.datetime
+    week_number: int
+    games: List[Game]
 
 
 class Team(AttrDict):
-    pass
+    id: int
+    name: str
+    gm_id: int
+    position: int
+    played: int
+    won: int
+    lost: int
+    drawn: int
+    forfeit_for: int
+    forfeit_against: int
+    score_for: int
+    score_against: int
+    score_difference: int
+    bonus_points: int
+    points: int
+    finals_rank: int
 
 
 class SeasonParse:
     def __init__(self):
-        self.game_days = None
-        self.season_id = None
-        self.season_name = None
-        self.division_id = None
-        self.league_id = None
-        self.teams = None
+        self.game_days: List[GameDay] = None
+        self.season_id: int = None
+        self.season_name: str = None
+        self.division_id: int = None
+        self.league_id: int = None
+        self.teams: List[Team] = None
 
     def unicorn_team_id(self, gm_team_id):
         """
@@ -89,7 +116,6 @@ class SeasonParse:
                 score_difference=int(tds[10].text.strip()),
                 bonus_points=int(tds[11].text.strip()),
                 points=int(tds[12].find('a').text.strip() if tds[12].find('a') else 0),
-
                 finals_rank=None,
             )
 
